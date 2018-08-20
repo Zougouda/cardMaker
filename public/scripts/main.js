@@ -4,40 +4,13 @@ var previewCanvas, previewCtx;
 
 var font = 'Trajan';
 
-var cardCaptionBoundingBox = {
-	left: 36,
-	top: 68,
-	width: 328,
-	height: 242
-};
+var title, titleBoundingBox,
+	description, descriptionBoundingBox,
+	manaCost, manaCostBoundingBox,
+	type, typeBoundingBox,
+	author, authorBoundingBox
+	;
 
-var title = '';
-var titleBoundingBox = {
-	left: 36,
-	top: 52,
-	width: 328,
-	height: 10
-};
-
-var description = '';
-var descriptionBoundingBox = {
-	left: 40,
-	top: 370,
-	width: 328,
-	height: 150
-};
-
-var manaCost = '';
-var manaCostBoundingBox = {
-	top: 40,
-	right: -40
-};
-
-var type = '';
-var typeBoundingBox = {
-	top: 336,
-	left: 40
-};
 
 document.addEventListener("DOMContentLoaded", function()
 {
@@ -46,6 +19,49 @@ document.addEventListener("DOMContentLoaded", function()
 
 function onReady()
 {
+	
+	cardCaptionBoundingBox = {
+		left: 36,
+		top: 68,
+		width: 328,
+		height: 242
+	};
+	
+	title = '';
+	titleBoundingBox = {
+		left: 36,
+		top: 52,
+		width: 328,
+		height: 10
+	};
+	
+	description = '';
+	descriptionBoundingBox = {
+		left: 40,
+		top: 370,
+		width: 328,
+		height: 150
+	};
+	
+	manaCost = '';
+	manaCostBoundingBox = {
+		top: 40,
+		right: -40
+	};
+	
+	type = '';
+	typeBoundingBox = {
+		top: 336,
+		left: 40
+	};
+	
+	author = document.querySelector('.card-author').value;
+	authorBoundingBox = {
+		top: 522,
+		left: 30
+	};
+
+
 	uploader = document.querySelector('.uploader');
 	uploadedImage = document.querySelector('img.uploaded-image');
 
@@ -101,6 +117,15 @@ function onReady()
 		type = this.value;
 		updatePreview();
 	}, false);
+
+	document.querySelector('.card-author').addEventListener('keyup', function(e)
+	{
+		author = this.value;
+		updatePreview();
+	}, false);
+
+
+	updatePreview();
 };
 
 function updatePreview()
@@ -143,7 +168,7 @@ function updatePreview()
 		previewCtx.fillText(type, typeBoundingBox.left, typeBoundingBox.top);
 
 		/* update desc */
-		var descFontSize = 14;
+		var descFontSize = 16;
 		previewCtx.color = 'black';
 		previewCtx.font = descFontSize+'px '+font;
 		wrapText(
@@ -155,37 +180,105 @@ function updatePreview()
 			descFontSize
 		);
 
+		/* update author */
+		var authorFontSize = 13;
+		previewCtx.color = 'black';
+		previewCtx.font = authorFontSize+'px '+font;
+		previewCtx.fillText("Zougouda's Magic The Gathering™ generator, 2018", authorBoundingBox.left, authorBoundingBox.top);
+		if(author)
+			previewCtx.fillText("By "+author, authorBoundingBox.left, authorBoundingBox.top+authorFontSize);
 	};
 }
 
 /* https://stackoverflow.com/a/2936288 */
+//function wrapText(context, text, x, y, line_width, line_height)
+//{
+//		var line = '';
+//		var paragraphs = text.split('\n');
+//		for (var i = 0; i < paragraphs.length; i++)
+//		{
+//				var words = paragraphs[i].split(' ');
+//				for (var n = 0; n < words.length; n++)
+//				{
+//						var testLine = line + words[n] + ' ';
+//						var metrics = context.measureText(testLine);
+//						var testWidth = metrics.width;
+//						if (testWidth > line_width && n > 0)
+//						{
+//								context.fillText(line, x, y);
+//								line = words[n] + ' ';
+//								y += line_height;
+//						}
+//						else
+//						{
+//								line = testLine;
+//						}
+//				}
+//				context.fillText(line, x, y);
+//				y += line_height;
+//				line = '';
+//		}
+//}
+
+
+/* https://stackoverflow.com/a/2936288 */
 function wrapText(context, text, x, y, line_width, line_height)
 {
-		var line = '';
-		var paragraphs = text.split('\n');
-		for (var i = 0; i < paragraphs.length; i++)
-		{
-				var words = paragraphs[i].split(' ');
-				for (var n = 0; n < words.length; n++)
-				{
-						var testLine = line + words[n] + ' ';
-						var metrics = context.measureText(testLine);
-						var testWidth = metrics.width;
-						if (testWidth > line_width && n > 0)
-						{
-								context.fillText(line, x, y);
-								line = words[n] + ' ';
-								y += line_height;
-						}
-						else
-						{
-								line = testLine;
-						}
-				}
-				context.fillText(line, x, y);
-				y += line_height;
-				line = '';
-		}
+	var abbreviationToSrc = {
+		'(w)' : 'https://vignette.wikia.nocookie.net/mtg/images/d/da/Mana_W.png/revision/latest',
+		'(u)' : 'https://vignette.wikia.nocookie.net/mtg/images/a/a8/Mana_U.png/revision/latest',
+		'(b)' : 'https://vignette.wikia.nocookie.net/mtg/images/a/a6/Mana_B.png/revision/latest',
+		'(r)' : 'https://vignette.wikia.nocookie.net/mtg/images/c/ce/Mana_R.png/revision/latest',
+		'(g)' : 'https://vignette.wikia.nocookie.net/mtg/images/f/f7/Mana_G.png/revision/latest',
+	};
+
+	var line = '';
+	var paragraphs = text.split('\n');
+	for (var i = 0; i < paragraphs.length; i++)
+	{
+			var words = paragraphs[i].split(' ');
+			for (var n = 0; n < words.length; n++)
+			{
+					var testLine = line + words[n] + ' ';
+
+					//var regex = /\(([^)]+)\)/gi;
+					var regex = /\(([^)]?)\)/gi;
+					while(reResult = regex.exec(testLine))
+					{
+						var pattern = reResult[0];
+						var textUpToAbbreviation = reResult.input.substring(0, reResult.input.indexOf(pattern) ); // remove everything just before the found string
+						testLine = testLine.replace(pattern, ' '.repeat(pattern.length)); // remove pattern from the line and replace it with spaces
+
+						var imgWidth = imgHeight = 12;
+						var marginX = context.measureText(textUpToAbbreviation).width;
+						var imgX = x + marginX;
+						var imgY = y - imgHeight;
+
+						/* build image */
+						var imageSrc = abbreviationToSrc[pattern];
+						var img = new Image();
+						img.src = imageSrc;
+
+						context.drawImage(img, imgX, imgY, imgWidth, imgHeight);
+					}
+
+					var metrics = context.measureText(testLine);
+					var testWidth = metrics.width;
+					if (testWidth > line_width && n > 0)
+					{
+							context.fillText(line, x, y);
+							line = words[n] + ' ';
+							y += line_height;
+					}
+					else
+					{
+							line = testLine;
+					}
+			}
+			context.fillText(line, x, y);
+			y += line_height;
+			line = '';
+	}
 }
 
 function getImagesByAbbreviationsText(text)
@@ -197,7 +290,9 @@ function getImagesByAbbreviationsText(text)
 		'(r)' : 'https://vignette.wikia.nocookie.net/mtg/images/c/ce/Mana_R.png/revision/latest',
 		'(g)' : 'https://vignette.wikia.nocookie.net/mtg/images/f/f7/Mana_G.png/revision/latest',
 	};
-	var allPatterns = text.match(/\(([^)]+)\)/gi); // get all patterns within parenthesis ( like '(b)' )
+	//var regex = /\(([^)]+)\)/gi;
+	var regex = /\(([^)]?)\)/gi;
+	var allPatterns = text.match(regex); // get all patterns within parenthesis ( like '(b)' )
 
 	var returnValue = [];
 	if(allPatterns)
