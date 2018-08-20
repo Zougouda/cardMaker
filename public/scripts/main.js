@@ -124,6 +124,15 @@ function onReady()
 		updatePreview();
 	}, false);
 
+	document.addEventListener('keydown', function(e)
+	{
+		if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 83)  // Ctrl + S or cmd + S
+		{
+			e.preventDefault();
+			exportImg();
+		}
+	}, false);
+
 
 	updatePreview();
 };
@@ -303,4 +312,15 @@ function getImagesByAbbreviationsText(text)
 		});
 	}
 	return returnValue;
+}
+
+function exportImg()
+{
+	updatePreview();
+	var dataUrl = previewCanvas.toDataURL('image/jpg').replace("image/png", "image/octet-stream");
+
+	var downloadButton = document.createElement('a');
+	downloadButton.setAttribute('download', (title) ? title+'.jpg' : 'newCard.jpg');
+	downloadButton.href = dataUrl;
+	downloadButton.click();
 }

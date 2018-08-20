@@ -22,5 +22,8 @@ block content
 			input.card-type(type='text',placeholder='type')
 			textarea.card-description(placeholder="Description")
 			input.card-author(placeholder="Author",value="Zougouda")
+
+			br 
+			button.save-button(onclick="javascript:exportImg()") Save card
 		div.preview
 			canvas.preview-canvas(width='400',height='560')
