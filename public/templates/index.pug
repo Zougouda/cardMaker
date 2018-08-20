@@ -3,5 +3,23 @@ extends layout.pug
 block head
 	title Index
 
+block append styles
+	link(rel='stylesheet',type='text/css',href='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.4.1/cropper.css')
+
+block append scripts
+	script(src='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.4.1/cropper.js')
+
 block content
-	p hello world
+	div.global-container
+		div.editor
+			input.uploader(type='file')
+			div.uploaded-image-container
+				img.uploaded-image
+			input.card-title(type='text',placeholder='Name')
+			div.mana-cost-container
+				input.card-mana-cost(type='text',placeholder='Mana cost')
+				div
+			input.card-type(type='text',placeholder='type')
+			textarea.card-description(placeholder="Description")
+		div.preview
+			canvas.preview-canvas(width='400',height='560')
