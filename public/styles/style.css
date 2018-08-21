@@ -45,6 +45,21 @@ img {
 	display: inline-block;
 	margin-top: 0;
 }
+.editor input.card-power, .editor input.card-toughness {
+	margin-top: 0;
+	width: 80px!important;
+	min-width: 0;
+	display: inline-block;
+}
+.editor .power-toughness-container {
+	margin-top: 10px;
+}
+.editor .power-toughness-separator {
+	margin: 0 5px;
+	display: inline-block;
+	font-size: 20px;
+	font-weight: bold;
+}
 
 .editor .uploaded-image-container {
 	width: 50%;
