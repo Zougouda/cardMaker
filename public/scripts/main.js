@@ -11,6 +11,39 @@ var title, titleBoundingBox,
 	author, authorBoundingBox
 	;
 
+var abbreviationToSrc = {
+	'(0)' : '/images/icons/mana/0.png',
+	'(X)' : '/images/icons/mana/X.png',
+	'(1)' : '/images/icons/mana/1.png',
+	'(2)' : '/images/icons/mana/2.png',
+	'(3)' : '/images/icons/mana/3.png',
+	'(4)' : '/images/icons/mana/4.png',
+	'(5)' : '/images/icons/mana/5.png',
+	'(6)' : '/images/icons/mana/6.png',
+	'(7)' : '/images/icons/mana/7.png',
+	'(8)' : '/images/icons/mana/8.png',
+	'(9)' : '/images/icons/mana/9.png',
+	//'(10)' : '/images/icons/mana/10.png',
+	//'(13)' : '/images/icons/mana/13.png',
+
+	'(w)' : '/images/icons/mana/white.png',
+	'(u)' : '/images/icons/mana/blue.png',
+	'(b)' : '/images/icons/mana/black.png',
+	'(r)' : '/images/icons/mana/red.png',
+	'(g)' : '/images/icons/mana/green.png',
+};
+
+
+var cardFramesSrcByColor = {
+	'default': '/images/createcard.jpg',
+	'white': '/images/createcard.jpg',
+	'blue': '/images/createcard.jpg',
+	'black': '/images/createcard.jpg',
+	'red': '/images/createcard.jpg',
+	'green': '/images/createcard.jpg',
+	'multi': '/images/createcard.jpg',
+};
+
 
 document.addEventListener("DOMContentLoaded", function()
 {
@@ -135,6 +168,7 @@ function onReady()
 
 
 	updatePreview();
+	buildManaCostButtons(true);
 };
 
 function updatePreview()
@@ -233,14 +267,6 @@ function updatePreview()
 /* https://stackoverflow.com/a/2936288 */
 function wrapText(context, text, x, y, line_width, line_height)
 {
-	var abbreviationToSrc = {
-		'(w)' : 'https://vignette.wikia.nocookie.net/mtg/images/d/da/Mana_W.png/revision/latest',
-		'(u)' : 'https://vignette.wikia.nocookie.net/mtg/images/a/a8/Mana_U.png/revision/latest',
-		'(b)' : 'https://vignette.wikia.nocookie.net/mtg/images/a/a6/Mana_B.png/revision/latest',
-		'(r)' : 'https://vignette.wikia.nocookie.net/mtg/images/c/ce/Mana_R.png/revision/latest',
-		'(g)' : 'https://vignette.wikia.nocookie.net/mtg/images/f/f7/Mana_G.png/revision/latest',
-	};
-
 	var line = '';
 	var paragraphs = text.split('\n');
 	for (var i = 0; i < paragraphs.length; i++)
@@ -292,13 +318,6 @@ function wrapText(context, text, x, y, line_width, line_height)
 
 function getImagesByAbbreviationsText(text)
 {
-	var abbreviationToSrc = {
-		'(w)' : 'https://vignette.wikia.nocookie.net/mtg/images/d/da/Mana_W.png/revision/latest',
-		'(u)' : 'https://vignette.wikia.nocookie.net/mtg/images/a/a8/Mana_U.png/revision/latest',
-		'(b)' : 'https://vignette.wikia.nocookie.net/mtg/images/a/a6/Mana_B.png/revision/latest',
-		'(r)' : 'https://vignette.wikia.nocookie.net/mtg/images/c/ce/Mana_R.png/revision/latest',
-		'(g)' : 'https://vignette.wikia.nocookie.net/mtg/images/f/f7/Mana_G.png/revision/latest',
-	};
 	//var regex = /\(([^)]+)\)/gi;
 	var regex = /\(([^)]?)\)/gi;
 	var allPatterns = text.match(regex); // get all patterns within parenthesis ( like '(b)' )
@@ -312,6 +331,7 @@ function getImagesByAbbreviationsText(text)
 		});
 	}
 	return returnValue;
+
 }
 
 function exportImg()
@@ -323,4 +343,51 @@ function exportImg()
 	downloadButton.setAttribute('download', (title) ? title+'.jpg' : 'newCard.jpg');
 	downloadButton.href = dataUrl;
 	downloadButton.click();
+}
+
+function insertIconIntoTextInput(iconAsText, inputDOM)
+{
+	var txtIndex = inputDOM.selectionStart;
+	inputDOM.value = inputDOM.value.slice(0, txtIndex) + iconAsText + inputDOM.value.slice(txtIndex); // Add value at the selected index in the input
+	/* manually trigger onchange event */
+	var event = new Event('change');
+	inputDOM.dispatchEvent(event);
+}
+
+function buildManaCostButtons(includeReset = false)
+{
+	var containerSelector = '.mana-cost-buttons';
+	var container = document.querySelector(containerSelector);
+	
+	Object.entries(abbreviationToSrc).forEach(function(entry)
+	{
+		var key = entry[0], value = entry[1];
+
+		var button = document.createElement('a');
+		var img = document.createElement('img');
+		img.src = value;
+		img.width = 16;
+		button.appendChild(img);
+		button.onclick = function()
+		{
+			insertIconIntoTextInput(key, document.querySelector('input.card-mana-cost'));
+		};
+		button.href = 'javascript:void(0);';
+		container.appendChild(button);
+	});
+
+	if(includeReset)
+	{
+		var resetButton = document.createElement('a');
+		resetButton.href = 'javascript:void(0);';
+		resetButton.innerHTML = 'Reset';
+		resetButton.onclick = function()
+		{
+			var input = document.querySelector('input.card-mana-cost');
+			input.value = '';
+			var event = new Event('change');
+			input.dispatchEvent(event);
+		};
+		container.appendChild(resetButton);
+	}
 }

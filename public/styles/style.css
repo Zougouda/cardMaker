@@ -30,19 +30,22 @@ img {
 
 .editor input, .editor textarea {
 	display: block;
-	margin-top: 10px;
 	min-width: 200px;
 }
 .editor textarea {
 	width: 100%;
 	height: 200px;
 }
+.editor input, .editor textarea, .mana-cost-container {
+	margin-top: 10px;
+}
+.editor .card-mana-cost, .editor .mana-cost-buttons {
+	display: inline-block;
+	margin-top: 0;
+}
 
 .editor .uploaded-image-container {
 	width: 50%;
 }
 
-@font-face {
-	font-family: "MTG";
-	src: url("/fonts/BelweMediumBT.ttf");
-}   
+.
