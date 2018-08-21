@@ -35,13 +35,13 @@ var abbreviationToSrc = {
 
 
 var cardFramesSrcByColor = {
-	'default': '/images/createcard.jpg',
-	'white': '/images/createcard.jpg',
-	'blue': '/images/createcard.jpg',
-	'black': '/images/createcard.jpg',
-	'red': '/images/createcard.jpg',
-	'green': '/images/createcard.jpg',
-	'multi': '/images/createcard.jpg',
+	'colorless': '/images/frames/white.jpg',
+	'white'    : '/images/frames/white.jpg',
+	'blue'     : '/images/frames/blue.jpg',
+	'black'    : '/images/frames/black.jpg',
+	'red'      : '/images/frames/red.jpg',
+	'green'    : '/images/frames/green.jpg',
+	'gold'    : '/images/frames/gold.jpg',
 };
 
 
@@ -91,7 +91,7 @@ function onReady()
 	author = document.querySelector('.card-author').value;
 	authorBoundingBox = {
 		top: 522,
-		left: 30
+		left: 60
 	};
 
 
@@ -169,14 +169,43 @@ function onReady()
 
 	updatePreview();
 	buildManaCostButtons(true);
-};
+}
+
+function getCardFrameSrc()
+{
+	var 
+		white = (manaCost.match(/\(w\)/g) || []).length,
+		blue  = (manaCost.match(/\(u\)/g) || []).length,
+		black = (manaCost.match(/\(b\)/g) || []).length,
+		red   = (manaCost.match(/\(r\)/g) || []).length,
+		green = (manaCost.match(/\(g\)/g) || []).length;
+
+	/* fatass if to determine the card's frame */
+	var returnValue;
+	if( !white && !blue && !black && !red && !green )
+		returnValue = cardFramesSrcByColor.colorless;
+	else if( white > 0 && !blue && !black && !red & !green )
+		returnValue = cardFramesSrcByColor.white; 
+	else if( blue > 0 && !white && !black && !red && !green )
+		returnValue = cardFramesSrcByColor.blue;
+	else if( black > 0 && !blue && !white && !red && !green )
+		returnValue = cardFramesSrcByColor.black;
+	else if( red > 0 && !blue && !black && !white && !green )
+		returnValue = cardFramesSrcByColor.red;
+	else if( green > 0 && !blue && !black && !red & !white )
+		returnValue = cardFramesSrcByColor.green;
+	else
+		returnValue = cardFramesSrcByColor.gold;
+
+	return returnValue;
+}
 
 function updatePreview()
 {
 	//previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height); // clear canvas
 
 	var cardFrameImg = new Image();
-	cardFrameImg.src = '/images/createcard.jpg'; // TODO use other frames depending on the mana used
+	cardFrameImg.src = getCardFrameSrc(); // TODO use other frames depending on the mana used
 	cardFrameImg.onload = function()
 	{
 		previewCtx.drawImage(cardFrameImg, 0, 0); // draw frame
@@ -186,7 +215,7 @@ function updatePreview()
 			previewCtx.drawImage(cropper.getCroppedCanvas(), cardCaptionBoundingBox.left, cardCaptionBoundingBox.top, cardCaptionBoundingBox.width, cardCaptionBoundingBox.height);
 
 		/* update title */
-		previewCtx.color = 'black';
+		previewCtx.fillStyle = 'black';
 		previewCtx.font = 'bold 18px '+font;
 		previewCtx.fillText(title, titleBoundingBox.left, titleBoundingBox.top);
 
@@ -206,13 +235,13 @@ function updatePreview()
 		});
 
 		/* update type */
-		previewCtx.color = 'black';
+		previewCtx.fillStyle = 'black';
 		previewCtx.font = 'bold 16px '+font;
 		previewCtx.fillText(type, typeBoundingBox.left, typeBoundingBox.top);
 
 		/* update desc */
 		var descFontSize = 16;
-		previewCtx.color = 'black';
+		previewCtx.fillStyle = 'black';
 		previewCtx.font = descFontSize+'px '+font;
 		wrapText(
 			previewCtx, 
@@ -224,8 +253,8 @@ function updatePreview()
 		);
 
 		/* update author */
-		var authorFontSize = 13;
-		previewCtx.color = 'black';
+		var authorFontSize = 11;
+		previewCtx.fillStyle = ( [cardFramesSrcByColor.black, cardFramesSrcByColor.red, cardFramesSrcByColor.green].indexOf( getCardFrameSrc() ) !== -1 ) ? 'white' : 'black';
 		previewCtx.font = authorFontSize+'px '+font;
 		previewCtx.fillText("Zougouda's Magic The Gathering™ generator, 2018", authorBoundingBox.left, authorBoundingBox.top);
 		if(author)
