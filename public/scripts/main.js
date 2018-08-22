@@ -276,7 +276,6 @@ function updatePreview()
 
 		/* update author */
 		var authorFontSize = 10;
-		previewCtx.textAlign = 'start';
 		previewCtx.fillStyle = ( [cardFramesSrcByColor.black].indexOf( getCardFrameSrc() ) !== -1 ) ? 'white' : 'black';
 		previewCtx.font = 'bold '+authorFontSize+'px '+font;
 		previewCtx.fillText("Zougouda's Magic The Gathering™ generator, 2018", authorBoundingBox.left, authorBoundingBox.top);
@@ -286,11 +285,13 @@ function updatePreview()
 		/* update power/toughness */
 		if(toughness)
 		{
+			previewCtx.save();
 			previewCtx.fillStyle = 'black';
 			previewCtx.font = 'bold 16px '+font;
 			previewCtx.textAlign = 'center';
 			previewCtx.fillText(power + ' / ' + toughness, powerBoundingBox.left, powerBoundingBox.top);
 			//previewCtx.fillText(toughness, toughnessBoundingBox.left, toughnessBoundingBox.top);
+			previewCtx.restore();
 		}
 	};
 }
