@@ -35,13 +35,13 @@ var abbreviationToSrc = {
 
 
 var cardFramesSrcByColor = {
-	'colorless': '/images/frames/white.jpg',
-	'white'    : '/images/frames/white.jpg',
-	'blue'     : '/images/frames/blue.jpg',
-	'black'    : '/images/frames/black.jpg',
-	'red'      : '/images/frames/red.jpg',
-	'green'    : '/images/frames/green.jpg',
-	'gold'    : '/images/frames/gold.jpg',
+	'colorless': '/images/frames/colorless',
+	'white'    : '/images/frames/white',
+	'blue'     : '/images/frames/blue',
+	'black'    : '/images/frames/black',
+	'red'      : '/images/frames/red',
+	'green'    : '/images/frames/green',
+	'gold'    : '/images/frames/gold',
 };
 
 
@@ -91,13 +91,13 @@ function onReady()
 	author = document.querySelector('.card-author').value;
 	authorBoundingBox = {
 		top: 522,
-		left: 60
+		left: 32
 	};
 
 	power = '';
 	powerBoundingBox = {
-		top: 530,
-		left: 350
+		top: 520,
+		left: 334
 	};
 	toughness = '';
 	//toughnessBoundingBox = {
@@ -138,7 +138,7 @@ function onReady()
 	document.querySelector('.card-title').addEventListener('keyup', function(e)
 	{
 		title = this.value;
-		updatePreview();
+		updatePreview();jpg
 	}, false);
 
 	document.querySelector('.card-description').addEventListener('keyup', function(e)
@@ -219,6 +219,10 @@ function getCardFrameSrc()
 	else
 		returnValue = cardFramesSrcByColor.gold;
 
+	if(toughness)
+		returnValue += '-creature';
+	returnValue += '.png';
+
 	return returnValue;
 }
 
@@ -230,7 +234,7 @@ function updatePreview()
 	cardFrameImg.src = getCardFrameSrc(); // TODO use other frames depending on the mana used
 	cardFrameImg.onload = function()
 	{
-		previewCtx.drawImage(cardFrameImg, 0, 0); // draw frame
+		previewCtx.drawImage(cardFrameImg, 0, 0, 400, 560); // draw frame
 
 		/* update image */
 		if(cropper)
@@ -276,8 +280,11 @@ function updatePreview()
 
 		/* update author */
 		var authorFontSize = 10;
-		previewCtx.fillStyle = ( [cardFramesSrcByColor.black].indexOf( getCardFrameSrc() ) !== -1 ) ? 'white' : 'black';
-		previewCtx.font = 'bold '+authorFontSize+'px '+font;
+		var authorColor = 'black';
+		if(cardFrameImg.src.match(/(colorless|black|green|red)/)) 
+			authorColor = 'white';
+		previewCtx.fillStyle = authorColor;
+		previewCtx.font = authorFontSize+'px '+font;
 		previewCtx.fillText("Zougouda's Magic The Gathering™ generator, 2018", authorBoundingBox.left, authorBoundingBox.top);
 		if(author)
 			previewCtx.fillText("By "+author, authorBoundingBox.left, authorBoundingBox.top+authorFontSize);
@@ -287,7 +294,7 @@ function updatePreview()
 		{
 			previewCtx.save();
 			previewCtx.fillStyle = 'black';
-			previewCtx.font = 'bold 16px '+font;
+			previewCtx.font = 'bold 20px '+font;
 			previewCtx.textAlign = 'center';
 			previewCtx.fillText(power + ' / ' + toughness, powerBoundingBox.left, powerBoundingBox.top);
 			//previewCtx.fillText(toughness, toughnessBoundingBox.left, toughnessBoundingBox.top);
@@ -400,10 +407,10 @@ function getImagesByAbbreviationsText(text)
 function exportImg()
 {
 	updatePreview();
-	var dataUrl = previewCanvas.toDataURL('image/jpg').replace("image/png", "image/octet-stream");
+	var dataUrl = previewCanvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
 
 	var downloadButton = document.createElement('a');
-	downloadButton.setAttribute('download', (title) ? title+'.jpg' : 'newCard.jpg');
+	downloadButton.setAttribute('download', (title) ? title+'.png' : 'newCard.jpg');
 	downloadButton.href = dataUrl;
 	downloadButton.click();
 }
