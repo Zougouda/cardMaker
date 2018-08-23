@@ -356,6 +356,7 @@ function wrapText(context, text, x, y, line_width, line_height)
 			{
 					var testLine = line + words[n] + ' ';
 
+					/* replace detected abbreviations by their matching images */
 					var regex = getAbbreviationsRegexp; 
 					while(reResult = regex.exec(testLine))
 					{
@@ -377,6 +378,8 @@ function wrapText(context, text, x, y, line_width, line_height)
 							context.drawImage(img, imgX, imgY, imgWidth, imgHeight);
 						}
 					}
+
+					/* TODO : handle <i> and </i> */
 
 					var metrics = context.measureText(testLine);
 					var testWidth = metrics.width;
