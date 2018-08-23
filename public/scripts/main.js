@@ -128,7 +128,6 @@ function onReady()
 		if(cropper) cropper.destroy(); // remove potential existing cropper
 
 		cropper = new Cropper( uploadedImage, {
-			//viewMode: 1,
 			dragMode: 'move',
 			aspectRatio: cardCaptionBoundingBox.width / cardCaptionBoundingBox.height,
 			cropend: updatePreview,
@@ -251,7 +250,7 @@ function getCardFrameSrc()
 function updatePreview()
 {
 	var cardFrameImg = new Image();
-	cardFrameImg.src = getCardFrameSrc(); // TODO use other frames depending on the mana used
+	cardFrameImg.src = getCardFrameSrc();
 	cardFrameImg.onload = function()
 	{
 		previewCtx.drawImage(cardFrameImg, 0, 0, 400, 560); // draw frame
