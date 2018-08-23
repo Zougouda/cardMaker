@@ -23,8 +23,6 @@ var abbreviationToSrc = {
 	'(7)' : '/images/icons/mana/7.png',
 	'(8)' : '/images/icons/mana/8.png',
 	'(9)' : '/images/icons/mana/9.png',
-	//'(10)' : '/images/icons/mana/10.png',
-	//'(13)' : '/images/icons/mana/13.png',
 
 	'(w)' : '/images/icons/mana/white.png',
 	'(u)' : '/images/icons/mana/blue.png',
@@ -42,6 +40,8 @@ Object.entries(abbreviationToSrc).forEach(function([key, val])
 {
 	abbreviationDescriptionToSrc[key] = val;
 });
+
+var getAbbreviationsRegexp = /\(([^)]?)\)/gi; // Matches every single char within parenthesis
 
 var cardFramesSrcByColor = {
 	'colorless': '/images/frames/colorless',
@@ -280,7 +280,6 @@ function updatePreview()
 			image.src = imageSrc;
 			previewCtx.drawImage(image, startX, startY, manaIconsSize, manaIconsSize);
 			startX += manaIconsSize;
-			// FIXME wait for images to load ?
 		});
 
 		/* update type */
@@ -320,42 +319,10 @@ function updatePreview()
 			previewCtx.font = 'bold 20px '+font;
 			previewCtx.textAlign = 'center';
 			previewCtx.fillText(power + ' / ' + toughness, powerBoundingBox.left, powerBoundingBox.top);
-			//previewCtx.fillText(toughness, toughnessBoundingBox.left, toughnessBoundingBox.top);
 			previewCtx.restore();
 		}
 	};
 }
-
-/* https://stackoverflow.com/a/2936288 */
-//function wrapText(context, text, x, y, line_width, line_height)
-//{
-//		var line = '';
-//		var paragraphs = text.split('\n');
-//		for (var i = 0; i < paragraphs.length; i++)
-//		{
-//				var words = paragraphs[i].split(' ');
-//				for (var n = 0; n < words.length; n++)
-//				{
-//						var testLine = line + words[n] + ' ';
-//						var metrics = context.measureText(testLine);
-//						var testWidth = metrics.width;
-//						if (testWidth > line_width && n > 0)
-//						{
-//								context.fillText(line, x, y);
-//								line = words[n] + ' ';
-//								y += line_height;
-//						}
-//						else
-//						{
-//								line = testLine;
-//						}
-//				}
-//				context.fillText(line, x, y);
-//				y += line_height;
-//				line = '';
-//		}
-//}
-
 
 /* https://stackoverflow.com/a/2936288 */
 function wrapText(context, text, x, y, line_width, line_height)
@@ -369,8 +336,7 @@ function wrapText(context, text, x, y, line_width, line_height)
 			{
 					var testLine = line + words[n] + ' ';
 
-					//var regex = /\(([^)]+)\)/gi;
-					var regex = /\(([^)]?)\)/gi;
+					var regex = getAbbreviationsRegexp; 
 					while(reResult = regex.exec(testLine))
 					{
 						var pattern = reResult[0];
@@ -411,8 +377,7 @@ function wrapText(context, text, x, y, line_width, line_height)
 
 function getImagesByAbbreviationsText(text)
 {
-	//var regex = /\(([^)]+)\)/gi;
-	var regex = /\(([^)]?)\)/gi;
+	var regex = getAbbreviationsRegexp; 
 	var allPatterns = text.match(regex); // get all patterns within parenthesis ( like '(b)' )
 
 	var returnValue = [];
