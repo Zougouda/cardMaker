@@ -120,26 +120,16 @@ function onReady()
 	previewCanvas = document.querySelector('.preview-canvas');
 	previewCtx = previewCanvas.getContext('2d');
 
+	['change', 'keyup'].forEach(function(action)
+	{
+		document.querySelector('input.uploader-by-url').addEventListener(action, function(e)
+		{
+			setCropperSrc( this.value, true );
+		});
+	});
 	uploader.addEventListener('change', function(e)
 	{
-		uploadedImage.src = window.URL.createObjectURL(this.files[0])
-
-		if(cropper) cropper.destroy(); // remove potential existing cropper
-
-		cropper = new Cropper( uploadedImage, {
-			dragMode: 'move',
-			aspectRatio: cardCaptionBoundingBox.width / cardCaptionBoundingBox.height,
-			cropend: updatePreview,
-			cropmove: updatePreview,
-			zoom: updatePreview,
-		});
-
-		/* show preview when uploading new image */
-		setTimeout(function()
-		{
-			updatePreview();
-		}, 100);
-
+		setCropperSrc( window.URL.createObjectURL(this.files[0]) );
 	}, false);
 	
 	document.querySelector('.card-title').addEventListener('keyup', function(e)
@@ -211,6 +201,38 @@ function onReady()
 		inputDestinationDOM: document.querySelector('textarea.card-description'),
 		containerDOM: document.querySelector('div.description-buttons'),
 	});
+}
+
+function setCropperSrc(src)
+{
+	if(!src) 
+		return;
+
+	try
+	{
+		if(src.indexOf('blob') == -1) // image URL from another domain
+			uploadedImage.src = 'https://cors-anywhere.herokuapp.com/'+src; // Thanks for this guys :)
+		else // image uploaded with input type=file
+			uploadedImage.src = src;
+
+		uploadedImage.onload = function()
+		{
+			if(cropper) cropper.destroy(); // remove potential existing cropper
+			
+			cropper = new Cropper( uploadedImage, {
+				dragMode: 'move',
+				aspectRatio: cardCaptionBoundingBox.width / cardCaptionBoundingBox.height,
+				cropend: updatePreview,
+				cropmove: updatePreview,
+				zoom: updatePreview,
+				ready: updatePreview
+			});
+		}
+	}
+	catch(e)
+	{
+		alert('Failed to retrieve the selected image! ', e);
+	}
 }
 
 function getCardFrameSrc()
@@ -338,20 +360,22 @@ function wrapText(context, text, x, y, line_width, line_height)
 					while(reResult = regex.exec(testLine))
 					{
 						var pattern = reResult[0];
-						var textUpToAbbreviation = reResult.input.substring(0, reResult.input.indexOf(pattern) ); // remove everything just before the found string
-						testLine = testLine.replace(pattern, ' '.repeat(pattern.length)); // remove pattern from the line and replace it with spaces
-
-						var imgWidth = imgHeight = 12;
-						var marginX = context.measureText(textUpToAbbreviation).width;
-						var imgX = x + marginX;
-						var imgY = y - imgHeight;
-
-						/* build image */
 						var imageSrc = abbreviationDescriptionToSrc[pattern];
-						var img = new Image();
-						img.src = imageSrc;
+						if(imageSrc)
+						{
+							var textUpToAbbreviation = reResult.input.substring(0, reResult.input.indexOf(pattern) ); // remove everything just before the found string
+							testLine = testLine.replace(pattern, ' '.repeat(pattern.length)); // remove pattern from the line and replace it with spaces
 
-						context.drawImage(img, imgX, imgY, imgWidth, imgHeight);
+							var imgWidth = imgHeight = 12;
+							var marginX = context.measureText(textUpToAbbreviation).width;
+							var imgX = x + marginX;
+							var imgY = y - imgHeight;
+
+							/* build image */
+							var img = new Image();
+							img.src = imageSrc;
+							context.drawImage(img, imgX, imgY, imgWidth, imgHeight);
+						}
 					}
 
 					var metrics = context.measureText(testLine);

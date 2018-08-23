@@ -28,6 +28,11 @@ img {
 	margin: 0 auto;
 }
 
+.editor .caption-container input {
+	display: inline-block;
+	margin-left: 15px;
+}
+
 .editor input, .editor textarea {
 	display: block;
 	min-width: 200px;
@@ -62,7 +67,8 @@ img {
 }
 
 .editor .uploaded-image-container {
-	width: 50%;
+	max-width: 80%;
+	margin: 10px auto;
 }
 
 .editor .icons-picker-button {

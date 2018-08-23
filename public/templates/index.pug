@@ -12,9 +12,16 @@ block append scripts
 block content
 	div.global-container
 		div.editor
-			input.uploader(type='file')
-			div.uploaded-image-container
-				img.uploaded-image
+			fieldset.caption-container
+				legend Illustration
+				div
+					span Import image from your computer
+					input.uploader(type='file')
+				div
+					span Or paste an image URL here
+					input.uploader-by-url(type='text')
+				div.uploaded-image-container
+					img.uploaded-image(crossorigin="")
 			input.card-title(type='text',placeholder='Name')
 			div.mana-cost-container
 				input.card-mana-cost(type='text',placeholder='Mana cost')
