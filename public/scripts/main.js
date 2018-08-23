@@ -31,7 +31,6 @@ var abbreviationToSrc = {
 	'(g)' : '/images/icons/mana/green.png',
 };
 
-
 var abbreviationDescriptionToSrc = {
 	'(t)' : '/images/icons/tap.png',
 	'(n)' : '/images/icons/untap.png',
@@ -41,7 +40,7 @@ Object.entries(abbreviationToSrc).forEach(function([key, val])
 	abbreviationDescriptionToSrc[key] = val;
 });
 
-var getAbbreviationsRegexp = /\(([^)]?)\)/gi; // Matches every single char within parenthesis
+var getAbbreviationsRegexp = /\(([^)]?)\)/gi; // Matches every single char within parenthesis eg."(b)"
 
 var cardFramesSrcByColor = {
 	'colorless': '/images/frames/colorless',
@@ -50,7 +49,7 @@ var cardFramesSrcByColor = {
 	'black'    : '/images/frames/black',
 	'red'      : '/images/frames/red',
 	'green'    : '/images/frames/green',
-	'gold'    : '/images/frames/gold',
+	'gold'     : '/images/frames/gold',
 };
 
 
