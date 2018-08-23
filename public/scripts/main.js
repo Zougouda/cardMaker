@@ -466,6 +466,7 @@ function buildIconsPicker(options = {})
 	if(includeReset)
 	{
 		var resetButton = document.createElement('a');
+		resetButton.classList.add('icons-picker-button');
 		resetButton.href = 'javascript:void(0);';
 		resetButton.innerHTML = 'Reset';
 		resetButton.onclick = function()
