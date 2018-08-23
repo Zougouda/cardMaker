@@ -24,7 +24,9 @@ block content
 				input.card-power(type='text',placeholder='Power')
 				span.power-toughness-separator /
 				input.card-toughness(type='text',placeholder='Toughness')
-			textarea.card-description(placeholder="Description")
+			div.description-container
+				textarea.card-description(placeholder="Description")
+				div.description-buttons
 			input.card-author(placeholder="Author",value="Zougouda")
 			br 
 			button.save-button(onclick="javascript:exportImg()") Download card

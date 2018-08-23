@@ -34,6 +34,15 @@ var abbreviationToSrc = {
 };
 
 
+var abbreviationDescriptionToSrc = {
+	'(t)' : '/images/icons/tap.png',
+	'(n)' : '/images/icons/untap.png',
+};
+Object.entries(abbreviationToSrc).forEach(function([key, val])
+{
+	abbreviationDescriptionToSrc[key] = val;
+});
+
 var cardFramesSrcByColor = {
 	'colorless': '/images/frames/colorless',
 	'white'    : '/images/frames/white',
@@ -138,14 +147,17 @@ function onReady()
 	document.querySelector('.card-title').addEventListener('keyup', function(e)
 	{
 		title = this.value;
-		updatePreview();jpg
-	}, false);
-
-	document.querySelector('.card-description').addEventListener('keyup', function(e)
-	{
-		description = this.value;
 		updatePreview();
 	}, false);
+
+	['change', 'keyup'].forEach(function(action)
+	{
+		document.querySelector('.card-description').addEventListener(action, function(e)
+		{
+			description = this.value;
+		updatePreview();
+		}, false);
+	});
 
 	['change', 'keyup'].forEach(function(action)
 	{
@@ -190,7 +202,17 @@ function onReady()
 
 
 	updatePreview();
-	buildManaCostButtons(true);
+
+	buildIconsPicker({
+		inputDestinationDOM: document.querySelector('input.card-mana-cost'),
+		containerDOM: document.querySelector('div.mana-cost-buttons'),
+		includeReset: true
+	});
+	buildIconsPicker({
+		iconsOptions: abbreviationDescriptionToSrc,
+		inputDestinationDOM: document.querySelector('textarea.card-description'),
+		containerDOM: document.querySelector('div.description-buttons'),
+	});
 }
 
 function getCardFrameSrc()
@@ -219,7 +241,7 @@ function getCardFrameSrc()
 	else
 		returnValue = cardFramesSrcByColor.gold;
 
-	if(toughness)
+	if(power || toughness)
 		returnValue += '-creature';
 	returnValue += '.png';
 
@@ -228,8 +250,6 @@ function getCardFrameSrc()
 
 function updatePreview()
 {
-	//previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height); // clear canvas
-
 	var cardFrameImg = new Image();
 	cardFrameImg.src = getCardFrameSrc(); // TODO use other frames depending on the mana used
 	cardFrameImg.onload = function()
@@ -238,7 +258,10 @@ function updatePreview()
 
 		/* update image */
 		if(cropper)
+		{
+			previewCtx.clearRect(cardCaptionBoundingBox.left, cardCaptionBoundingBox.top, cardCaptionBoundingBox.width, cardCaptionBoundingBox.height); // clear card's caption
 			previewCtx.drawImage(cropper.getCroppedCanvas(), cardCaptionBoundingBox.left, cardCaptionBoundingBox.top, cardCaptionBoundingBox.width, cardCaptionBoundingBox.height);
+		}
 
 		/* update title */
 		previewCtx.fillStyle = 'black';
@@ -279,7 +302,7 @@ function updatePreview()
 		);
 
 		/* update author */
-		var authorFontSize = 10;
+		var authorFontSize = 11;
 		var authorColor = 'black';
 		if(cardFrameImg.src.match(/(colorless|black|green|red)/)) 
 			authorColor = 'white';
@@ -290,7 +313,7 @@ function updatePreview()
 			previewCtx.fillText("By "+author, authorBoundingBox.left, authorBoundingBox.top+authorFontSize);
 
 		/* update power/toughness */
-		if(toughness)
+		if(power || toughness)
 		{
 			previewCtx.save();
 			previewCtx.fillStyle = 'black';
@@ -360,7 +383,7 @@ function wrapText(context, text, x, y, line_width, line_height)
 						var imgY = y - imgHeight;
 
 						/* build image */
-						var imageSrc = abbreviationToSrc[pattern];
+						var imageSrc = abbreviationDescriptionToSrc[pattern];
 						var img = new Image();
 						img.src = imageSrc;
 
@@ -401,7 +424,6 @@ function getImagesByAbbreviationsText(text)
 		});
 	}
 	return returnValue;
-
 }
 
 function exportImg()
@@ -410,7 +432,7 @@ function exportImg()
 	var dataUrl = previewCanvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
 
 	var downloadButton = document.createElement('a');
-	downloadButton.setAttribute('download', (title) ? title+'.png' : 'newCard.jpg');
+	downloadButton.setAttribute('download', (title) ? title+'.png' : 'newCard.png');
 	downloadButton.href = dataUrl;
 	downloadButton.click();
 }
@@ -419,31 +441,39 @@ function insertIconIntoTextInput(iconAsText, inputDOM)
 {
 	var txtIndex = inputDOM.selectionStart;
 	inputDOM.value = inputDOM.value.slice(0, txtIndex) + iconAsText + inputDOM.value.slice(txtIndex); // Add value at the selected index in the input
+
 	/* manually trigger onchange event */
 	var event = new Event('change');
 	inputDOM.dispatchEvent(event);
+
+	inputDOM.focus();
 }
 
-function buildManaCostButtons(includeReset = false)
+function buildIconsPicker(options = {})
 {
-	var containerSelector = '.mana-cost-buttons';
-	var container = document.querySelector(containerSelector);
-	
-	Object.entries(abbreviationToSrc).forEach(function(entry)
-	{
-		var key = entry[0], value = entry[1];
+	var {iconsOptions = abbreviationToSrc, 
+		inputDestinationDOM, 
+		containerDOM = null, 
+		includeReset = false
+	} = options;
 
+	if(!containerDOM)
+		containerDOM = inputDestinationDOM.parentNode;
+	
+	Object.entries(iconsOptions).forEach(function([key, value])
+	{
 		var button = document.createElement('a');
+		button.classList.add('icons-picker-button');
 		var img = document.createElement('img');
 		img.src = value;
 		img.width = 16;
 		button.appendChild(img);
 		button.onclick = function()
 		{
-			insertIconIntoTextInput(key, document.querySelector('input.card-mana-cost'));
+			insertIconIntoTextInput(key, inputDestinationDOM);
 		};
 		button.href = 'javascript:void(0);';
-		container.appendChild(button);
+		containerDOM.appendChild(button);
 	});
 
 	if(includeReset)
@@ -453,11 +483,10 @@ function buildManaCostButtons(includeReset = false)
 		resetButton.innerHTML = 'Reset';
 		resetButton.onclick = function()
 		{
-			var input = document.querySelector('input.card-mana-cost');
-			input.value = '';
+			inputDestinationDOM.value = '';
 			var event = new Event('change');
-			input.dispatchEvent(event);
+			inputDestinationDOM.dispatchEvent(event);
 		};
-		container.appendChild(resetButton);
+		containerDOM.appendChild(resetButton);
 	}
 }
