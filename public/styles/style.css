@@ -26,6 +26,8 @@ img {
 .preview-canvas {
 	display: block;
 	margin: 0 auto;
+	width: 400px;
+	max-width: 100%;
 }
 
 .editor .caption-container input {
@@ -68,6 +70,7 @@ img {
 
 .editor .uploaded-image-container {
 	max-width: 80%;
+	max-height: 400px;
 	margin: 10px auto;
 }
 
