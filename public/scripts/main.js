@@ -55,7 +55,10 @@ var cardFramesSrcByColor = {
 
 document.addEventListener("DOMContentLoaded", function()
 {
-	onReady();
+	//onReady();
+	window.currentCard = new MagicCard({
+		canvasDOM: document.querySelector('.preview-canvas')
+	});
 });
 
 function onReady()
@@ -351,52 +354,52 @@ function wrapText(context, text, x, y, line_width, line_height)
 	var paragraphs = text.split('\n');
 	for (var i = 0; i < paragraphs.length; i++)
 	{
-			var words = paragraphs[i].split(' ');
-			for (var n = 0; n < words.length; n++)
+		var words = paragraphs[i].split(' ');
+		for (var n = 0; n < words.length; n++)
+		{
+			var testLine = line + words[n] + ' ';
+
+			/* replace detected abbreviations by their matching images */
+			var regex = getAbbreviationsRegexp; 
+			while(reResult = regex.exec(testLine))
 			{
-					var testLine = line + words[n] + ' ';
+				var pattern = reResult[0];
+				var imageSrc = abbreviationDescriptionToSrc[pattern];
+				if(imageSrc)
+				{
+					var textUpToAbbreviation = reResult.input.substring(0, reResult.input.indexOf(pattern) ); // remove everything just before the found string
+					testLine = testLine.replace(pattern, ' '.repeat(pattern.length)); // remove pattern from the line and replace it with spaces
 
-					/* replace detected abbreviations by their matching images */
-					var regex = getAbbreviationsRegexp; 
-					while(reResult = regex.exec(testLine))
-					{
-						var pattern = reResult[0];
-						var imageSrc = abbreviationDescriptionToSrc[pattern];
-						if(imageSrc)
-						{
-							var textUpToAbbreviation = reResult.input.substring(0, reResult.input.indexOf(pattern) ); // remove everything just before the found string
-							testLine = testLine.replace(pattern, ' '.repeat(pattern.length)); // remove pattern from the line and replace it with spaces
+					var imgWidth = imgHeight = 12;
+					var marginX = context.measureText(textUpToAbbreviation).width;
+					var imgX = x + marginX;
+					var imgY = y - imgHeight;
 
-							var imgWidth = imgHeight = 12;
-							var marginX = context.measureText(textUpToAbbreviation).width;
-							var imgX = x + marginX;
-							var imgY = y - imgHeight;
-
-							/* build image */
-							var img = new Image();
-							img.src = imageSrc;
-							context.drawImage(img, imgX, imgY, imgWidth, imgHeight);
-						}
-					}
-
-					/* TODO : handle <i> and </i> */
-
-					var metrics = context.measureText(testLine);
-					var testWidth = metrics.width;
-					if (testWidth > line_width && n > 0)
-					{
-							context.fillText(line, x, y);
-							line = words[n] + ' ';
-							y += line_height;
-					}
-					else
-					{
-							line = testLine;
-					}
+					/* build image */
+					var img = new Image();
+					img.src = imageSrc;
+					context.drawImage(img, imgX, imgY, imgWidth, imgHeight);
+				}
 			}
-			context.fillText(line, x, y);
-			y += line_height;
-			line = '';
+
+			/* TODO : handle <i> and </i> */
+
+			var metrics = context.measureText(testLine);
+			var testWidth = metrics.width;
+			if (testWidth > line_width && n > 0)
+			{
+				context.fillText(line, x, y);
+				line = words[n] + ' ';
+				y += line_height;
+			}
+			else
+			{
+				line = testLine;
+			}
+		}
+		context.fillText(line, x, y);
+		y += line_height;
+		line = '';
 	}
 }
 
