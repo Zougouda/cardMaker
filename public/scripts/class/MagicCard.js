@@ -376,6 +376,19 @@ class MagicCard
 		}
 	}
 
+
+	insertIconIntoTextInput(iconAsText, inputDOM)
+	{
+		var txtIndex = inputDOM.selectionStart;
+		inputDOM.value = inputDOM.value.slice(0, txtIndex) + iconAsText + inputDOM.value.slice(txtIndex); // Add value at the selected index in the input
+	
+		/* manually trigger onchange event */
+		var event = new Event('change');
+		inputDOM.dispatchEvent(event);
+	
+		inputDOM.focus();
+	}
+
 	buildIconsPicker(options = {})
 	{
 		var {iconsOptions = MagicCard.abbreviationToSrc, 
@@ -387,7 +400,7 @@ class MagicCard
 		if(!containerDOM)
 			containerDOM = inputDestinationDOM.parentNode;
 		
-		Object.entries(iconsOptions).forEach(function([key, value])
+		Object.entries(iconsOptions).forEach(([key, value])=>
 		{
 			var button = document.createElement('a');
 			button.classList.add('icons-picker-button');
@@ -395,9 +408,9 @@ class MagicCard
 			img.src = value;
 			img.width = 16;
 			button.appendChild(img);
-			button.onclick = function()
+			button.onclick = ()=>
 			{
-				insertIconIntoTextInput(key, inputDestinationDOM);
+				this.insertIconIntoTextInput(key, inputDestinationDOM);
 			};
 			button.href = 'javascript:void(0);';
 			containerDOM.appendChild(button);
