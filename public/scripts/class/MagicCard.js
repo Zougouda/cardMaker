@@ -114,9 +114,13 @@ class MagicCard
 					startX -= manaCostImages.length * manaIconsSize;
 					manaCostImages.forEach((imageSrc)=>
 					{
+						var localStartX = startX; // to avoid async errors with image loading
 						var image = new Image();
 						image.src = imageSrc;
-						this.cardObject.ctx.drawImage(image, startX, startY, manaIconsSize, manaIconsSize);
+						image.onload = ()=>
+						{
+							this.cardObject.ctx.drawImage(image, localStartX, startY, manaIconsSize, manaIconsSize);
+						}
 						startX += manaIconsSize;
 					});
 				}
@@ -133,6 +137,34 @@ class MagicCard
 					this.cardObject.ctx.fillStyle = 'black';
 					this.cardObject.ctx.font = 'bold 16px '+this.cardObject.defaultFont;
 					this.cardObject.ctx.fillText(this.value, this.boundingBox.left, this.boundingBox.top);
+				}
+			}),
+			rarity: new MagicCardAttribute({
+				cardObject: this,
+				inputDOM: document.querySelector('.card-rarity-selector'),
+				boundingBox: {
+					top: 318,
+					left: 340,
+					width: 22,
+					height: 22
+				},
+				ondraw: function()
+				{
+					this.rarityIconSrc = '/images/icons/rarities/default/';
+					this.rarityIconSrc += 'm-' + this.value + '.png';
+					this.rarityIcon = new Image();
+					this.rarityIcon.src = this.rarityIconSrc;
+					
+					this.rarityIcon.onload = ()=>
+					{
+						this.cardObject.ctx.drawImage(
+							this.rarityIcon, 
+							this.boundingBox.left, 
+							this.boundingBox.top,
+							this.boundingBox.width, 
+							this.boundingBox.height
+						);
+					};
 				}
 			}),
 			author: new MagicCardAttribute({

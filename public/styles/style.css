@@ -54,6 +54,17 @@ img {
 	display: inline-block;
 	margin-top: 0;
 }
+.editor .card-type {
+	display: inline-block;
+}
+.editor .card-rarity-selector {
+	display: inline-block;
+	margin-left: 15px;
+}
+.editor .card-rarity-selector .common {
+	padding-left: 24px;
+}
+
 .editor input.card-power, .editor input.card-toughness {
 	margin-top: 0;
 	width: 80px!important;
