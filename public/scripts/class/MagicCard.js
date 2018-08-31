@@ -352,12 +352,83 @@ class MagicCard
 	}
 
 	/* https://stackoverflow.com/a/2936288 */
-	 wrapText(context, text, x, y, line_width, line_height)
+//	 wrapText(context, text, x, y, line_width, line_height)
+//	{
+//		var line = '';
+//		var paragraphs = text.split('\n');
+//		for (var i = 0; i < paragraphs.length; i++)
+//		{
+//			var words = paragraphs[i].split(' ');
+//			for (var n = 0; n < words.length; n++)
+//			{
+//				var testLine = line + words[n] + ' ';
+//	
+//				/* replace detected abbreviations by their matching images */
+//				var regex = MagicCard.getAbbreviationsRegexp; 
+//				var reResult;
+//				while(reResult = regex.exec(testLine))
+//				{
+//					var pattern = reResult[0];
+//					var imageSrc = MagicCard.abbreviationDescriptionToSrc[pattern];
+//					if(imageSrc)
+//					{
+//						var textUpToAbbreviation = reResult.input.substring(0, reResult.input.indexOf(pattern) ); // remove everything just before the found string
+//						testLine = testLine.replace(pattern, ' '.repeat(pattern.length)); // remove pattern from the line and replace it with spaces
+//	
+//						var imgWidth, imgHeight; imgWidth = imgHeight = 12;
+//						var marginX = context.measureText(textUpToAbbreviation).width;
+//						var imgX = x + marginX;
+//						var imgY = y - imgHeight;
+//	
+//						/* build image */
+//						var img = new Image();
+//						img.src = imageSrc;
+//						context.drawImage(img, imgX, imgY, imgWidth, imgHeight);
+//					}
+//				}
+//	
+//				/* TODO : handle <i> and </i> */
+//				var italicRegex = /\<i\>/gi; // "<i>"
+//				var italicEndRegex = /\<\/i\>/gi; // "</i>
+//				while(reResult = italicRegex.exec(testLine))
+//				{
+//					var pattern = reResult[0];
+//					console.log(reResult);
+//					//var textUpToAbbreviation = reResult.input.substring(0, reResult.input.indexOf(pattern) ); // remove everything just before the found string
+//					//testLine = testLine.replace(pattern, ' '.repeat(pattern.length)); // remove pattern from the line and replace it with spaces
+//				}
+//	
+//				var metrics = context.measureText(testLine);
+//				var testWidth = metrics.width;
+//				if (testWidth > line_width && n > 0)
+//				{
+//					context.fillText(line, x, y);
+//					line = words[n] + ' ';
+//					y += line_height;
+//				}
+//				else
+//				{
+//					line = testLine;
+//				}
+//			}
+//			context.fillText(line, x, y);
+//			y += line_height;
+//	line = '';
+//}
+//	}
+
+	/* https://stackoverflow.com/a/2936288 */
+	wrapText(context, text, x, y, line_width, line_height)
 	{
-		var line = '';
+		var defaultCtxFont = context.font;
+
+		var line = ''; var startX = x;
 		var paragraphs = text.split('\n');
 		for (var i = 0; i < paragraphs.length; i++)
 		{
+			let italicStartIndexes = [];
+			let italicEndIndexes = [];
+
 			var words = paragraphs[i].split(' ');
 			for (var n = 0; n < words.length; n++)
 			{
@@ -386,28 +457,81 @@ class MagicCard
 						context.drawImage(img, imgX, imgY, imgWidth, imgHeight);
 					}
 				}
-	
-				/* TODO : handle <i> and </i> */
-	
+
 				var metrics = context.measureText(testLine);
 				var testWidth = metrics.width;
 				if (testWidth > line_width && n > 0)
 				{
-					context.fillText(line, x, y);
+					//context.fillText(line, x, y);
+					writeLineWords(line);
+
 					line = words[n] + ' ';
 					y += line_height;
+					x = startX;
 				}
 				else
 				{
 					line = testLine;
 				}
 			}
-			context.fillText(line, x, y);
+			//context.fillText(line, x, y);
+			writeLineWords(line);
+
 			y += line_height;
+			x = startX;
 			line = '';
 		}
-	}
 
+		function writeLineWords(line)
+		{
+			line.split(' ').forEach((lineWord)=>
+			{
+				var italicRegex = /\<i\>/gi; // "<i>"
+				var boldRegex = /\<b\>/gi; // "<b>"
+				var italicEndRegex = /\<\/i\>/gi; // "</i>
+				var boldEndRegex = /\<\/b\>/gi; // "</b>
+				var stopItalic = false, stopBold = false;
+
+				var reResult;
+				reResult = italicRegex.exec(lineWord);
+				if(reResult /*&& reResult.index == 0*/)
+				{
+					context.font = 'italic ' + context.font;
+					lineWord = lineWord.replace(italicRegex, '');
+				}
+				reResult = boldRegex.exec(lineWord);
+				if(reResult /*&& reResult.index == 0*/)
+				{
+					context.font = 'bold ' + context.font;
+					lineWord = lineWord.replace(boldRegex, '');
+				}
+
+				reResult = italicEndRegex.exec(lineWord);
+				if(reResult)
+				{
+					lineWord = lineWord.replace(italicEndRegex, '');
+					//if(reResult.index == lineWord.length)
+						stopItalic = true;
+				}
+				reResult = boldEndRegex.exec(lineWord);
+				if(reResult)
+				{
+					lineWord = lineWord.replace(boldEndRegex, '');
+					//if(reResult.index == lineWord.length)
+						stopBold = true;
+				}
+
+				context.fillText(lineWord+' ', x, y); // Actual writing done here
+
+				if(stopItalic)
+					context.font = context.font.replace('italic', '');
+				if(stopBold)
+					context.font = context.font.replace('bold', '');
+
+				x+= context.measureText(lineWord+' ').width;
+			});
+		}
+	}
 
 	insertIconIntoTextInput(iconAsText, inputDOM)
 	{
