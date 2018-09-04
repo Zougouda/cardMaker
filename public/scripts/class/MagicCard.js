@@ -357,10 +357,22 @@ class MagicCard
 
 		Object.entries(this.attributes).forEach(([key, obj])=>
 		{
-			if(key === 'illustration' && this.cropper) // special case for illu: export img as base64
-				json[key] = this.cropper.getCroppedCanvas().toDataURL('image/png');
+			if(key === 'illustration')
+			{
+				if(this.cropper)
+					json[key] = this.cropper.getCroppedCanvas().toDataURL('image/png');
+				else if(obj.value.startsWith('/images') )
+					return;
+				else
+					json[key] = obj.value;
+			}
 			else
 				json[key] = obj.value;
+
+			//if(key === 'illustration' && this.cropper) // special case for illu: export img as base64
+			//	json[key] = this.cropper.getCroppedCanvas().toDataURL('image/png');
+			//else
+			//	json[key] = obj.value;
 		});
 
 		return json;
@@ -370,32 +382,57 @@ class MagicCard
 	{
 		Object.entries(json).forEach(([key, val])=>
 		{
-			if(key === 'illustration' && this.cropper) // special case for illu: export img as base64
-			{
-				this.cropper.destroy();
-				this.cropper = null;
-			}
-			this.attributes[key].value = val;
+			if(!this.attributes[key])
+				return;
 
-			if(key != 'illustration')
+			this.attributes[key].value = val;
+			if(key == 'illustration')
+			{
+				if(this.cropper)
+				{
+					this.cropper.destroy();
+					this.cropper = null;
+				}
+			}
+			else
+			{
 				this.attributes[key].inputDOM.value = val;
+			}
+
+			//if(key === 'illustration' && this.cropper) // special case for illu: export img as base64
+			//{
+			//	this.cropper.destroy();
+			//	this.cropper = null;
+			//}
+			//this.attributes[key].value = val;
+			//if(key != 'illustration')
+			//	this.attributes[key].inputDOM.value = val;
 		});
 		this.update();
+	}
+
+	fetchData(id, callback = null)
+	{
+		return fetch(`/get-card-data?id=${id}`)
+		.then((resp)=>
+		{
+			resp.json()
+			.then((json)=>
+			{
+				if(callback)
+					callback(json);
+			});
+		});
 	}
 
 	saveToDatabase()
 	{
 		var json = this.exportJson(); // get card-relative infos
 		json['wholeCardImgSrc'] = this.getWholeCardImgSrc(); // save generated img to DB
-
-		/* set the current user as owner */
-		var userID = localStorage.getItem('userID');
-		if(!userID)
-		{
-			userID = new Date().valueOf();
-			localStorage.setItem('userID', userID);
-		}
-		json['userID'] = userID;
+		json['userID'] = window.userID;
+		if(this.cardID)
+			json['id'] = this.cardID; // update card
+		console.log(json);
 
 		/* Ajax query to save card */
 		var newXHR = new XMLHttpRequest();
@@ -403,11 +440,35 @@ class MagicCard
 		{
 			if (newXHR.readyState === 4 && newXHR.status === 200) 
 			{
-				//window.location.href = '/list-cards'; // TODO
-				//console.log('ok');
+				window.location.href = `/list-cards?id=${userID}`;
 			}
 		};
 		newXHR.open( 'POST', '/save-card', true );
+		newXHR.setRequestHeader("Content-Type", "application/json");
+		var formattedJsonData = JSON.stringify( json );
+		newXHR.send( formattedJsonData );
+	}
+
+	deleteFromDatabase()
+	{
+		if(this.cardID)
+			window.location.href = `/list-cards?id=${userID}`;
+
+		var confirmed = window.confirm('U sure ?');
+		if(!confirmed)
+			return;
+
+		/* Ajax query to delete card */
+		var json = {id: this.cardID};
+		var newXHR = new XMLHttpRequest();
+		newXHR.onreadystatechange = function() 
+		{
+			if (newXHR.readyState === 4 && newXHR.status === 200) 
+			{
+				window.location.href = `/list-cards?id=${userID}`;
+			}
+		};
+		newXHR.open( 'POST', '/delete-card', true );
 		newXHR.setRequestHeader("Content-Type", "application/json");
 		var formattedJsonData = JSON.stringify( json );
 		newXHR.send( formattedJsonData );

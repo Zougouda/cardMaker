@@ -1,0 +1,16 @@
+
+extends layout.pug
+
+block head
+	title Cards list
+
+block content
+	div.list-cards
+		each card in cards
+			div.list-card-el
+				div
+					a(href="/edit-card?id="+card.id)
+						span.title #{card.title}
+					a(href="/edit-card?id="+card.id) 
+						img(src="/images/savedCards/"+card.id+".png")
+					span.author by #[a(href="/list-cards?userID="+card.userID) #{card.author}]

@@ -4,46 +4,14 @@ block head
 	title Index
 
 block append styles
-	link(rel='stylesheet',type='text/css',href='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.4.1/cropper.css')
 
 block append scripts
-	script(src='/scripts/main.js')
-	script(src='/scripts/class/MagicCard.js')
-	script(src='/scripts/class/MagicCardAttribute.js')
-	script(src='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.4.1/cropper.js')
+	script(src='/scripts/index.js')
 
 block content
-	div.global-container
-		div.editor
-			fieldset.caption-container
-				legend Illustration
+	div.list-cards
+		each linkOption in linksOptions
+			div.list-card-el
 				div
-					span Import an image from your computer
-					input.uploader(type='file')
-				div
-					span Or paste an image URL here
-					input.uploader-by-url(type='text')
-				div.uploaded-image-container
-					img.uploaded-image(crossorigin="")
-			input.card-title(type='text',placeholder='Name')
-			div.mana-cost-container
-				input.card-mana-cost(type='text',placeholder='Mana cost')
-				div.mana-cost-buttons
-			input.card-type(type='text',placeholder='type')
-			select.card-rarity-selector
-				option.common(value='c') Common
-				option.unco(value='u')   Uncommon
-				option.rare(value='r')    Rare
-				option.mythic(value='m') Mythic rare
-			div.power-toughness-container
-				input.card-power(type='text',placeholder='Power')
-				span.power-toughness-separator /
-				input.card-toughness(type='text',placeholder='Toughness')
-			div.description-container
-				textarea.card-description(placeholder="Description ( Specials tags: <i>italic</i>, <b>bold</b> )")
-				div.description-buttons
-			input.card-author(placeholder="Author",value="Zougouda")
-			br 
-			button.save-button(onclick="javascript:currentCard.exportImg()") Download card
-		div.preview
-			canvas.preview-canvas(width='400',height='560')
+					a(href=linkOption.href) 
+						img(src=linkOption.src)

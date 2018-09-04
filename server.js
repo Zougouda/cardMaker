@@ -4,52 +4,146 @@ const express = require('express'),
 	  pug = require('pug'),
 	  mongoClient = require('mongodb').MongoClient,
 	  mongoose = require('mongoose'),
-	  fs = require('fs');
+	  fs = require('fs')
+	  ;
 
 const MagicCardSchema = require('./schemas/MagicCard.js');
 
 const port = 4242;
+
+function writeBase64ToImage(imageAsBase64, path)
+{
+	return new Promise((resolve, reject)=>
+	{
+		var base64Data = imageAsBase64
+		.replace('data:image/png;base64,', '')
+		.replace('data:image/octet-stream;base64,', '');
+		fs.writeFile(path, base64Data, {encoding: 'base64'}, (imgErr)=>
+		{
+			if(imgErr)
+				return reject(imgErr);
+			resolve();
+		});
+	});
+}
 
 var app = express()
 .use(bodyParser.json({limit: '50mb'})) // support json encoded bodies
 .use(bodyParser.urlencoded({ extended: true })) // support encoded bodies
 .get('/', (req, res)=>
 {
-	res.send(pug.renderFile('public/templates/index.pug'));
+	var linksOptions = [
+		{src: '/images/Create new card.png', href: '/edit-card'},
+		{src: '/images/My cards.png', href: '/list-cards'},
+		{src: '/images/All cards.png', href: '/list-cards'},
+	];
+
+	res.send(pug.renderFile('public/templates/index.pug', {linksOptions: linksOptions}));
 })
-//.get('/edit-card', (req, res)=>
-//{
-//	res.send(pug.renderFile('public/templates/index.pug'));
-//})
+.get('/edit-card', (req, res)=>
+{
+	res.send(pug.renderFile('public/templates/editCard.pug'));
+})
+.get('/get-card-data', (req, res)=>
+{
+	var id = req.query.id;
+	if(!id)
+		return res.send({error: 'No ID specified'});
+
+	var conn = mongoose.createConnection('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
+	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
+	MagicCardModel.findById(req.query.id, {_id: 0, wholeCardImgSrc: 0, illustration: 0}, (err, card)=>
+	{
+		card.illustration = `/images/savedCards/${req.query.id}_illustration.png`;
+		res.send(card);
+	});
+})
 .post('/save-card', (req, res)=>
 {
 	/* Save into DB */
 	var conn = mongoose.createConnection('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
 	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
 
-	var card = new MagicCardModel(req.body);
-	card.save((err, savedCard)=>
+	var cardID = req.body.id;
+	if(cardID)
 	{
-		/* write the whole card as an img onto the disk */
-		var imgPath = `public/images/savedCards/${savedCard.id}.png`;
-		var base64Data = req.body.wholeCardImgSrc
-		.replace('data:image/png;base64,', '')
-		.replace('data:image/octet-stream;base64,', '');
-		fs.writeFile(imgPath, base64Data, {encoding: 'base64'}, (imgErr)=>
+		MagicCardModel.findOneAndUpdate({_id: cardID}, req.body, {new: true}, (err, savedCard)=>
 		{
-			if(imgErr)
-				console.log(imgErr);
-		  	res.send('ok');
+			/* write the whole card as an img onto the disk */
+			writeBase64ToImage(req.body.wholeCardImgSrc, `public/images/savedCards/${savedCard.id}.png`)
+			.then(()=>
+			{
+				/* write the illustration as an img onto the disk */
+				if(req.body.illustration)
+				{
+					writeBase64ToImage(req.body.illustration, `public/images/savedCards/${savedCard.id}_illustration.png`)
+					.then(()=>
+					{
+			  			res.send('ok'); // success
+					});
+				}
+				else
+			  		res.send('ok'); // success
+			});
 		});
+	}
+	else
+	{
+		var card = new MagicCardModel(req.body);
+		card.save((err, savedCard)=>
+		{
+			/* write the whole card as an img onto the disk */
+			writeBase64ToImage(req.body.wholeCardImgSrc, `public/images/savedCards/${savedCard.id}.png`)
+			.then(()=>
+			{
+				/* write the illustration as an img onto the disk */
+				if(req.body.illustration)
+				{
+					writeBase64ToImage(req.body.illustration, `public/images/savedCards/${savedCard.id}_illustration.png`)
+					.then(()=>
+					{
+			  			res.send('ok'); // success
+					});
+				}
+				else
+			  		res.send('ok'); // success
+			});
+		});
+	}
+
+})
+.post('/delete-card', (req, res)=>
+{
+	/* Save into DB */
+	var conn = mongoose.createConnection('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
+	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
+
+	var cardID = req.body.id;
+	if(!cardID)
+		res.send('nope');
+
+	MagicCardModel.findByIdAndRemove(cardID, (err, savedCard)=>
+	{
+		res.send('ok'); // success
 	});
 })
 .get('/list-cards', (req, res)=>
 {
+	var userID = req.query.userID;
+	var searchParams = {};
+	if(userID)
+		searchParams.userID = userID;
+
 	var conn = mongoose.createConnection('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
 	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
-	MagicCardModel.find({}, {illustration: 0, wholeCardImgSrc: 0}, (err, cards)=>
+	MagicCardModel.find(searchParams, 
 	{
-		//console.log(cards);
+		_id: 1,
+		title: 1, 
+		userID: 1, 
+		author: 1,
+	}, (err, cards)=>
+	{
 		res.send(pug.renderFile('public/templates/listCards.pug', {cards: cards}));
 	});
 })
