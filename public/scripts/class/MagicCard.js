@@ -56,6 +56,15 @@ class MagicCard
 						this.cardObject.ctx.clearRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height); // clear card's caption
 						this.cardObject.ctx.drawImage(this.cardObject.cropper.getCroppedCanvas(), this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height);
 					}
+					else if(this.value)
+					{
+						this.cardObject.uploadedImage.src = this.value;
+						this.cardObject.uploadedImage.onload = ()=>
+						{
+							this.cardObject.ctx.clearRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height); // clear card's caption
+							this.cardObject.ctx.drawImage(this.cardObject.uploadedImage, this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height);
+						};
+					}
 				}
 			}),
 			title: new MagicCardAttribute({
@@ -264,7 +273,7 @@ class MagicCard
 
 		//try
 		//{
-			if(src.indexOf('blob') == -1) // image URL from another domain
+			if(src.indexOf('blob') == -1 && src.indexOf('data:') == -1) // image URL from another domain
 				this.uploadedImage.src = 'https://cors-anywhere.herokuapp.com/'+src; // Thanks for this guys :)
 			else // image uploaded with input type=file
 				this.uploadedImage.src = src;
@@ -322,10 +331,17 @@ class MagicCard
 		return returnValue;
 	}
 
-	exportImg()
+	getWholeCardImgSrc()
 	{
 		this.update();
-		var dataUrl = this.canvasDOM.toDataURL('image/png').replace("image/png", "image/octet-stream");
+		return this.canvasDOM.toDataURL('image/png').replace("image/png", "image/octet-stream");
+	}
+
+	exportImg()
+	{
+		//this.update();
+		//var dataUrl = this.canvasDOM.toDataURL('image/png').replace("image/png", "image/octet-stream");
+		var dataUrl = this.getWholeCardImgSrc();
 
 		var downloadButton = document.createElement('a');
 
@@ -333,6 +349,68 @@ class MagicCard
 		downloadButton.setAttribute('download', (title) ? title+'.png' : 'newCard.png');
 		downloadButton.href = dataUrl;
 		downloadButton.click();
+	}
+
+	exportJson()
+	{
+		var json = {};
+
+		Object.entries(this.attributes).forEach(([key, obj])=>
+		{
+			if(key === 'illustration' && this.cropper) // special case for illu: export img as base64
+				json[key] = this.cropper.getCroppedCanvas().toDataURL('image/png');
+			else
+				json[key] = obj.value;
+		});
+
+		return json;
+	}
+
+	importJson(json)
+	{
+		Object.entries(json).forEach(([key, val])=>
+		{
+			if(key === 'illustration' && this.cropper) // special case for illu: export img as base64
+			{
+				this.cropper.destroy();
+				this.cropper = null;
+			}
+			this.attributes[key].value = val;
+
+			if(key != 'illustration')
+				this.attributes[key].inputDOM.value = val;
+		});
+		this.update();
+	}
+
+	saveToDatabase()
+	{
+		var json = this.exportJson(); // get card-relative infos
+		json['wholeCardImgSrc'] = this.getWholeCardImgSrc(); // save generated img to DB
+
+		/* set the current user as owner */
+		var userID = localStorage.getItem('userID');
+		if(!userID)
+		{
+			userID = new Date().valueOf();
+			localStorage.setItem('userID', userID);
+		}
+		json['userID'] = userID;
+
+		/* Ajax query to save card */
+		var newXHR = new XMLHttpRequest();
+		newXHR.onreadystatechange = function() 
+		{
+			if (newXHR.readyState === 4 && newXHR.status === 200) 
+			{
+				//window.location.href = '/list-cards'; // TODO
+				//console.log('ok');
+			}
+		};
+		newXHR.open( 'POST', '/save-card', true );
+		newXHR.setRequestHeader("Content-Type", "application/json");
+		var formattedJsonData = JSON.stringify( json );
+		newXHR.send( formattedJsonData );
 	}
 
 	getImagesByAbbreviationsText(text)

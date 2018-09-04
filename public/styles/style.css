@@ -90,3 +90,16 @@ img {
 .editor .icons-picker-button {
 	margin: 0 1px;
 }
+
+/* list-cards */
+
+.list-cards .list-card-el {
+	max-width: 25%;
+	display: inline-block;
+}
+
+.list-cards .list-card-el img,
+.list-cards .list-card-el .title  {
+	display: block;
+	text-align: center;
+}
