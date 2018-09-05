@@ -183,6 +183,21 @@ class MagicCard
 					top: 522,
 					left: 32
 				},
+				onready: function()
+				{
+					/* retrieve user's name from localstorage */
+					var userName = localStorage.getItem('userName');
+					if(userName)
+					{
+						this.value = userName;
+						this.inputDOM.value = this.value;
+					}
+				},
+				onchange: function()
+				{
+					this.cardObject.update();
+					localStorage.setItem('userName', this.value); // Store username into localStorage
+				},
 				ondraw: function()
 				{
 					var authorFontSize = 11;
