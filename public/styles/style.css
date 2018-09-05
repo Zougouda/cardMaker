@@ -11,6 +11,23 @@ img {
 	display: none;
 }
 
+/* Header */
+
+.header {
+	margin-bottom: 30px;
+}
+
+.header a.index {
+	display: block;
+	margin:  0 auto;
+	background-image: url('/images/Index.jpg');
+	width: 150px;
+	height: 107px;
+	background-size: 150px 107px;
+}
+
+/* Editor */
+
 .global-container {
 	width: 100%;
 }
