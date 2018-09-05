@@ -16,3 +16,5 @@ block content
 						img(src="/images/savedCards/"+card.id+".png")
 					if card.author
 						span.author by #[a(href="/list-cards?userID="+card.userID) #{card.author}]
+					else
+						span.author By Anonymous 
