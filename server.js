@@ -54,6 +54,9 @@ var app = express()
 	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
 	MagicCardModel.findById(req.query.id, {_id: 0, wholeCardImgSrc: 0, illustration: 0}, (err, card)=>
 	{
+		if(!card || err)
+			return res.send({error: "No card found"});
+
 		card.illustration = `/images/savedCards/${req.query.id}_illustration.png`;
 		res.send(card);
 	});
