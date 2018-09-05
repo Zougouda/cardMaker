@@ -104,6 +104,10 @@ img {
 	margin: 10px auto;
 }
 
+.editor .uploaded-image-container img{
+	height: 100%;
+}
+
 .editor .icons-picker-button {
 	margin: 0 1px;
 }
