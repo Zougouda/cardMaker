@@ -26,6 +26,12 @@ img {
 	background-size: 150px 107px;
 }
 
+/* Footer */
+
+footer {
+	padding-top: 25px;
+}
+
 /* Editor */
 
 .global-container {
@@ -117,6 +123,7 @@ img {
 }
 
 .delete-button {
+	margin-left: 20px!important;
 	color: red;
 }
 
