@@ -247,6 +247,15 @@ class MagicCard
 			if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 83)  // Ctrl + S or cmd + S
 			{
 				e.preventDefault();
+				this.saveToDatabase();
+			}
+		}, false);
+		/* Add ctrl-i shortcut */
+		document.addEventListener('keydown',(e)=>
+		{
+			if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 73)  // Ctrl + i or cmd + i
+			{
+				e.preventDefault();
 				this.exportImg();
 			}
 		}, false);

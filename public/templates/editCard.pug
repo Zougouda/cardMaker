@@ -44,8 +44,8 @@ block content
 				div.description-buttons
 			input.card-author(placeholder="Author",value="")
 			br 
-			button(onclick="javascript:currentCard.exportImg()") Download card
-			button(onclick="javascript:currentCard.saveToDatabase()") Save card
+			button(onclick="javascript:currentCard.exportImg()") Download card as image (ctrl+i)
+			button(onclick="javascript:currentCard.saveToDatabase()") Save card (ctrl+s)
 			button.delete-button(onclick="javascript:currentCard.deleteFromDatabase()") Delete card
 		div.preview
 			canvas.preview-canvas(width='400',height='560')
