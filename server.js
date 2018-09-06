@@ -11,6 +11,13 @@ const MagicCardSchema = require('./schemas/MagicCard.js');
 
 const port = 4242;
 
+function getCardModel()
+{
+	var conn = mongoose.createConnection('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
+	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
+	return MagicCardModel;
+}
+
 function writeBase64ToImage(imageAsBase64, path)
 {
 	return new Promise((resolve, reject)=>
@@ -50,8 +57,7 @@ var app = express()
 	if(!id)
 		return res.send({error: 'No ID specified'});
 
-	var conn = mongoose.createConnection('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
-	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
+	var MagicCardModel = getCardModel();
 	MagicCardModel.findById(req.query.id, {_id: 0, wholeCardImgSrc: 0, illustration: 0}, (err, card)=>
 	{
 		if(!card || err)
@@ -64,8 +70,7 @@ var app = express()
 .post('/save-card', (req, res)=>
 {
 	/* Save into DB */
-	var conn = mongoose.createConnection('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
-	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
+	var MagicCardModel = getCardModel();
 
 	var onSaveCallback = (err, savedCard)=>
 	{
@@ -106,8 +111,7 @@ var app = express()
 .post('/delete-card', (req, res)=>
 {
 	/* Save into DB */
-	var conn = mongoose.createConnection('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
-	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
+	var MagicCardModel = getCardModel();
 
 	var cardID = req.body.id;
 	if(!cardID)
@@ -125,8 +129,7 @@ var app = express()
 	if(userID)
 		searchParams.userID = userID;
 
-	var conn = mongoose.createConnection('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
-	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
+	var MagicCardModel = getCardModel();
 	MagicCardModel.find(searchParams, 
 	{
 		_id: 1,
