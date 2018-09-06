@@ -1,0 +1,160 @@
+@desktop:   ~"only screen and (min-width: 960px) and (max-width: 1199px)";
+@tablet:    ~"only screen and (min-width: 720px) and (max-width: 959px)";
+@mobile:    ~"only screen and (max-width: 719px)";
+
+/* Limit image width to avoid overflow the container */
+img {
+	max-width: 100%; /* This rule is very important, please do not ignore this! */
+}
+
+* {
+	box-sizing: border-box;
+}
+
+*.hidden {
+	display: none;
+}
+
+/* Header */
+
+.header {
+	margin-bottom: 30px;
+
+	a.index {
+		display: block;
+		margin:  0 auto;
+		background-image: url('/images/Index.jpg');
+		width: 150px;
+		height: 107px;
+		background-size: 150px 107px;
+	}
+}
+
+/* Footer */
+
+footer {
+	padding-top: 25px;
+}
+
+
+/* Editor */
+
+.global-container {
+	width: 100%;
+}
+
+.editor, .preview {
+	width: 50%;
+	min-height: 100px;
+	display: inline-block;
+	vertical-align: top;
+	margin: 0 auto;
+}
+
+.preview-canvas {
+	display: block;
+	margin: 0 auto;
+	width: 400px;
+	max-width: 100%;
+}
+
+.editor {
+	.caption-container input {
+		display: inline-block;
+		margin-left: 15px;
+		min-width: 0;
+		width: 100px;
+	}
+	input, textarea {
+		display: block;
+		min-width: 200px;
+	}
+	textarea {
+		width: 100%;
+		height: 200px;
+		max-width: 100%;
+		min-height: 100px;
+	}
+	input, textarea, .mana-cost-container {
+		margin-top: 10px;
+	}
+	.card-mana-cost, .mana-cost-buttons {
+		display: inline-block;
+		margin-top: 0;
+	}
+	.card-type {
+		display: inline-block;
+	}
+	.card-rarity-selector {
+		display: inline-block;
+		margin-left: 15px;
+	}
+	.card-rarity-selector .common {
+		padding-left: 24px;
+	}
+	input.card-power, input.card-toughness {
+		margin-top: 0;
+		width: 80px!important;
+		min-width: 0;
+		display: inline-block;
+	}
+	.power-toughness-container {
+		margin-top: 10px;
+	}
+	.power-toughness-separator {
+		margin: 0 5px;
+		display: inline-block;
+		font-size: 20px;
+		font-weight: bold;
+	}
+	.uploaded-image-container {
+		max-width: 80%;
+		max-height: 300px;
+		margin: 10px auto;
+	}
+	.uploaded-image-container img{
+		/*height: 100%;*/
+		width: 100%;
+	}
+	.icons-picker-button {
+		margin: 0 1px;
+	}
+	button {
+		margin: 4px 4px 4px 0;
+	}
+	.delete-button {
+		margin-left: 20px!important;
+		color: red;
+	}
+}
+
+/* list-cards */
+
+.list-cards {
+	width: 100%;
+	margin: 0 auto;
+
+	.list-card-el {
+		width: 25%;
+		margin-left: 4%;
+		margin-right: 4%;
+		display: inline-block;
+		margin-bottom: 15px;
+
+		@media @tablet {
+			width: 42%;
+		}
+
+		@media @mobile {
+			width: 70%;
+			margin-left: 15%;
+		}
+
+		img, .title {
+			display: block;
+			text-align: center;
+			margin: 0 auto;
+		}
+	}
+
+}
