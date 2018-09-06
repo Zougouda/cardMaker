@@ -453,10 +453,10 @@ class MagicCard
 	{
 		var json = this.exportJson(); // get card-relative infos
 		json['wholeCardImgSrc'] = this.getWholeCardImgSrc(); // save generated img to DB
-		json['userID'] = window.userID;
-		if(this.cardID)
+		if(this.cardID) // existing card
 			json['id'] = this.cardID; // update card
-		console.log(json);
+		else // new card
+			json['userID'] = window.userID; // set ownership
 
 		/* Ajax query to save card */
 		var newXHR = new XMLHttpRequest();
