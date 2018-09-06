@@ -144,3 +144,10 @@ footer {
   text-align: center;
   margin: 0 auto;
 }
+.list-cards .list-card-el img {
+  transition: all 0.2s;
+  margin-bottom: 15px;
+}
+.list-cards .list-card-el img:hover {
+  transform: scale(1.05);
+}
