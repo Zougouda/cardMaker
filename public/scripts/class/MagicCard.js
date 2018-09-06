@@ -480,7 +480,7 @@ class MagicCard
 		{
 			if (newXHR.readyState === 4 && newXHR.status === 200) 
 			{
-				window.location.href = `/list-cards?id=${userID}`;
+				window.location.href = `/list-cards?userID=${userID}`;
 			}
 		};
 		newXHR.open( 'POST', '/delete-card', true );
