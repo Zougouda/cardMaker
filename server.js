@@ -67,51 +67,39 @@ var app = express()
 	var conn = mongoose.createConnection('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
 	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
 
+	var onSaveCallback = (err, savedCard)=>
+	{
+		if(err)
+		{
+			console.log(`Error: ${err}`);
+			return res.send('ko');
+		}
+
+		/* write the whole card as an img onto the disk */
+		writeBase64ToImage(req.body.wholeCardImgSrc, `public/images/savedCards/${savedCard.id}.png`)
+		.then(()=>
+		{
+			/* write the illustration as an img onto the disk */
+			if(!req.body.illustration)
+		  		res.send('ok'); // success
+			else
+			{
+				writeBase64ToImage(req.body.illustration, `public/images/savedCards/${savedCard.id}_illustration.png`)
+				.then(()=>
+				{
+		  			res.send('ok'); // success
+				});
+			}
+		});
+	};
+
 	var cardID = req.body.id;
 	if(cardID)
-	{
-		MagicCardModel.findOneAndUpdate({_id: cardID}, req.body, {new: true}, (err, savedCard)=>
-		{
-			/* write the whole card as an img onto the disk */
-			writeBase64ToImage(req.body.wholeCardImgSrc, `public/images/savedCards/${savedCard.id}.png`)
-			.then(()=>
-			{
-				/* write the illustration as an img onto the disk */
-				if(req.body.illustration)
-				{
-					writeBase64ToImage(req.body.illustration, `public/images/savedCards/${savedCard.id}_illustration.png`)
-					.then(()=>
-					{
-			  			res.send('ok'); // success
-					});
-				}
-				else
-			  		res.send('ok'); // success
-			});
-		});
-	}
+		MagicCardModel.findOneAndUpdate({_id: cardID}, req.body, {new: true}, onSaveCallback);
 	else
 	{
 		var card = new MagicCardModel(req.body);
-		card.save((err, savedCard)=>
-		{
-			/* write the whole card as an img onto the disk */
-			writeBase64ToImage(req.body.wholeCardImgSrc, `public/images/savedCards/${savedCard.id}.png`)
-			.then(()=>
-			{
-				/* write the illustration as an img onto the disk */
-				if(req.body.illustration)
-				{
-					writeBase64ToImage(req.body.illustration, `public/images/savedCards/${savedCard.id}_illustration.png`)
-					.then(()=>
-					{
-			  			res.send('ok'); // success
-					});
-				}
-				else
-			  		res.send('ok'); // success
-			});
-		});
+		card.save(onSaveCallback);
 	}
 
 })
