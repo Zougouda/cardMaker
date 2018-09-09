@@ -15,7 +15,8 @@ function getCardModel()
 {
 	var conn = mongoose.createConnection('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
 	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
-	return MagicCardModel;
+	return {conn, MagicCardModel};
+	//return MagicCardModel;
 }
 
 function writeBase64ToImage(imageAsBase64, path)
@@ -57,9 +58,10 @@ var app = express()
 	if(!id)
 		return res.send({error: 'No ID specified'});
 
-	var MagicCardModel = getCardModel();
+	var {conn, MagicCardModel} = getCardModel();
 	MagicCardModel.findById(req.query.id, {_id: 0, wholeCardImgSrc: 0, illustration: 0}, (err, card)=>
 	{
+		conn.close();
 		if(!card || err)
 			return res.send({error: "No card found"});
 
@@ -70,10 +72,12 @@ var app = express()
 .post('/save-card', (req, res)=>
 {
 	/* Save into DB */
-	var MagicCardModel = getCardModel();
+	//var MagicCardModel = getCardModel();
+	var {conn, MagicCardModel} = getCardModel();
 
 	var onSaveCallback = (err, savedCard)=>
 	{
+		conn.close();
 		if(err)
 		{
 			console.log(`Error: ${err}`);
@@ -110,15 +114,17 @@ var app = express()
 })
 .post('/delete-card', (req, res)=>
 {
-	/* Save into DB */
-	var MagicCardModel = getCardModel();
-
 	var cardID = req.body.id;
 	if(!cardID)
 		res.send('nope');
 
+	/* Save into DB */
+	//var MagicCardModel = getCardModel();
+	var {conn, MagicCardModel} = getCardModel();
+
 	MagicCardModel.findByIdAndRemove(cardID, (err, savedCard)=>
 	{
+		conn.close();
 		res.send('ok'); // success
 	});
 })
@@ -129,7 +135,8 @@ var app = express()
 	if(userID)
 		searchParams.userID = userID;
 
-	var MagicCardModel = getCardModel();
+	//var MagicCardModel = getCardModel();
+	var {conn, MagicCardModel} = getCardModel();
 	MagicCardModel.find(searchParams, 
 	{
 		_id: 1,
@@ -138,6 +145,7 @@ var app = express()
 		author: 1,
 	}, (err, cards)=>
 	{
+		conn.close();
 		res.send(pug.renderFile('public/templates/listCards.pug', {cards: cards}));
 	});
 })
