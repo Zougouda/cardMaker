@@ -20,6 +20,10 @@ img {
   width: 150px;
   height: 107px;
   background-size: 150px 107px;
+  transition: all 0.2s;
+}
+.header a.index:hover {
+  transform: scale(1.05);
 }
 /* Footer */
 footer {
