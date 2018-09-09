@@ -51,18 +51,24 @@ class MagicCard
 				},
 				ondraw: function()
 				{
+					var actualDraw = (ctx, source)=>
+					{
+						ctx.clearRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height); // clear card's caption
+						ctx.fillStyle = '#FFFFFF';
+						ctx.fillRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height);
+						ctx.drawImage(source, this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height);
+					};
+
 					if(this.cardObject.cropper)
 					{
-						this.cardObject.ctx.clearRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height); // clear card's caption
-						this.cardObject.ctx.drawImage(this.cardObject.cropper.getCroppedCanvas(), this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height);
+						actualDraw(this.cardObject.ctx, this.cardObject.cropper.getCroppedCanvas());
 					}
 					else if(this.value)
 					{
 						this.cardObject.uploadedImage.src = this.value;
 						this.cardObject.uploadedImage.onload = ()=>
 						{
-							this.cardObject.ctx.clearRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height); // clear card's caption
-							this.cardObject.ctx.drawImage(this.cardObject.uploadedImage, this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height);
+							actualDraw(this.cardObject.ctx, this.cardObject.uploadedImage);
 						};
 					}
 				}
