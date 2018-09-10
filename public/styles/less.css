@@ -9,6 +9,9 @@ img {
 *.hidden {
   display: none;
 }
+body {
+  position: relative;
+}
 /* Header */
 .header {
   margin-bottom: 30px;
@@ -27,7 +30,11 @@ img {
 }
 /* Footer */
 footer {
-  padding-top: 25px;
+  position: absolute;
+  bottom: -50px;
+  /* always at bottom */
+  left: 0;
+  right: 0;
 }
 /* Editor */
 .global-container {
