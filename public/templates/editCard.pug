@@ -1,7 +1,30 @@
 extends layout.pug
 
 block head
-	title Index
+	if title
+		title #{title}
+		meta(property='og:title',content=title)
+		meta(property='twitter:title',content=title)
+	else
+		title New card
+
+	if description
+		meta(name='description', content=description)
+		meta(property='og:description',content=description)
+		meta(name='twitter:description',content=description)
+
+	if author
+		meta(property='author',content=author)
+
+	if id
+		meta(propety='og:image',content='http://home.cyrilannette.fr:4242/images/savedCards/'+id+'.png')
+		meta(propety='og:image:type',content='image/png')
+		meta(propety='og:image:width',content='400')
+		meta(propety='og:image:height',content='560')
+		meta(name='twitter:image',content='http://home.cyrilannette.fr:4242/images/savedCards/'+id+'.png')
+
+	meta(property='og:site_name',content="Zougouda's MTG card maker")
+	meta(property='og:type',content='article')
 
 block append styles
 	link(rel='stylesheet',type='text/css',href='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.4.1/cropper.css')

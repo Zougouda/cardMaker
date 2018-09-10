@@ -50,7 +50,21 @@ var app = express()
 })
 .get('/edit-card', (req, res)=>
 {
-	res.send(pug.renderFile('public/templates/editCard.pug'));
+	var templateParams = {};
+	var {id} = req.query;
+	if(!id)
+		return res.send(pug.renderFile('public/templates/editCard.pug', templateParams));
+
+	var {conn, MagicCardModel} = getCardModel();
+	MagicCardModel.findById(req.query.id, {_id: 0, title: 1, description: 1, author: 1}, (err, card)=>
+	{
+		conn.close();
+		templateParams.id = id;
+		templateParams.title = card.title;
+		templateParams.description = card.description;
+		res.send(pug.renderFile('public/templates/editCard.pug', templateParams));
+	});
+
 })
 .get('/get-card-data', (req, res)=>
 {
