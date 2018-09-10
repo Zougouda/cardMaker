@@ -162,3 +162,20 @@ footer {
 .list-cards .list-card-el img:hover {
   transform: scale(1.05);
 }
+.list-cards .paginator {
+  margin-top: 25px;
+  text-align: center;
+}
+.list-cards .paginator .page {
+  margin: 5px;
+  font-size: large;
+  font-weight: bold;
+  color: black;
+}
+.list-cards .paginator a.page {
+  color: blue;
+}
+.list-cards .paginator a.page:visited,
+.list-cards .paginator a.page:active {
+  color: blue;
+}

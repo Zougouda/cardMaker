@@ -4,6 +4,9 @@ extends layout.pug
 block head
 	title Cards list
 
+block scripts
+	script(src='/scripts/paginator.js')
+
 block content
 	div.list-cards
 		each card in cards
@@ -18,3 +21,9 @@ block content
 						span.author by #[a(href="/list-cards?userID="+card.userID) #{card.author}]
 					else
 						span.author By Anonymous 
+
+		div.paginator
+			
+	script
+		|window.count = #{count};
+		|window.maxPerPage = #{maxPerPage}

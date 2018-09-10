@@ -145,22 +145,41 @@ var app = express()
 .get('/list-cards', (req, res)=>
 {
 	var userID = req.query.userID;
+	
+	var maxPerPage = 6;
+	var offset = req.query.offset;
+
 	var searchParams = {};
 	if(userID)
 		searchParams.userID = userID;
 
-	//var MagicCardModel = getCardModel();
 	var {conn, MagicCardModel} = getCardModel();
-	MagicCardModel.find(searchParams, 
+
+	MagicCardModel.count(searchParams)
+	.then((count)=>
 	{
-		_id: 1,
-		title: 1, 
-		userID: 1, 
-		author: 1,
-	}, (err, cards)=>
+		MagicCardModel.find(searchParams, 
+			{
+				_id: 1,
+				title: 1, 
+				userID: 1, 
+				author: 1,
+			}, 
+			{skip: offset, limit: 3}
+		)
+		.then((cards)=>
+		{
+			conn.close();
+			res.send(pug.renderFile('public/templates/listCards.pug', {cards, count, maxPerPage, offset}));
+		})
+		.catch((err2)=>
+		{
+			
+		});
+	})
+	.catch((err)=>
 	{
-		conn.close();
-		res.send(pug.renderFile('public/templates/listCards.pug', {cards: cards}));
+		
 	});
 })
 .use(express.static('public'))
