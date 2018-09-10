@@ -56,7 +56,7 @@ class MagicCard
 						ctx.clearRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height); // clear card's caption
 						ctx.fillStyle = '#FFFFFF';
 						ctx.fillRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height);
-						ctx.drawImage(source, this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height);
+						ctx.drawImage(source, this.boundingBox.left-1, this.boundingBox.top, this.boundingBox.width+1, this.boundingBox.height); // TODO fix these offset/width values
 					};
 
 					if(this.cardObject.cropper)
