@@ -165,7 +165,7 @@ var app = express()
 				userID: 1, 
 				author: 1,
 			}, 
-			{skip: offset, limit: 3}
+			{skip: offset, limit: maxPerPage}
 		)
 		.then((cards)=>
 		{
