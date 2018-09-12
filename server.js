@@ -165,7 +165,11 @@ var app = express()
 				userID: 1, 
 				author: 1,
 			}, 
-			{skip: offset, limit: maxPerPage}
+			{
+				skip: offset, 
+				limit: maxPerPage, 
+				sort: {created: -1} // sort by creation date DESC
+			}
 		)
 		.then((cards)=>
 		{

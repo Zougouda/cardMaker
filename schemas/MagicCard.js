@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const MagicCard = new Schema({
 	userID: Number,
 	wholeCardImgSrc: String,
+	created: {type: Date, default: Date.now},
 
 	illustration: String,
 	title: String,
