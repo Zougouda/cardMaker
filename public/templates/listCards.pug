@@ -1,4 +1,3 @@
-
 extends layout.pug
 
 block append head
@@ -12,9 +11,6 @@ block content
 		each card in cards
 			div.list-card-el.col-max-4
 				div
-					//- if card.title
-					//- 	a(href="/edit-card?id="+card.id)
-					//- 		span.title #{card.title}
 					a(href="/edit-card?id="+card.id) 
 						img(src="/images/savedCards/"+card.id+".png")
 					if card.author
