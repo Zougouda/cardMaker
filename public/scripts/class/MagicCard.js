@@ -761,13 +761,13 @@ class MagicCard
 /* Static attributes */
 
 MagicCard.cardFramesSrcByColor = {
-	'colorless': '/images/frames/colorless',
-	'white'    : '/images/frames/white',
-	'blue'     : '/images/frames/blue',
-	'black'    : '/images/frames/black',
-	'red'      : '/images/frames/red',
-	'green'    : '/images/frames/green',
-	'gold'     : '/images/frames/gold',
+	'colorless': '/images/frames/small/colorless',
+	'white'    : '/images/frames/small/white',
+	'blue'     : '/images/frames/small/blue',
+	'black'    : '/images/frames/small/black',
+	'red'      : '/images/frames/small/red',
+	'green'    : '/images/frames/small/green',
+	'gold'     : '/images/frames/small/gold',
 };
 
 
