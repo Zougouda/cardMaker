@@ -3,28 +3,33 @@
 @mobile:    ~"only screen and (max-width: 719px)";
 
 /* Limit image width to avoid overflow the container */
-img {
+img 
+{
 	max-width: 100%; /* This rule is very important, please do not ignore this! */
 }
 
-* {
+* 
+{
 	box-sizing: border-box;
 }
 
-*.hidden {
+*.hidden 
+{
 	display: none;
 }
 
-body {
+body 
+{
 	position: relative;
 }
 
 /* Header */
-
-.header {
+.header 
+{
 	margin-bottom: 30px;
 
-	a.index {
+	a.index 
+	{
 		display: block;
 		margin:  0 auto;
 		background-image: url('/images/Index.jpg');
@@ -33,15 +38,16 @@ body {
 		background-size: 150px 107px;
 		transition: all .2s;
 
-		&:hover {
+		&:hover 
+		{
 			transform: scale(1.05);
 		}
 	}
 }
 
 /* Footer */
-
-footer {
+footer 
+{
 	position: absolute;
 	bottom: -50px; /* always at bottom */
 	left: 0;
@@ -50,12 +56,13 @@ footer {
 
 
 /* Editor */
-
-.global-container {
+.global-container 
+{
 	width: 100%;
 }
 
-.editor, .preview {
+.editor, .preview 
+{
 	width: 50%;
 	min-height: 100px;
 	display: inline-block;
@@ -63,150 +70,180 @@ footer {
 	margin: 0 auto;
 }
 
-.preview-canvas {
+.preview-canvas 
+{
 	display: block;
 	margin: 0 auto;
 	width: 400px;
 	max-width: 100%;
 }
 
-.editor {
-	.caption-container input {
+.editor 
+{
+	.caption-container input 
+	{
 		display: inline-block;
 		margin-left: 15px;
 		min-width: 0;
 		width: 100px;
 	}
-	input, textarea {
+	input, textarea 
+	{
 		display: block;
 		min-width: 200px;
 	}
-	textarea {
+	textarea 
+	{
 		width: 100%;
 		height: 120px;
 		max-width: 100%;
 		min-height: 100px;
 	}
-	input, textarea, .mana-cost-container {
+	input, textarea, .mana-cost-container 
+	{
 		margin-top: 10px;
 	}
-	.card-mana-cost, .mana-cost-buttons {
+	.card-mana-cost, .mana-cost-buttons 
+	{
 		display: inline-block;
 		margin-top: 0;
 	}
-	.card-type {
+	.card-type 
+	{
 		display: inline-block;
 	}
-	.card-rarity-selector {
+	.card-rarity-selector 
+	{
 		display: inline-block;
 		margin-left: 15px;
 	}
-	.card-rarity-selector .common {
+	.card-rarity-selector .common 
+	{
 		padding-left: 24px;
 	}
-	input.card-power, input.card-toughness {
+	input.card-power, input.card-toughness 
+	{
 		margin-top: 0;
 		width: 80px!important;
 		min-width: 0;
 		display: inline-block;
 	}
-	.power-toughness-container {
+	.power-toughness-container 
+	{
 		margin-top: 10px;
 	}
-	.power-toughness-separator {
+	.power-toughness-separator 
+	{
 		margin: 0 5px;
 		display: inline-block;
 		font-size: 20px;
 		font-weight: bold;
 	}
-	.uploaded-image-container {
+	.uploaded-image-container 
+	{
 		max-width: 80%;
 		max-height: 300px;
 		margin: 10px auto;
 	}
-	.uploaded-image-container img{
+	.uploaded-image-container img
+	{
 		height: 100%;
-		/*width: 100%;*/
 	}
-	.icons-picker-button {
+	.icons-picker-button 
+	{
 		margin: 0 1px;
 	}
-	button {
+	button 
+	{
 		margin: 4px 4px 4px 0;
 	}
-	.delete-button {
+	.delete-button 
+	{
 		margin-left: 20px!important;
 		color: red;
 	}
 }
 
 /* list-cards */
-
-.list-cards {
+.list-cards 
+{
 	width: 100%;
 	margin: 0 auto;
 
-	.list-card-el {
+	.list-card-el 
+	{
 		width: 25%;
 		margin-left: 4%;
 		margin-right: 4%;
 		display: inline-block;
 		margin-bottom: 15px;
 
-		img, .title {
+		img, .title 
+		{
 			display: block;
 			text-align: center;
 			margin: 0 auto;
 		}
-		img {
+		img 
+		{
 			transition: all .2s;
 			margin-bottom: 15px;
-			&:hover {
+			&:hover 
+			{
 				transform: scale(1.05);
 			}
 		}
 
-		&.col-max-4 {
+		&.col-max-4 
+		{
 			width: 20%;
 			margin-left: 2%;
 			margin-right: 2%;
 		}
-		&.col-max-5 {
+		&.col-max-5 
+		{
 			width: 16%;
 			margin-left: 2%;
 			margin-right: 2%;
 		}
-		&.col-max-6 {
+		&.col-max-6 
+		{
 			width: 12%;
 			margin-left: 2%;
 			margin-right: 2%;
 		}
 
-		@media @tablet {
+		@media @tablet 
+		{
 			width: 42%!important;
 			margin-left: 4%!important;
 			margin-right: 4%!important;
 		}
 
-		@media @mobile {
+		@media @mobile 
+		{
 			width: 70%!important;
 			margin-left: 15%!important;
 		}
 	}
 
-	.paginator {
+	.paginator 
+	{
 		margin-top: 25px;
 		text-align: center;
 
-		.page {
+		.page 
+		{
 			margin: 5px;
 			font-size: large;
 			font-weight: bold;
 			color: black;
 		}
-		a.page {
+		a.page 
+		{
 			color: blue;
-			&:visited, &:active {
+			&:visited, &:active 
+			{
 				color: blue
 			}
 		}
