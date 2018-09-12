@@ -146,7 +146,7 @@ var app = express()
 {
 	var userID = req.query.userID;
 	
-	var maxPerPage = 6;
+	var maxPerPage = 8;
 	var offset = req.query.offset;
 
 	var searchParams = {};

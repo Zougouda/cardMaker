@@ -138,17 +138,6 @@ footer {
   display: inline-block;
   margin-bottom: 15px;
 }
-@media only screen and (min-width: 720px) and (max-width: 959px) {
-  .list-cards .list-card-el {
-    width: 42%;
-  }
-}
-@media only screen and (max-width: 719px) {
-  .list-cards .list-card-el {
-    width: 70%;
-    margin-left: 15%;
-  }
-}
 .list-cards .list-card-el img,
 .list-cards .list-card-el .title {
   display: block;
@@ -161,6 +150,34 @@ footer {
 }
 .list-cards .list-card-el img:hover {
   transform: scale(1.05);
+}
+.list-cards .list-card-el.col-max-4 {
+  width: 20%;
+  margin-left: 2%;
+  margin-right: 2%;
+}
+.list-cards .list-card-el.col-max-5 {
+  width: 16%;
+  margin-left: 2%;
+  margin-right: 2%;
+}
+.list-cards .list-card-el.col-max-6 {
+  width: 12%;
+  margin-left: 2%;
+  margin-right: 2%;
+}
+@media only screen and (min-width: 720px) and (max-width: 959px) {
+  .list-cards .list-card-el {
+    width: 42%!important;
+    margin-left: 4%!important;
+    margin-right: 4%!important;
+  }
+}
+@media only screen and (max-width: 719px) {
+  .list-cards .list-card-el {
+    width: 70%!important;
+    margin-left: 15%!important;
+  }
 }
 .list-cards .paginator {
   margin-top: 25px;
