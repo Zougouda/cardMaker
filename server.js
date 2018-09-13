@@ -16,7 +16,6 @@ function getCardModel()
 	var conn = mongoose.createConnection('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
 	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
 	return {conn, MagicCardModel};
-	//return MagicCardModel;
 }
 
 function writeBase64ToImage(imageAsBase64, path)
@@ -86,7 +85,6 @@ var app = express()
 .post('/save-card', (req, res)=>
 {
 	/* Save into DB */
-	//var MagicCardModel = getCardModel();
 	var {conn, MagicCardModel} = getCardModel();
 
 	var onSaveCallback = (err, savedCard)=>
@@ -133,7 +131,6 @@ var app = express()
 		res.send('nope');
 
 	/* Save into DB */
-	//var MagicCardModel = getCardModel();
 	var {conn, MagicCardModel} = getCardModel();
 
 	MagicCardModel.findByIdAndRemove(cardID, (err, savedCard)=>
