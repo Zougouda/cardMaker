@@ -41,9 +41,9 @@ var app = express()
 .get('/', (req, res)=>
 {
 	var linksOptions = [
-		{src: '/images/Create new card.png', href: '/edit-card'},
-		{src: '/images/My cards.png', href: '/list-cards'},
-		{src: '/images/All cards.png', href: '/list-cards'},
+		{src: '/images/Create new card.png', href: '/edit-card', title: 'New card'},
+		{src: '/images/My cards.png', href: '/list-cards', title: 'My  cards'},
+		{src: '/images/All cards.png', href: '/list-cards', title: 'All cards'},
 	];
 
 	res.send(pug.renderFile('public/templates/index.pug', {linksOptions: linksOptions}));
