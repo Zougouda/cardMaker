@@ -178,12 +178,12 @@ var app = express()
 		})
 		.catch((err2)=>
 		{
-			
+			conn.close();
 		});
 	})
 	.catch((err)=>
 	{
-		
+		conn.close();
 	});
 })
 .use(express.static('public'))
