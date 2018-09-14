@@ -189,10 +189,10 @@ var app = express()
 		//conn.close();
 	});
 })
-.post('/toggle-card-as-favorite', (req, res)=>
+.get('/toggle-card-as-favorite', (req, res)=>
 {	
-	var cardID = req.body.cardID;
-	var userID = req.body.userID;
+	//var {cardID, userID} = req.body;
+	var {cardID, userID} = req.query;
 	if(!cardID || !userID)
 		return res.send(JSON.stringify({error: 'No cardID or userID specified'}));
 	
@@ -218,19 +218,23 @@ var app = express()
 	UserModel.findOne({userID})
 	.then((user)=>
 	{
-		if(!user) // no user found create it with the first favorite
+		if(!user) // no user found: create it with the first favorite
 		{
 			var user = new UserModel(req.body);
 			user.userID = userID;
 			user.favoriteCards.push(cardID)
 			user.save(onSaveCallback);
 		}
-		else
+		else // update existing user
 		{
 			UserModel.findOne({userID})
 			.then((user)=>
 			{
-				user.favoriteCards.push(cardID)
+				var index = user.favoriteCards.indexOf(cardID);
+				if(index !== -1) // cardID exists
+					user.favoriteCards.splice(index, 1);
+				else
+					user.favoriteCards.push(cardID)
 				user.save(onSaveCallback);
 			})
 			.catch(onErrorCallback);
