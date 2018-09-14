@@ -301,6 +301,37 @@ var app = express()
 	})
 	.catch(onErrorCallback);
 })
+.get('/search', (req, res)=>
+{
+	var {search = ''} = req.query;
+	
+	var searchParams = {};
+
+	var onErrorCB = (err)=>
+	{
+		console.log(err);
+		res.send(JSON.stringify({error: err}));
+	};
+	MagicCardModel.find(
+		{
+			title: new RegExp(search, 'i')
+		}, 
+		{
+			_id: 1,
+			title: 1, 
+			userID: 1, 
+			author: 1,
+		}, 
+		{
+			sort: {created: -1} // sort by creation date DESC
+		}
+	)
+	.then((cards)=>
+	{
+		res.send(pug.renderFile('public/templates/listCards.pug', {cards, maxPerPage: null, offset: 0}));
+	})
+	.catch(onErrorCB);
+})
 .use(express.static('public'))
 .use((req, res, next)=>
 {

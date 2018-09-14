@@ -11,6 +11,14 @@ document.addEventListener("DOMContentLoaded", ()=>
 
 	/* check for favorites cards */
 	checkFavorites();
+
+	/* Handle search requests */
+	document.querySelector('.search').addEventListener('keyup', function(e)
+	{
+		event.preventDefault();
+		if (event.keyCode === 13) // enter
+			window.location.href = `/search?search=${this.value}`;
+	});
 });
 
 function addCardToFavorites(cardID, callback)

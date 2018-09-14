@@ -16,6 +16,9 @@ body {
 .header {
   margin-bottom: 30px;
 }
+.header .search {
+  float: right;
+}
 .header a.index {
   display: block;
   margin: 0 auto;
