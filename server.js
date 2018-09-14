@@ -7,7 +7,12 @@ const express = require('express'),
 	  fs = require('fs')
 	  ;
 
-const MagicCardSchema = require('./schemas/MagicCard.js');
+/* DB vars */
+//const MagicCardSchema = require('./schemas/MagicCard.js'),
+//	  UserSchema = require('./schemas/User.js');
+const db = mongoose.connect('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
+const MagicCardModel = mongoose.model('MagicCard', require('./schemas/MagicCard.js')),
+	  UserModel = mongoose.model('User', require('./schemas/User.js'));
 
 const port = 4242;
 
@@ -15,7 +20,8 @@ function getCardModel()
 {
 	var conn = mongoose.createConnection('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
 	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
-	return {conn, MagicCardModel};
+	var UserModel = conn.model('User', UserSchema);
+	return {conn, MagicCardModel, UserSchema};
 }
 
 function writeBase64ToImage(imageAsBase64, path)
@@ -54,10 +60,10 @@ var app = express()
 	if(!id)
 		return res.send(pug.renderFile('public/templates/editCard.pug', templateParams));
 
-	var {conn, MagicCardModel} = getCardModel();
+	//var {conn, MagicCardModel} = getCardModel();
 	MagicCardModel.findById(req.query.id, {_id: 0, title: 1, description: 1, author: 1}, (err, card)=>
 	{
-		conn.close();
+		//conn.close();
 		templateParams.id = id;
 		templateParams.title = card.title;
 		templateParams.description = card.description;
@@ -71,10 +77,10 @@ var app = express()
 	if(!id)
 		return res.send({error: 'No ID specified'});
 
-	var {conn, MagicCardModel} = getCardModel();
+	//var {conn, MagicCardModel} = getCardModel();
 	MagicCardModel.findById(req.query.id, {_id: 0, wholeCardImgSrc: 0, illustration: 0}, (err, card)=>
 	{
-		conn.close();
+		//conn.close();
 		if(!card || err)
 			return res.send({error: "No card found"});
 
@@ -85,11 +91,11 @@ var app = express()
 .post('/save-card', (req, res)=>
 {
 	/* Save into DB */
-	var {conn, MagicCardModel} = getCardModel();
+	//var {conn, MagicCardModel} = getCardModel();
 
 	var onSaveCallback = (err, savedCard)=>
 	{
-		conn.close();
+		//conn.close();
 		if(err)
 		{
 			console.log(`Error: ${err}`);
@@ -131,11 +137,11 @@ var app = express()
 		res.send('nope');
 
 	/* Save into DB */
-	var {conn, MagicCardModel} = getCardModel();
+	//var {conn, MagicCardModel} = getCardModel();
 
 	MagicCardModel.findByIdAndRemove(cardID, (err, savedCard)=>
 	{
-		conn.close();
+		//conn.close();
 		res.send('ok'); // success
 	});
 })
@@ -150,7 +156,7 @@ var app = express()
 	if(userID)
 		searchParams.userID = userID;
 
-	var {conn, MagicCardModel} = getCardModel();
+	//var {conn, MagicCardModel} = getCardModel();
 
 	MagicCardModel.count(searchParams)
 	.then((count)=>
@@ -170,23 +176,83 @@ var app = express()
 		)
 		.then((cards)=>
 		{
-			conn.close();
+			//conn.close();
 			res.send(pug.renderFile('public/templates/listCards.pug', {cards, count, maxPerPage, offset}));
 		})
 		.catch((err2)=>
 		{
-			conn.close();
+			//conn.close();
 		});
 	})
 	.catch((err)=>
 	{
-		conn.close();
+		//conn.close();
 	});
+})
+.post('/toggle-card-as-favorite', (req, res)=>
+{	
+	var cardID = req.body.cardID;
+	var userID = req.body.userID;
+	if(!cardID || !userID)
+		return res.send(JSON.stringify({error: 'No cardID or userID specified'}));
+	
+	var errorResp = JSON.stringify({error: 'Failed to update database'});
+
+	//var {conn, MagicCardModel, UserModel} = getCardModel();
+	
+	var onSaveCallback = (err, savedUser)=>
+	{
+		//conn.close();
+
+		if(err)
+			return res.send(errorResp);
+
+		res.send(JSON.stringify(savedUser));
+	};
+	var onErrorCallback = (err)=>
+	{
+		//conn.close();
+		res.send(errorResp);
+	};
+
+	UserModel.findOne({userID})
+	.then((user)=>
+	{
+		if(!user) // no user found create it with the first favorite
+		{
+			var user = new UserModel(req.body);
+			user.userID = userID;
+			user.favoriteCards.push(cardID)
+			user.save(onSaveCallback);
+		}
+		else
+		{
+			UserModel.findOne({userID})
+			.then((user)=>
+			{
+				user.favoriteCards.push(cardID)
+				user.save(onSaveCallback);
+			})
+			.catch(onErrorCallback);
+		}
+
+	})
+	.catch(onErrorCallback);
 })
 .use(express.static('public'))
 .use((req, res, next)=>
 {
 	res.status(404).send('404 not found.');
+});
+
+process.on('SIGINT', async function()
+{
+	try 
+	{
+		db.close();
+	}
+	catch(err){}
+	process.exit();
 });
 
 var httpServer = http.createServer(app);
