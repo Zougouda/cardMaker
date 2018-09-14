@@ -150,6 +150,13 @@ footer {
 .list-cards .list-card-el img:hover {
   transform: scale(1.05);
 }
+.list-cards .list-card-el .favorite {
+  float: right;
+}
+.list-cards .list-card-el .favorite label,
+.list-cards .list-card-el .favorite input.add-to-favorites {
+  display: inline-block;
+}
 .list-cards .list-card-el.col-max-4 {
   width: 20%;
   margin-left: 2%;

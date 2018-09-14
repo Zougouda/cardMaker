@@ -9,7 +9,7 @@ block append scripts
 block content
 	div.list-cards
 		each card in cards
-			div.list-card-el.col-max-4
+			div.list-card-el.col-max-4(data-card-id=card.id)
 				div
 					a(href="/edit-card?id="+card.id) 
 						img(src="/images/savedCards/"+card.id+".png")
@@ -18,8 +18,14 @@ block content
 					else
 						span.author By Anonymous 
 
+					span.favorite
+						label Added to favorites
+						input.add-to-favorites(type='checkbox')
+
 		div.paginator
 			
 	script
-		|window.count = #{count};
-		|window.maxPerPage = #{maxPerPage}
+		if count
+			|window.count = #{count};
+		if maxPerPage
+			|window.maxPerPage = #{maxPerPage}

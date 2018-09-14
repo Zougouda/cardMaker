@@ -11,7 +11,7 @@ block append scripts
 block content
 	div.list-cards
 		each linkOption in linksOptions
-			div.list-card-el
+			div.list-card-el.col-max-4
 				div
 					a(href=linkOption.href,title=linkOption.title) 
 						img(src=linkOption.src)

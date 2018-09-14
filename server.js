@@ -16,13 +16,15 @@ const MagicCardModel = mongoose.model('MagicCard', require('./schemas/MagicCard.
 
 const port = 4242;
 
-function getCardModel()
-{
-	var conn = mongoose.createConnection('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
-	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
-	var UserModel = conn.model('User', UserSchema);
-	return {conn, MagicCardModel, UserSchema};
-}
+const maxCardPerPage = 8;
+
+//function getCardModel()
+//{
+//	var conn = mongoose.createConnection('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
+//	var MagicCardModel = conn.model('MagicCard', MagicCardSchema);
+//	var UserModel = conn.model('User', UserSchema);
+//	return {conn, MagicCardModel, UserSchema};
+//}
 
 function writeBase64ToImage(imageAsBase64, path)
 {
@@ -40,6 +42,30 @@ function writeBase64ToImage(imageAsBase64, path)
 	});
 }
 
+function getFavoritesCards(userID, fields = {})
+{
+	return new Promise((resolve, reject)=>
+	{
+		if(!userID)
+			return reject(JSON.stringify({error: 'No userID specified'}));
+
+		var onErrorCB = (err)=>
+		{
+			console.log(err);
+			return reject(JSON.stringify({error: err}));
+		};
+
+		var populateOptions = {path: 'favoriteCards', select: fields}
+		UserModel.findOne({userID})
+		.populate(populateOptions)
+		.then((user)=>
+		{
+			resolve(user);
+		})
+		.catch(onErrorCB);
+	});
+}
+
 var app = express()
 .use(bodyParser.json({limit: '50mb'})) // support json encoded bodies
 .use(bodyParser.urlencoded({ extended: true })) // support encoded bodies
@@ -48,6 +74,7 @@ var app = express()
 	var linksOptions = [
 		{src: '/images/Create new card.png', href: '/edit-card', title: 'New card'},
 		{src: '/images/My cards.png', href: '/list-cards', title: 'My  cards'},
+		{src: '/images/Crowd Favorites.png', href: '/favorite-cards', title: 'Favorites'},
 		{src: '/images/All cards.png', href: '/list-cards', title: 'All cards'},
 	];
 
@@ -149,7 +176,6 @@ var app = express()
 {
 	var userID = req.query.userID;
 	
-	var maxPerPage = 8;
 	var offset = req.query.offset;
 
 	var searchParams = {};
@@ -158,6 +184,11 @@ var app = express()
 
 	//var {conn, MagicCardModel} = getCardModel();
 
+	var onErrorCB = (err)=>
+	{
+		console.log(err);
+		res.send(JSON.stringify({error: err}));
+	};
 	MagicCardModel.count(searchParams)
 	.then((count)=>
 	{
@@ -170,23 +201,50 @@ var app = express()
 			}, 
 			{
 				skip: offset, 
-				limit: maxPerPage, 
+				limit: maxCardPerPage, 
 				sort: {created: -1} // sort by creation date DESC
 			}
 		)
 		.then((cards)=>
 		{
-			//conn.close();
-			res.send(pug.renderFile('public/templates/listCards.pug', {cards, count, maxPerPage, offset}));
+			res.send(pug.renderFile('public/templates/listCards.pug', {cards, count, maxPerPage: maxCardPerPage, offset}));
 		})
-		.catch((err2)=>
-		{
-			//conn.close();
-		});
+		.catch(onErrorCB);
+	})
+	.catch(onErrorCB);
+})
+.get('/favorite-cards', (req, res)=>
+{
+	var {userID} = req.query;
+
+	getFavoritesCards(userID)
+	.then((user)=>
+	{
+		res.send(pug.renderFile('public/templates/listCards.pug', {cards: user.favoriteCards}));
 	})
 	.catch((err)=>
 	{
-		//conn.close();
+		res.send(err);	
+	});
+})
+.get('/get-favorite-cards-id', (req, res) =>
+{
+	var {userID} = req.query;
+
+	getFavoritesCards(userID, {'_id': 1})
+	.then((user)=>
+	{
+		var arrayOfIDs = [];
+		user.favoriteCards.forEach((card)=>
+		{
+			arrayOfIDs.push(card.id);
+		});
+
+		res.send(JSON.stringify(arrayOfIDs));
+	})
+	.catch((err)=>
+	{
+		res.send(err);	
 	});
 })
 .get('/toggle-card-as-favorite', (req, res)=>
