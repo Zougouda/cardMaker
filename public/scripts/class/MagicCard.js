@@ -265,6 +265,20 @@ class MagicCard
 				this.exportImg();
 			}
 		}, false);
+		/* Add paste imageData feature */
+		document.addEventListener('paste', (e)=>
+		{
+			var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+			Object.entries(items).forEach(([index, item])=>
+			{
+				if(item.type.indexOf('image') == -1) 
+					return;
+
+				var blob = item.getAsFile();
+				var uRLObj = window.URL || window.webkitURL;
+				this.setCropperSrc( uRLObj.createObjectURL(blob), true );
+			});	
+		});
 
 		/* Build buttonsPickers */
 		this.buildIconsPicker({
