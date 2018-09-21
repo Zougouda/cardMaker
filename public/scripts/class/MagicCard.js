@@ -752,6 +752,7 @@ class MagicCard
 				this.insertIconIntoTextInput(key, inputDestinationDOM);
 			};
 			button.href = 'javascript:void(0);';
+			button.setAttribute('tabIndex', -1);
 			containerDOM.appendChild(button);
 		});
 	
@@ -760,6 +761,7 @@ class MagicCard
 			var resetButton = document.createElement('a');
 			resetButton.classList.add('icons-picker-button');
 			resetButton.href = 'javascript:void(0);';
+			resetButton.setAttribute('tabIndex', -1);
 			resetButton.innerHTML = 'Reset';
 			resetButton.onclick = function()
 			{
