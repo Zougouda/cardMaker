@@ -1,4 +1,4 @@
-class MagicCardAttribute
+class CardAttribute
 {
 	constructor(options = {})
 	{
