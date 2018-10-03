@@ -16,6 +16,7 @@ class CardAttribute
 			onready:  this.onready = function(){},
 			onchange: this.onchange = this.defaultOnchange,
 			ondraw: this.ondraw = function(){},
+			debug: this.debug = false,
 		} = this.options);
 
 		if(!this.value)
@@ -24,15 +25,27 @@ class CardAttribute
 		this.onready();
 		if(this.inputDOM)
 		{
+			this.eventListenerCallback = (e)=>
+			{
+				this.value = e.target.value;
+				this.onchange();		
+			};
 			['change', 'keyup'].forEach((action) =>
 			{
-				this.inputDOM.addEventListener(action, (e)=>
-				{
-					this.value = e.target.value;
-					this.onchange();		
-				});
+				this.inputDOM.addEventListener(action, this.eventListenerCallback);
 			});
 		}
+	}
+
+	destroy()
+	{
+		if(!this.inputDOM)
+			return;
+
+		['change', 'keyup'].forEach((action) =>
+		{
+			this.inputDOM.removeEventListener(action, this.eventListenerCallback);
+		});
 	}
 
 	defaultOnchange(value)
@@ -43,5 +56,18 @@ class CardAttribute
 	draw()
 	{
 		this.ondraw();
+		if(this.debug)
+		{
+			var ctx = this.cardObject.ctx;
+			ctx.save();
+			ctx.strokeStyle = 'red'; ctx.lineWidth = 3;
+			ctx.strokeRect(
+				this.boundingBox.left,
+				this.boundingBox.top,
+				this.boundingBox.width || 10,
+				this.boundingBox.height || 10,
+			);
+			ctx.restore();
+		}
 	}
 }

@@ -8,6 +8,10 @@ class MagicCard extends GenericCard
 		this.defaultFont = 'Trajan';
 
 		this.setAttributes();
+		this.attributes['illustration'].value = this.uploadedImage.src;
+		if(GenericCard.lastCropperSrc)
+			this.setCropperSrc(GenericCard.lastCropperSrc);
+		this.update();
 
 		/* Build buttonsPickers */
 		this.buildIconsPicker({
@@ -20,8 +24,15 @@ class MagicCard extends GenericCard
 			inputDestinationDOM: this.attributes.description.inputDOM,
 			containerDOM: document.querySelector('div.description-buttons'),
 		});
+	}
 
-		this.update();
+	destroy()
+	{
+		super.destroy();
+
+		/* remove mana-pickers buttons */
+		document.querySelector('div.mana-cost-buttons').innerHTML = '';
+		document.querySelector('div.description-buttons').innerHTML = '';
 	}
 
 	setAttributes()
@@ -54,6 +65,7 @@ class MagicCard extends GenericCard
 				},
 				ondraw: function()
 				{
+					this.cardObject.ctx.drawImage(this.cardObject.cardFrameImg, 0, 0, this.cardObject.cardWidth, this.cardObject.cardheight); // draw frame
 					var actualDraw = (ctx, source)=>
 					{
 						ctx.clearRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height); // clear card's caption
@@ -64,7 +76,7 @@ class MagicCard extends GenericCard
 
 					if(this.cardObject.cropper)
 					{
-						actualDraw(this.cardObject.ctx, this.cardObject.cropper.getCroppedCanvas());
+						actualDraw(this.cardObject.ctx, this.cardObject.cropper.getCroppedCanvas() );
 					}
 					else if(this.value)
 					{
@@ -284,132 +296,11 @@ class MagicCard extends GenericCard
 		return returnValue;
 	}
 
-	getImagesByAbbreviationsText(text)
+	exportJson()
 	{
-		var regex = MagicCard.getAbbreviationsRegexp; 
-		var allPatterns = text.match(regex); // get all patterns within parenthesis ( like '(b)' )
-	
-		var returnValue = [];
-		if(allPatterns)
-		{
-			allPatterns.forEach(function(elem)
-			{
-				returnValue.push(MagicCard.abbreviationToSrc[elem]);
-			});
-		}
-		return returnValue;
-	}
-
-	/* https://stackoverflow.com/a/2936288 */
-	wrapText(context, text, x, y, line_width, line_height)
-	{
-		var defaultCtxFont = context.font;
-
-		var line = ''; var startX = x;
-		var paragraphs = text.split('\n');
-		for (var i = 0; i < paragraphs.length; i++)
-		{
-			let italicStartIndexes = [];
-			let italicEndIndexes = [];
-
-			var words = paragraphs[i].split(' ');
-			for (var n = 0; n < words.length; n++)
-			{
-				var testLine = line + words[n] + ' ';
-	
-				/* replace detected abbreviations by their matching images */
-				var regex = MagicCard.getAbbreviationsRegexp; 
-				var reResult;
-				while(reResult = regex.exec(testLine))
-				{
-					var pattern = reResult[0];
-					var imageSrc = MagicCard.abbreviationDescriptionToSrc[pattern];
-					if(imageSrc)
-					{
-						var textUpToAbbreviation = reResult.input.substring(0, reResult.input.indexOf(pattern) ); // remove everything just before the found string
-						testLine = testLine.replace(pattern, ' '.repeat(pattern.length)); // remove pattern from the line and replace it with spaces
-	
-						var imgWidth, imgHeight; imgWidth = imgHeight = 12;
-						var marginX = context.measureText(textUpToAbbreviation).width;
-						var imgX = x + marginX;
-						var imgY = y - imgHeight;
-	
-						/* build image */
-						var img = new Image();
-						img.src = imageSrc;
-						context.drawImage(img, imgX, imgY, imgWidth, imgHeight);
-					}
-				}
-
-				var metrics = context.measureText(testLine);
-				var testWidth = metrics.width;
-				if (testWidth > line_width && n > 0)
-				{
-					writeLineWords(line);
-
-					line = words[n] + ' ';
-					y += line_height;
-					x = startX;
-				}
-				else
-				{
-					line = testLine;
-				}
-			}
-			writeLineWords(line);
-
-			y += line_height;
-			x = startX;
-			line = '';
-		}
-
-		function writeLineWords(line)
-		{
-			line.split(' ').forEach((lineWord)=>
-			{
-				var italicRegex = /\<i\>/gi; // "<i>"
-				var boldRegex = /\<b\>/gi; // "<b>"
-				var italicEndRegex = /\<\/i\>/gi; // "</i>
-				var boldEndRegex = /\<\/b\>/gi; // "</b>
-				var stopItalic = false, stopBold = false;
-
-				var reResult;
-				reResult = italicRegex.exec(lineWord);
-				if(reResult)
-				{
-					context.font = 'italic ' + context.font;
-					lineWord = lineWord.replace(italicRegex, '');
-				}
-				reResult = boldRegex.exec(lineWord);
-				if(reResult)
-				{
-					context.font = 'bold ' + context.font;
-					lineWord = lineWord.replace(boldRegex, '');
-				}
-
-				reResult = italicEndRegex.exec(lineWord);
-				if(reResult)
-				{
-					lineWord = lineWord.replace(italicEndRegex, '');
-					stopItalic = true;
-				}
-				reResult = boldEndRegex.exec(lineWord);
-				if(reResult)
-				{
-					lineWord = lineWord.replace(boldEndRegex, '');
-					stopBold = true;
-				}
-
-				context.fillText(lineWord+' ', x, y); // Actual writing done here
-
-				if(stopItalic)
-					context.font = context.font.replace('italic', '');
-				if(stopBold)
-					context.font = context.font.replace('bold', '');
-
-				x+= context.measureText(lineWord+' ').width;
-			});
-		}
+		var json = super.exportJson();
+		json.cardPattern = 'magic';
+		return json;
 	}
 
 	insertIconIntoTextInput(iconAsText, inputDOM)

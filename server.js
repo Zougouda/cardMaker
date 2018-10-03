@@ -142,13 +142,11 @@ var app = express()
 .post('/delete-card', (req, res)=>
 {
 	var cardID = req.body.id;
-	if(!cardID)
-		res.send('nope');
-
-	MagicCardModel.findByIdAndRemove(cardID, (err, savedCard)=>
+	if(this.cardID)
 	{
-		res.send('ok'); // success
-	});
+		MagicCardModel.findByIdAndRemove(cardID, (err, savedCard)=>{});
+	}
+	res.send('ok'); // success
 })
 .get('/list-cards', (req, res)=>
 {

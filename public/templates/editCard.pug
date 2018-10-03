@@ -33,12 +33,16 @@ block append scripts
 	script(src='/scripts/main.js')
 	script(src='/scripts/class/GenericCard.js')
 	script(src='/scripts/class/MagicCard.js')
+	script(src='/scripts/class/HearthstoneCard.js')
 	script(src='/scripts/class/CardAttribute.js')
 	script(src='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.4.1/cropper.js')
 
 block content
 	div.global-container
 		div.editor
+			div.pattern-selector
+				img(width='50',src='https://cn.pling.com/img//hive/content-pre1/104822-1.png', onclick='javascript:GenericCard.initCard("magic")', title='Magic the Gathering')
+				img(width='50',src='https://www.logolynx.com/images/logolynx/25/25cb1ccb3913a0224fd610ce83bfc4c3.png', onclick='javascript:GenericCard.initCard("hearthstone")', title='Hearthstone')
 			fieldset.caption-container
 				legend Illustration
 				div

@@ -57,6 +57,9 @@ footer {
   width: 400px;
   max-width: 100%;
 }
+.editor .pattern-selector img:hover {
+  cursor: pointer;
+}
 .editor .caption-container input {
   display: inline-block;
   margin-left: 15px;
