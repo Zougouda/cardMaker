@@ -79,6 +79,9 @@ var app = express()
 
 	MagicCardModel.findById(req.query.id, {_id: 0, title: 1, description: 1, author: 1}, (err, card)=>
 	{
+		if(err || !card)
+			return res.send({error: "No card found"});
+
 		templateParams.id = id;
 		templateParams.title = card.title;
 		templateParams.description = card.description;
