@@ -6,6 +6,7 @@ const MagicCard = new Schema({
 	wholeCardImgSrc: String,
 	created: {type: Date, default: Date.now},
 
+	cardPattern: {type: String, default: 'magic'},
 	illustration: String,
 	title: String,
 	description: String,
