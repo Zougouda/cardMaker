@@ -84,6 +84,20 @@ footer
 
 .editor 
 {
+	/* hearthstone-specific */
+	.card-class-selector
+	{
+		display: none;
+	}
+	&[data-pattern="hearthstone"]
+	{
+		.card-class-selector
+		{
+			display: inline;
+		}
+	}
+
+
 	.pattern-selector img
 	{
 		&:hover 

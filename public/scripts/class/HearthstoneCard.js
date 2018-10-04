@@ -176,6 +176,12 @@ class HearthstoneCard extends GenericCard
 					// TODO
 				}
 			}),
+			class: new CardAttribute({
+				cardObject: this,
+				inputDOM: document.querySelector('.card-class-selector'),
+				ondraw: function()
+				{}
+			}),
 			rarity: new CardAttribute({
 				cardObject: this,
 				inputDOM: document.querySelector('.card-rarity-selector'),
@@ -281,7 +287,18 @@ class HearthstoneCard extends GenericCard
 
 	getCardFrameSrc()
 	{
-		return '/images/frames_hearthstone/neutral_monster.png'
+		var folder = '/images/frames_hearthstone/';
+		var file = 'card_'
+		if(this.attributes.toughness.value)
+			file += 'minion_';
+		else
+			file += 'spell_';
+		file += this.attributes.class.value;
+		file += '.png';
+
+		var src = folder + file;
+		return src;
+		//return '/images/frames_hearthstone/neutral_monster.png'
 	}
 
 	exportJson()

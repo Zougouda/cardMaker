@@ -57,6 +57,15 @@ footer {
   width: 400px;
   max-width: 100%;
 }
+.editor {
+  /* hearthstone-specific */
+}
+.editor .card-class-selector {
+  display: none;
+}
+.editor[data-pattern="hearthstone"] .card-class-selector {
+  display: inline;
+}
 .editor .pattern-selector img:hover {
   cursor: pointer;
 }

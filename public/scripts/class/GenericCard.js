@@ -16,9 +16,8 @@ class GenericCard
 			{
 				classToUse = GenericCard.getCardClass(pattern);
 				if(json.cardPattern)
-					classToUse = GenericCard.getCardClass(json.cardPattern);
-				else 
-					classToUse = GenericCard.getCardClass(pattern);
+					pattern = json.cardPattern;
+				classToUse = GenericCard.getCardClass(pattern);
 				card = new classToUse(options);
 				card.cardID = cardID;
 	
@@ -82,6 +81,7 @@ class GenericCard
 			break;
 		}
 	
+		document.querySelector('.editor').dataset.pattern = pattern;
 		return classToUse;
 	}
 
