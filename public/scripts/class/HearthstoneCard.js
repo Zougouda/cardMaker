@@ -4,7 +4,8 @@ class HearthstoneCard extends GenericCard
 	{
 		super.init();
 
-		this.cardWidth = 270, this.cardheight = 383;
+		//this.cardWidth = 270, this.cardheight = 383;
+		this.cardWidth = 400, this.cardheight = 543;
 		this.defaultFont = 'Trajan';
 
 		this.setAttributes();
@@ -24,8 +25,8 @@ class HearthstoneCard extends GenericCard
 				boundingBox: {
 					left: 0,
 					top: 0,
-					width: 270,
-					height: 220
+					width: this.cardWidth,
+					height: 320
 				},
 				onchange: function(val)
 				{
@@ -47,20 +48,28 @@ class HearthstoneCard extends GenericCard
 					var actualDraw = (ctx, source)=>
 					{
 						ctx.save();
-						ctx.beginPath();
-						ctx.ellipse(136, 130, 75, 100, 0, 0, 2 * Math.PI); // static ellipse containing the illustration
-						ctx.clip();
+						if(this.cardObject.isACreature()) // is a creature
+						{
+							ctx.beginPath();
+							ctx.ellipse(this.cardObject.cardWidth*52/100, 160, 110, 150, 0, 0, 2 * Math.PI); // static ellipse containing the illustration
+							ctx.strokeStyle = 'red'; ctx.lineWidth = 4;
+							if(this.debug)
+								ctx.stroke();
+							ctx.clip();
+						}
+						else // is a spell
+						{
+							ctx.beginPath();
+							ctx.rect(50, 50, 320, 220); // static reactangle containing the illustration
+							ctx.strokeStyle = 'red'; ctx.lineWidth = 4;
+							if(this.debug)
+								ctx.stroke();
+							ctx.clip();
+						}
 
-						//ctx.clearRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height); // clear card's caption
-						//ctx.fillStyle = '#FFFFFF';
-						//ctx.fillRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height);
-						ctx.save();
 						ctx.globalCompositeOperation = 'destination-over'; // draw image below the frame
 						ctx.drawImage(source, this.boundingBox.left-1, this.boundingBox.top, this.boundingBox.width+1, this.boundingBox.height); // TODO fix these offset/width values
 						ctx.restore();
-
-						ctx.restore();
-
 					};
 
 					this.cardObject.ctx.clearRect(0, 0, this.cardObject.cardWidth, this.cardObject.cardheight); // clear the whole card
@@ -83,23 +92,15 @@ class HearthstoneCard extends GenericCard
 							actualDraw(this.cardObject.ctx, this.cardObject.uploadedImage);
 						};
 					}
-					//else
-					//{
-					//	this.cardObject.ctx.drawImage(
-					//		this.cardObject.cardFrameImg, 0, 0, 
-					//		this.cardObject.cardWidth, 
-					//		this.cardObject.cardheight
-					//	); // draw frame
-					//}
 				}
 			}),
 			title: new CardAttribute({
 				cardObject: this,
 				inputDOM: document.querySelector('.card-title'),
 				boundingBox: {
-					left: 36,
-					top: 220,
-					width: 200,
+					left: 62,
+					top: 295,
+					width: this.cardWidth - 54 - 36,
 					height: 10
 				},
 				ondraw: function()
@@ -109,10 +110,21 @@ class HearthstoneCard extends GenericCard
 					ctx.fillStyle = 'white';
 					ctx.strokeStyle = 'black';
 					ctx.lineWidth = 3;
-					ctx.font = 'bold 24px '+this.cardObject.defaultFont;
+					ctx.font = 'bold 28px '+this.cardObject.defaultFont;
 					ctx.textAlign = 'center';
-					ctx.strokeText(this.value, this.boundingBox.left + this.boundingBox.width/2, this.boundingBox.top); // write centered text
-					ctx.fillText(this.value, this.boundingBox.left + this.boundingBox.width/2, this.boundingBox.top);
+
+					if(this.cardObject.isACreature())
+					{
+						ctx.translate(this.boundingBox.left + this.boundingBox.width/2, this.boundingBox.top);
+						ctx.rotate(-4 * Math.PI/180);
+						ctx.strokeText(this.value, 0, 0); // write centered text
+						ctx.fillText(this.value, 0, 0);
+					}
+					else
+					{
+						ctx.strokeText(this.value, this.boundingBox.left + this.boundingBox.width/2 - 15, this.boundingBox.top - 12); // write centered text
+						ctx.fillText(this.value, this.boundingBox.left + this.boundingBox.width/2 - 15, this.boundingBox.top - 12); // write centered text
+					}
 					ctx.restore();
 				}
 			}),
@@ -120,18 +132,19 @@ class HearthstoneCard extends GenericCard
 				cardObject: this,
 				inputDOM: document.querySelector('.card-description'),
 				boundingBox: {
-					left: 50,
-					top: 270,
-					width: 180,
-					height: 120
+					left: 78,
+					top: 360,
+					width: 260,
+					height: 90
 				},
 				ondraw: function()
 				{
 					var ctx = this.cardObject.ctx;
 					var descFontSize = 20;
 					ctx.font = descFontSize+'px '+this.cardObject.defaultFont;
-					ctx.fillStyle = 'white';
-					ctx.strokeStyle = 'black';
+					ctx.fillStyle = 'black';
+					ctx.lineWidth = 0;
+					//ctx.textAlign = 'center';
 					this.cardObject.wrapText(
 						this.cardObject.ctx, 
 						this.value, 
@@ -146,8 +159,8 @@ class HearthstoneCard extends GenericCard
 				cardObject: this,
 				inputDOM: document.querySelector('.card-mana-cost'),
 				boundingBox: {
-					top: 76,
-					left: 15,
+					top: 72,
+					left: 42,
 					width: 44
 				},
 				ondraw: function()
@@ -158,7 +171,7 @@ class HearthstoneCard extends GenericCard
 					ctx.strokeStyle = 'black';
 					ctx.lineWidth = 4;
 					ctx.textAlign = 'center';
-					ctx.font = 'bold 48px '+this.cardObject.defaultFont;
+					ctx.font = 'bold 72px '+this.cardObject.defaultFont;
 					ctx.strokeText(this.value, this.boundingBox.left + this.boundingBox.width/2, this.boundingBox.top); // write centered text
 					ctx.fillText(this.value, this.boundingBox.left + this.boundingBox.width/2, this.boundingBox.top);
 					ctx.restore();
@@ -168,12 +181,45 @@ class HearthstoneCard extends GenericCard
 				cardObject: this,
 				inputDOM: document.querySelector('.card-type'),
 				boundingBox: {
-					top: 336,
-					left: 40
+					top: 467,
+					left: 132,
+					width: 156,
+					height: 36
 				},
 				ondraw: function()
 				{
-					// TODO
+					if(!this.value)
+						return;
+
+					var typeFrameSrc = '/images/icons_hearthstone/card_race.png';
+					var typeFrameImg = new Image();
+					typeFrameImg.onload = ()=>
+					{
+						var ctx = this.cardObject.ctx;
+						ctx.drawImage( 
+							typeFrameImg, 
+							this.boundingBox.left, this.boundingBox.top,
+							this.boundingBox.width, this.boundingBox.height
+						);
+						ctx.save();
+						ctx.textAlign = 'center';
+						ctx.fillStyle = 'white';
+						ctx.strokeStyle = 'black';
+						ctx.lineWidth = 3;
+						ctx.font = 'bold 18px '+this.cardObject.defaultFont;
+						ctx.strokeText(
+							this.value,
+							this.boundingBox.left + this.boundingBox.width/2,
+							this.boundingBox.top + 26
+						);
+						ctx.fillText(
+							this.value,
+							this.boundingBox.left + this.boundingBox.width/2,
+							this.boundingBox.top + 26
+						);
+						ctx.restore();
+					};
+					typeFrameImg.src = typeFrameSrc;
 				}
 			}),
 			class: new CardAttribute({
@@ -242,8 +288,8 @@ class HearthstoneCard extends GenericCard
 				cardObject: this,
 				inputDOM: document.querySelector('.card-power'),
 				boundingBox: {
-					top: 362,
-					left: 25,
+					top: 500,
+					left: 48,
 					width: 36,
 				},
 				ondraw: function()
@@ -254,7 +300,7 @@ class HearthstoneCard extends GenericCard
 					ctx.strokeStyle = 'black';
 					ctx.lineWidth = 4;
 					ctx.textAlign = 'center';
-					ctx.font = 'bold 36px '+this.cardObject.defaultFont;
+					ctx.font = 'bold 54px '+this.cardObject.defaultFont;
 					ctx.strokeText(this.value, this.boundingBox.left + this.boundingBox.width/2, this.boundingBox.top); // write centered text
 					ctx.fillText(this.value, this.boundingBox.left + this.boundingBox.width/2, this.boundingBox.top);
 					ctx.restore();
@@ -264,8 +310,8 @@ class HearthstoneCard extends GenericCard
 				cardObject: this,
 				inputDOM: document.querySelector('.card-toughness'),
 				boundingBox: {
-					top: 362,
-					left: 215,
+					top: 500,
+					left: 336,
 					width: 36,
 				},
 				ondraw: function()
@@ -276,7 +322,7 @@ class HearthstoneCard extends GenericCard
 					ctx.strokeStyle = 'black';
 					ctx.lineWidth = 4;
 					ctx.textAlign = 'center';
-					ctx.font = 'bold 36px '+this.cardObject.defaultFont;
+					ctx.font = 'bold 54px '+this.cardObject.defaultFont;
 					ctx.strokeText(this.value, this.boundingBox.left + this.boundingBox.width/2, this.boundingBox.top); // write centered text
 					ctx.fillText(this.value, this.boundingBox.left + this.boundingBox.width/2, this.boundingBox.top);
 					ctx.restore();

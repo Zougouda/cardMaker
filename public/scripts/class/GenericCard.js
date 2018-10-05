@@ -437,7 +437,9 @@ class GenericCard
 					stopBold = true;
 				}
 
-				context.fillText(lineWord+' ', x, y); // Actual writing done here
+				/* Actual writing done here */
+				//context.strokeText(lineWord+' ', x, y);
+				context.fillText(lineWord+' ', x, y);
 
 				if(stopItalic)
 					context.font = context.font.replace('italic', '');
@@ -463,5 +465,10 @@ class GenericCard
 			});
 		}
 		return returnValue;
+	}
+
+	isACreature()
+	{
+		return (this.attributes.toughness.value);
 	}
 }

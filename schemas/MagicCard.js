@@ -16,6 +16,9 @@ const MagicCard = new Schema({
 	author: String,
 	power: String,
 	toughness: String,
+
+	/* HS specific */
+	class: String,
 });
 
 module.exports = MagicCard;
