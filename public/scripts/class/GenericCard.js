@@ -31,40 +31,6 @@ class GenericCard
 			card = new classToUse(options);
 			window.currentCard = card;
 		}
-
-		
-		/* Add ctrl-S shortcut */
-		document.addEventListener('keydown',(e)=>
-		{
-			if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 83)  // Ctrl + S or cmd + S
-			{
-				e.preventDefault();
-				card.saveToDatabase();
-			}
-		}, false);
-		/* Add ctrl-i shortcut */
-		document.addEventListener('keydown',(e)=>
-		{
-			if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 73)  // Ctrl + i or cmd + i
-			{
-				e.preventDefault();
-				card.exportImg();
-			}
-		}, false);
-		/* Add paste imageData feature */
-		document.addEventListener('paste', (e)=>
-		{
-			var items = (e.clipboardData || e.originalEvent.clipboardData).items;
-			Object.entries(items).forEach(([index, item])=>
-			{
-				if(item.type.indexOf('image') == -1) 
-					return;
-
-				var blob = item.getAsFile();
-				var uRLObj = window.URL || window.webkitURL;
-				card.setCropperSrc( uRLObj.createObjectURL(blob), true );
-			});	
-		});
 	}
 	
 	static getCardClass(pattern = 'magic')
@@ -469,3 +435,37 @@ class GenericCard
 		return (this.attributes.power.value || this.attributes.toughness.value);
 	}
 }
+
+
+/* Add ctrl-S shortcut */
+document.addEventListener('keydown',(e)=>
+{
+	if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 83)  // Ctrl + S or cmd + S
+	{
+		e.preventDefault();
+		window.currentCard.saveToDatabase();
+	}
+}, false);
+/* Add ctrl-i shortcut */
+document.addEventListener('keydown',(e)=>
+{
+	if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 73)  // Ctrl + i or cmd + i
+	{
+		e.preventDefault();
+		window.currentCard.exportImg();
+	}
+}, false);
+/* Add paste imageData feature */
+document.addEventListener('paste', (e)=>
+{
+	var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+	Object.entries(items).forEach(([index, item])=>
+	{
+		if(item.type.indexOf('image') == -1) 
+			return;
+
+		var blob = item.getAsFile();
+		var uRLObj = window.URL || window.webkitURL;
+		window.currentCard.setCropperSrc( uRLObj.createObjectURL(blob), true );
+	});	
+});
