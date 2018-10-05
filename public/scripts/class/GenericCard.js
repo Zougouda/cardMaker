@@ -314,9 +314,6 @@ class GenericCard
 
 	deleteFromDatabase()
 	{
-		if(this.cardID)
-			window.location.href = `/list-cards?id=${userID}`;
-
 		var confirmed = window.confirm('U sure ?');
 		if(!confirmed)
 			return;

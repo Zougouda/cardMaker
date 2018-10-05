@@ -145,7 +145,7 @@ var app = express()
 .post('/delete-card', (req, res)=>
 {
 	var cardID = req.body.id;
-	if(this.cardID)
+	if(cardID)
 	{
 		MagicCardModel.findByIdAndRemove(cardID, (err, savedCard)=>{});
 	}
