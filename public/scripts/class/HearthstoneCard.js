@@ -170,7 +170,7 @@ class HearthstoneCard extends GenericCard
 				cardObject: this,
 				inputDOM: document.querySelector('.card-mana-cost'),
 				boundingBox: {
-					top: 72,
+					top: 80,
 					left: 42,
 					width: 44
 				},
