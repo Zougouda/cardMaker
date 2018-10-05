@@ -145,12 +145,23 @@ class HearthstoneCard extends GenericCard
 					ctx.fillStyle = 'black';
 					ctx.lineWidth = 0;
 					//ctx.textAlign = 'center';
+
+					var x = this.boundingBox.left,
+						y = this.boundingBox.top,
+						width = this.boundingBox.width;
+					if(!this.cardObject.isACreature())
+					{
+						x += 15;
+						y += 25;
+						width -= 20;
+					}
+
 					this.cardObject.wrapText(
 						this.cardObject.ctx, 
 						this.value, 
-						this.boundingBox.left, 
-						this.boundingBox.top, 
-						this.boundingBox.width, 
+						x, 
+						y, 
+						width, 
 						descFontSize
 					);
 				}
