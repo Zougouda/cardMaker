@@ -466,6 +466,6 @@ class GenericCard
 
 	isACreature()
 	{
-		return (this.attributes.toughness.value);
+		return (this.attributes.power.value || this.attributes.toughness.value);
 	}
 }

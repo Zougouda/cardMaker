@@ -335,7 +335,7 @@ class HearthstoneCard extends GenericCard
 	{
 		var folder = '/images/frames_hearthstone/';
 		var file = 'card_'
-		if(this.attributes.toughness.value)
+		if(this.isACreature())
 			file += 'minion_';
 		else
 			file += 'spell_';
