@@ -248,6 +248,7 @@ class GenericCard
 			else
 			{
 				this.attributes[key].inputDOM.value = val;
+				this.attributes[key].inputDOM.checked = Boolean(val); // checkbox specific
 			}
 		});
 		this.update();
