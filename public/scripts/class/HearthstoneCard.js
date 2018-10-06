@@ -377,13 +377,6 @@ class HearthstoneCard extends GenericCard
 		return src;
 		//return '/images/frames_hearthstone/neutral_monster.png'
 	}
-
-	exportJson()
-	{
-		var json = super.exportJson();
-		json.cardPattern = 'hearthstone';
-		return json;
-	}
 }
 
 HearthstoneCard.aditionalHeight = 30;

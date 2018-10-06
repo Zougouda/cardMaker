@@ -20,6 +20,7 @@ class GenericCard
 				classToUse = GenericCard.getCardClass(pattern);
 				card = new classToUse(options);
 				card.cardID = cardID;
+				card.pattern = pattern;
 	
 				card.importJson(json);
 				window.currentCard = card;
@@ -29,6 +30,7 @@ class GenericCard
 		{
 			classToUse = GenericCard.getCardClass(pattern);
 			card = new classToUse(options);
+			card.pattern = pattern;
 			window.currentCard = card;
 		}
 	}
@@ -239,6 +241,8 @@ class GenericCard
 			});
 		//}
 
+		if(this.pattern)
+			json.pattern = this.pattern;
 		return json;
 	}
 

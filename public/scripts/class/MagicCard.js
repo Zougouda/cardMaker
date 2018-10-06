@@ -276,13 +276,6 @@ class MagicCard extends GenericCard
 		return returnValue;
 	}
 
-	exportJson()
-	{
-		var json = super.exportJson();
-		json.cardPattern = 'magic';
-		return json;
-	}
-
 	insertIconIntoTextInput(iconAsText, inputDOM)
 	{
 		var txtIndex = inputDOM.selectionStart;
