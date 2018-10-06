@@ -17,6 +17,8 @@ const MagicCard = new Schema({
 	power: String,
 	toughness: String,
 
+	premium: Boolean,
+
 	/* HS specific */
 	class: String,
 });

@@ -285,7 +285,7 @@ class HearthstoneCard extends GenericCard
 				},
 				onready: function()
 				{
-					this.value = this.inputDOM.checked; // checkbox specific
+					this.inputDOM.checked = this.value; // checkbox specific
 				},
 				onchange: function()
 				{
