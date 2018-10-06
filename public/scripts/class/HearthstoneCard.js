@@ -51,7 +51,7 @@ class HearthstoneCard extends GenericCard
 						else // is a spell
 						{
 							ctx.beginPath();
-							ctx.rect(50, 50, 320, 220 + HearthstoneCard.aditionalHeight); // static reactangle containing the illustration
+							ctx.rect(50, 50 + HearthstoneCard.aditionalHeight, 320, 220); // static reactangle containing the illustration
 							ctx.strokeStyle = 'red'; ctx.lineWidth = 4;
 							if(this.debug)
 								ctx.stroke();
