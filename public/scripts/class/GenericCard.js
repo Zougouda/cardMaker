@@ -450,36 +450,46 @@ class GenericCard
 	}
 }
 
-
-/* Add ctrl-S shortcut */
-document.addEventListener('keydown',(e)=>
+document.addEventListener('DOMContentLoaded', (e)=>
 {
-	if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 83)  // Ctrl + S or cmd + S
+	/* Add ctrl-S shortcut */
+	document.addEventListener('keydown',(e)=>
 	{
-		e.preventDefault();
-		window.currentCard.saveToDatabase();
-	}
-}, false);
-/* Add ctrl-i shortcut */
-document.addEventListener('keydown',(e)=>
-{
-	if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 73)  // Ctrl + i or cmd + i
+		if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 83)  // Ctrl + S or cmd + S
+		{
+			e.preventDefault();
+			window.currentCard.saveToDatabase();
+		}
+	}, false);
+	/* Add ctrl-i shortcut */
+	document.addEventListener('keydown',(e)=>
 	{
-		e.preventDefault();
-		window.currentCard.exportImg();
-	}
-}, false);
-/* Add paste imageData feature */
-document.addEventListener('paste', (e)=>
-{
-	var items = (e.clipboardData || e.originalEvent.clipboardData).items;
-	Object.entries(items).forEach(([index, item])=>
+		if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 73)  // Ctrl + i or cmd + i
+		{
+			e.preventDefault();
+			window.currentCard.exportImg();
+		}
+	}, false);
+	/* Add paste imageData feature */
+	document.addEventListener('paste', (e)=>
 	{
-		if(item.type.indexOf('image') == -1) 
-			return;
-
-		var blob = item.getAsFile();
-		var uRLObj = window.URL || window.webkitURL;
-		window.currentCard.setCropperSrc( uRLObj.createObjectURL(blob), true );
-	});	
+		var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+		Object.entries(items).forEach(([index, item])=>
+		{
+			if(item.type.indexOf('image') == -1) 
+				return;
+	
+			var blob = item.getAsFile();
+			var uRLObj = window.URL || window.webkitURL;
+			window.currentCard.setCropperSrc( uRLObj.createObjectURL(blob), true );
+		});	
+	});
+	/* Add illustration by url from input text  */
+	['change', 'keyup'].forEach((action)=>
+	{
+		document.querySelector('input.uploader-by-url').addEventListener(action, (e)=>
+		{
+			window.currentCard.setCropperSrc( e.target.value, true );
+		});
+	});
 });

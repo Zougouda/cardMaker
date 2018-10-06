@@ -23,17 +23,6 @@ class HearthstoneCard extends GenericCard
 				{
 					this.cardObject.setCropperSrc( window.URL.createObjectURL(this.inputDOM.files[0]) );
 				},
-				onready: ()=>
-				{
-					/* Add illustration by url from input text  */
-					['change', 'keyup'].forEach((action)=>
-					{
-						document.querySelector('input.uploader-by-url').addEventListener(action, (e)=>
-						{
-							this.setCropperSrc( e.target.value, true );
-						});
-					});
-				},
 				ondraw: function()
 				{
 					var actualDraw = (ctx, source)=>
@@ -227,8 +216,7 @@ class HearthstoneCard extends GenericCard
 			class: new CardAttribute({
 				cardObject: this,
 				inputDOM: document.querySelector('.card-class-selector'),
-				ondraw: function()
-				{}
+				ondraw: function(){}
 			}),
 			rarity: new CardAttribute({
 				cardObject: this,
@@ -394,7 +382,6 @@ class HearthstoneCard extends GenericCard
 	{
 		var json = super.exportJson();
 		json.cardPattern = 'hearthstone';
-		console.log(json);
 		return json;
 	}
 }

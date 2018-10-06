@@ -43,17 +43,6 @@ class MagicCard extends GenericCard
 				{
 					this.cardObject.setCropperSrc( window.URL.createObjectURL(this.inputDOM.files[0]) );
 				},
-				onready: ()=>
-				{
-					/* Add illustration by url from input text  */
-					['change', 'keyup'].forEach((action)=>
-					{
-						document.querySelector('input.uploader-by-url').addEventListener(action, (e)=>
-						{
-							this.setCropperSrc( e.target.value, true );
-						});
-					});
-				},
 				ondraw: function()
 				{
 					this.cardObject.ctx.drawImage(this.cardObject.cardFrameImg, 0, 0, this.cardObject.cardWidth, this.cardObject.cardheight); // draw frame
