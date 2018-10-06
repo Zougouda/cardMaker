@@ -47,6 +47,10 @@ class GenericCard
 			case 'hearthstone':
 				classToUse = HearthstoneCard;
 			break;
+
+			case 'gwent':
+				classToUse = GwentCard;
+			break;
 		}
 	
 		document.querySelector('.editor').dataset.pattern = pattern;
