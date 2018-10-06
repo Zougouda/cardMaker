@@ -4,15 +4,6 @@ class MagicCard extends GenericCard
 	{
 		super.init();
 
-		this.cardWidth = 400, this.cardheight = 560;
-		this.defaultFont = 'Trajan';
-
-		this.setAttributes();
-		this.attributes['illustration'].value = this.uploadedImage.src;
-		if(GenericCard.lastCropperSrc)
-			this.setCropperSrc(GenericCard.lastCropperSrc);
-		this.update();
-
 		/* Build buttonsPickers */
 		this.buildIconsPicker({
 			inputDestinationDOM: this.attributes.manaCost.inputDOM,

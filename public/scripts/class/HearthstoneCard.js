@@ -1,18 +1,9 @@
 class HearthstoneCard extends GenericCard
 {
-	init()
+	beforeInit()
 	{
-		super.init();
-
-		//this.cardWidth = 270, this.cardheight = 383;
+		super.beforeInit();
 		this.cardWidth = 400, this.cardheight = 543 + HearthstoneCard.aditionalHeight; // FIXME
-		this.defaultFont = 'Trajan';
-
-		this.setAttributes();
-		this.attributes['illustration'].value = this.uploadedImage.src;
-		if(GenericCard.lastCropperSrc)
-			this.setCropperSrc(GenericCard.lastCropperSrc);
-		this.update();
 	}
 
 	setAttributes()

@@ -77,17 +77,30 @@ class GenericCard
 		this.init();
 	}
 
+	beforeInit()
+	{
+		this.cardWidth = 400, this.cardheight = 560;
+		this.defaultFont = 'Trajan';
+	}
+
 	init()
 	{
 		({
 			canvasDOM: this.canvasDOM = null,
 		} = this.options);
+		this.beforeInit();
 
 		if(!this.canvasDOM)
 			throw('Error: canvasDOM attribute is mandatory for the preview to work');
 
 		this.ctx = this.canvasDOM.getContext('2d');
 		this.uploadedImage = document.querySelector('img.uploaded-image');
+
+		this.setAttributes();
+		this.attributes['illustration'].value = this.uploadedImage.src;
+		if(GenericCard.lastCropperSrc)
+			this.setCropperSrc(GenericCard.lastCropperSrc);
+		this.update();
 	}
 
 	destroy()
