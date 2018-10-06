@@ -243,28 +243,32 @@ class HearthstoneCard extends GenericCard
 				cardObject: this,
 				inputDOM: document.querySelector('.card-rarity-selector'),
 				boundingBox: {
-					top: 318,
-					left: 340,
+					top: 306,
+					left: 204,
 					width: 22,
 					height: 22
 				},
 				ondraw: function()
 				{
-					this.rarityIconSrc = '/images/icons/rarities/default/';
-					this.rarityIconSrc += 'm-' + this.value + '.png';
+					this.rarityIconSrc = '/images/icons_hearthstone/rarities/';
+					this.rarityIconSrc += 'gem_' + this.value + '.png';
 					this.rarityIcon = new Image();
 					this.rarityIcon.src = this.rarityIconSrc;
 					
+					if(!this.cardObject.isACreature())
+					{
+						this.boundingBox.left -= 6;
+						this.boundingBox.top -= 6;
+					}
 					this.rarityIcon.onload = ()=>
 					{
-						// TODO
-						//this.cardObject.ctx.drawImage(
-						//	this.rarityIcon, 
-						//	this.boundingBox.left, 
-						//	this.boundingBox.top,
-						//	this.boundingBox.width, 
-						//	this.boundingBox.height
-						//);
+						this.cardObject.ctx.drawImage(
+							this.rarityIcon, 
+							this.boundingBox.left, 
+							this.boundingBox.top,
+							this.boundingBox.width, 
+							this.boundingBox.height
+						);
 					};
 				}
 			}),
