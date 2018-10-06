@@ -283,6 +283,10 @@ class HearthstoneCard extends GenericCard
 					width: 234 * 1.2,
 					height: 174 * 1.2
 				},
+				onready: function()
+				{
+					this.value = this.inputDOM.checked; // checkbox specific
+				},
 				onchange: function()
 				{
 					this.value = this.inputDOM.checked; // checkbox specific
