@@ -106,6 +106,11 @@ footer {
 .editor .card-rarity-selector .common {
   padding-left: 24px;
 }
+.editor input.card-premium {
+  display: inline;
+  margin: 0 5px 0 10px;
+  min-width: auto;
+}
 .editor input.card-power,
 .editor input.card-toughness {
   margin-top: 0;

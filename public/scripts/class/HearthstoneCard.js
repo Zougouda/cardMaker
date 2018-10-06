@@ -5,7 +5,7 @@ class HearthstoneCard extends GenericCard
 		super.init();
 
 		//this.cardWidth = 270, this.cardheight = 383;
-		this.cardWidth = 400, this.cardheight = 543;
+		this.cardWidth = 400, this.cardheight = 543 + HearthstoneCard.aditionalHeight; // FIXME
 		this.defaultFont = 'Trajan';
 
 		this.setAttributes();
@@ -51,7 +51,7 @@ class HearthstoneCard extends GenericCard
 						if(this.cardObject.isACreature()) // is a creature
 						{
 							ctx.beginPath();
-							ctx.ellipse(this.cardObject.cardWidth*52/100, 160, 110, 150, 0, 0, 2 * Math.PI); // static ellipse containing the illustration
+							ctx.ellipse(this.cardObject.cardWidth*52/100, 160+HearthstoneCard.aditionalHeight, 110, 150, 0, 0, 2 * Math.PI); // static ellipse containing the illustration
 							ctx.strokeStyle = 'red'; ctx.lineWidth = 4;
 							if(this.debug)
 								ctx.stroke();
@@ -60,7 +60,7 @@ class HearthstoneCard extends GenericCard
 						else // is a spell
 						{
 							ctx.beginPath();
-							ctx.rect(50, 50, 320, 220); // static reactangle containing the illustration
+							ctx.rect(50, 50, 320, 220 + HearthstoneCard.aditionalHeight); // static reactangle containing the illustration
 							ctx.strokeStyle = 'red'; ctx.lineWidth = 4;
 							if(this.debug)
 								ctx.stroke();
@@ -68,16 +68,16 @@ class HearthstoneCard extends GenericCard
 						}
 
 						ctx.globalCompositeOperation = 'destination-over'; // draw image below the frame
-						ctx.drawImage(source, this.boundingBox.left-1, this.boundingBox.top, this.boundingBox.width+1, this.boundingBox.height); // TODO fix these offset/width values
+						ctx.drawImage(source, this.boundingBox.left-1, this.boundingBox.top+HearthstoneCard.aditionalHeight, this.boundingBox.width+1, this.boundingBox.height); // TODO fix these offset/width values
 						ctx.restore();
 					};
 
 					this.cardObject.ctx.clearRect(0, 0, this.cardObject.cardWidth, this.cardObject.cardheight); // clear the whole card
 
 					this.cardObject.ctx.drawImage(
-						this.cardObject.cardFrameImg, 0, 0, 
+						this.cardObject.cardFrameImg, 0, HearthstoneCard.aditionalHeight,  // FIXME
 						this.cardObject.cardWidth, 
-						this.cardObject.cardheight
+						this.cardObject.cardheight - HearthstoneCard.aditionalHeight
 					); // draw frame
 
 					if(this.cardObject.cropper)
@@ -99,7 +99,7 @@ class HearthstoneCard extends GenericCard
 				inputDOM: document.querySelector('.card-title'),
 				boundingBox: {
 					left: 62,
-					top: 295,
+					top: 295 + HearthstoneCard.aditionalHeight,
 					width: this.cardWidth - 54 - 36,
 					height: 10
 				},
@@ -133,7 +133,7 @@ class HearthstoneCard extends GenericCard
 				inputDOM: document.querySelector('.card-description'),
 				boundingBox: {
 					left: 78,
-					top: 360,
+					top: 360 + HearthstoneCard.aditionalHeight,
 					width: 260,
 					height: 90
 				},
@@ -170,7 +170,7 @@ class HearthstoneCard extends GenericCard
 				cardObject: this,
 				inputDOM: document.querySelector('.card-mana-cost'),
 				boundingBox: {
-					top: 80,
+					top: 80 + HearthstoneCard.aditionalHeight,
 					left: 42,
 					width: 44
 				},
@@ -192,7 +192,7 @@ class HearthstoneCard extends GenericCard
 				cardObject: this,
 				inputDOM: document.querySelector('.card-type'),
 				boundingBox: {
-					top: 467,
+					top: 467 + HearthstoneCard.aditionalHeight,
 					left: 132,
 					width: 156,
 					height: 36
@@ -243,7 +243,7 @@ class HearthstoneCard extends GenericCard
 				cardObject: this,
 				inputDOM: document.querySelector('.card-rarity-selector'),
 				boundingBox: {
-					top: 306,
+					top: 306 + HearthstoneCard.aditionalHeight,
 					left: 204,
 					width: 22,
 					height: 22
@@ -255,21 +255,58 @@ class HearthstoneCard extends GenericCard
 					this.rarityIcon = new Image();
 					this.rarityIcon.src = this.rarityIconSrc;
 					
+					var x = this.boundingBox.left, y = this.boundingBox.top;
 					if(!this.cardObject.isACreature())
 					{
-						this.boundingBox.left -= 6;
-						this.boundingBox.top -= 6;
+						x -= 6;
+						y -= 6;
 					}
+					
 					this.rarityIcon.onload = ()=>
 					{
 						this.cardObject.ctx.drawImage(
 							this.rarityIcon, 
-							this.boundingBox.left, 
-							this.boundingBox.top,
+							x, 
+							y,
 							this.boundingBox.width, 
 							this.boundingBox.height
 						);
 					};
+				}
+			}),
+			premium: new CardAttribute({
+				cardObject: this,
+				inputDOM: document.querySelector('.card-premium'),
+				boundingBox: {
+					left: 112,
+					top: -28 + HearthstoneCard.aditionalHeight,
+					width: 234 * 1.2,
+					height: 174 * 1.2
+				},
+				onready: function()
+				{
+					this.value = this.inputDOM.checked; // checkbox specific
+				},
+				onchange: function()
+				{
+					this.value = this.inputDOM.checked; // checkbox specific
+					this.cardObject.update();
+				},
+				ondraw: function()
+				{
+					if( !this.cardObject.isACreature() || !this.value)
+						return;
+
+					var dragonImg = new Image();
+					dragonImg.onload = ()=>
+					{
+						this.cardObject.ctx.drawImage(
+							dragonImg,
+							this.boundingBox.left, this.boundingBox.top,
+							this.boundingBox.width, this.boundingBox.height
+						);
+					};
+					dragonImg.src = '/images/icons_hearthstone/card_minion_legendary_dragon_bracket.png';
 				}
 			}),
 			author: new CardAttribute({
@@ -303,7 +340,7 @@ class HearthstoneCard extends GenericCard
 				cardObject: this,
 				inputDOM: document.querySelector('.card-power'),
 				boundingBox: {
-					top: 500,
+					top: 500 + HearthstoneCard.aditionalHeight,
 					left: 48,
 					width: 36,
 				},
@@ -325,7 +362,7 @@ class HearthstoneCard extends GenericCard
 				cardObject: this,
 				inputDOM: document.querySelector('.card-toughness'),
 				boundingBox: {
-					top: 500,
+					top: 500 + HearthstoneCard.aditionalHeight,
 					left: 336,
 					width: 36,
 				},
@@ -370,3 +407,5 @@ class HearthstoneCard extends GenericCard
 		return json;
 	}
 }
+
+HearthstoneCard.aditionalHeight = 30;
