@@ -203,7 +203,7 @@ class MagicCard extends GenericCard
 				{
 					var authorFontSize = 11;
 					var authorColor = 'black';
-					if(this.cardObject.cardFrameImg.src.match(/(colorless|black|green|red)/)) 
+					if(this.cardObject.cardFrameImg.src.match(/(land|colorless|black|green|red)/)) 
 						authorColor = 'white';
 					this.cardObject.ctx.fillStyle = authorColor;
 					this.cardObject.ctx.font = authorFontSize+'px '+this.cardObject.defaultFont;
@@ -245,6 +245,10 @@ class MagicCard extends GenericCard
 
 	getCardFrameSrc()
 	{
+		/* is a land */
+		if(!this.attributes.manaCost.value && !this.isACreature() )
+			return MagicCard.cardFramesSrcByColor.land + '.png';
+
 		var 
 			white = (this.attributes.manaCost.value.match(/\(w\)/g) || []).length,
 			blue  = (this.attributes.manaCost.value.match(/\(u\)/g) || []).length,
@@ -337,6 +341,7 @@ class MagicCard extends GenericCard
 /* Static attributes */
 
 MagicCard.cardFramesSrcByColor = {
+	'land'	   : '/images/frames/small/land',
 	'colorless': '/images/frames/small/colorless',
 	'white'    : '/images/frames/small/white',
 	'blue'     : '/images/frames/small/blue',
