@@ -58,12 +58,24 @@ footer {
   max-width: 100%;
 }
 .editor {
-  /* hearthstone-specific */
+  /* Hearthstone-specific */
+  /* Gwent-specific */
 }
 .editor .card-class-selector {
   display: none;
 }
 .editor[data-pattern="hearthstone"] .card-class-selector {
+  display: inline;
+}
+.editor[data-pattern="gwent"] .card-mana-cost,
+.editor[data-pattern="gwent"] .card-type,
+.editor[data-pattern="gwent"] .power-toughness-separator,
+.editor[data-pattern="gwent"] .card-toughness {
+  display: none;
+}
+.editor[data-pattern="gwent"] .card-faction-selector,
+.editor[data-pattern="gwent"] .card-row-selector,
+.editor[data-pattern="gwent"] .card-border-selector {
   display: inline;
 }
 .editor .pattern-selector img:hover {

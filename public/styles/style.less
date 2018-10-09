@@ -84,7 +84,7 @@ footer
 
 .editor 
 {
-	/* hearthstone-specific */
+	/* Hearthstone-specific */
 	.card-class-selector
 	{
 		display: none;
@@ -97,6 +97,24 @@ footer
 		}
 	}
 
+	/* Gwent-specific */
+	&[data-pattern="gwent"]
+	{
+		.card-mana-cost,
+		.card-type,
+		.power-toughness-separator,
+		.card-toughness,
+		{
+			display: none;
+		}
+
+		.card-faction-selector,
+		.card-row-selector,
+		.card-border-selector,
+		{
+			display: inline;
+		}
+	}
 
 	.pattern-selector img
 	{
