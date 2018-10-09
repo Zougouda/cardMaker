@@ -44,6 +44,7 @@ block content
 			div.pattern-selector
 				img(width='50',src='https://cn.pling.com/img//hive/content-pre1/104822-1.png', onclick='javascript:GenericCard.initCard("magic")', title='Magic the Gathering')
 				img(width='50',src='https://www.logolynx.com/images/logolynx/25/25cb1ccb3913a0224fd610ce83bfc4c3.png', onclick='javascript:GenericCard.initCard("hearthstone")', title='Hearthstone')
+				img(width='50',src='http://purepng.com/public/uploads/large/purepng.com-the-witcher-logowitcherthe-witcherandrzej-sapkowskiwriterfantasy-serieswitcher-geralt-of-riviawitchersbooksmonster-hunterssupernaturaldeadly-beastsseriesvideo-gamesxbox-1701528661197tz2s1.png', onclick='javascript:GenericCard.initCard("gwent")', title='Gwent')
 			fieldset.caption-container
 				legend Illustration
 				div
@@ -61,17 +62,37 @@ block content
 			input.card-type(type='text',placeholder='type')
 			select.card-class-selector
 				option.common(value='warrior') Warrior
-				option.unco(value='warlock') Warlock
-				option.rare(value='shaman') Shaman
-				option.mythic(value='rogue') Rogue
-				option.mythic(value='priest') Priest
-				option.mythic(value='paladin') Paladin
-				option.mythic(value='monk') Monk
-				option.mythic(value='mage') Mage
-				option.mythic(value='hunter') Huntard
-				option.mythic(value='druid') Druid
-				option.mythic(value='dk_kotft') Death knight
-				option.mythic(value='neutral') Neutral
+				option(value='warlock') Warlock
+				option(value='shaman') Shaman
+				option(value='rogue') Rogue
+				option(value='priest') Priest
+				option(value='paladin') Paladin
+				option(value='monk') Monk
+				option(value='mage') Mage
+				option(value='hunter') Huntard
+				option(value='druid') Druid
+				option(value='dk_kotft') Death knight
+				option(value='neutral') Neutral
+			select.card-border-selector
+				option(value='bronze') Bronze
+				option(value='silver') Silver
+				option(value='gold') Gold
+			select.card-faction-selector
+				option(value='1') Meutral
+				option(value='2') Monsters
+				option(value='3') Northern Realms
+				option(value='4') Scoiatels
+				option(value='5') Skellige
+				option(value='6') Nilfgaard
+			select.card-row-selector
+				option(value='any') Any
+				option(value='any_enemy') Any (enemy side)
+				option(value='melee') Melee
+				option(value='melee_enemy') Melee (enemy side)
+				option(value='ranged') Ranged
+				option(value='ranged_enemy') Ranged (enemy side)
+				option(value='siege') Siege
+				option(value='siege_enemy') Siege (enemy side)
 			select.card-rarity-selector
 				option.common(value='c') Common
 				option.unco(value='u')   Uncommon
