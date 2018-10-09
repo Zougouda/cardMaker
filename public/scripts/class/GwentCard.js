@@ -229,7 +229,9 @@ class GwentCard extends GenericCard
 								80
 							);
 						};
-						rowImg.src = this.cardObject.getRowIconSrc();
+						var rowIconSrc = this.cardObject.getRowIconSrc();
+						if(rowIconSrc)
+							rowImg.src = rowIconSrc;
 
 					};
 					bannerImg.src = bannerSrc;
@@ -335,6 +337,9 @@ class GwentCard extends GenericCard
 
 	getRowIconSrc()
 	{
+		if(!this.attributes.row.value)
+			return null;
+			
 		return `/images/icons_gwent/row_${this.attributes.row.value}.png`;
 	}
 
