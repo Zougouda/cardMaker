@@ -3,7 +3,11 @@ class GenericCard
 	static initCard(pattern)
 	{
 		if (window.currentCard)
+		{
+			if(window.currentCard.pattern === pattern )
+				return;
 			window.currentCard.destroy();
+		}
 	
 		var classToUse, card;
 		var cardID = GenericCard.getCardID();
