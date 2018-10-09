@@ -67,6 +67,11 @@ footer {
 .editor[data-pattern="hearthstone"] .card-class-selector {
   display: inline;
 }
+.editor .card-faction-selector,
+.editor .card-row-selector,
+.editor .card-border-selector {
+  display: none;
+}
 .editor[data-pattern="gwent"] .card-mana-cost,
 .editor[data-pattern="gwent"] .card-type,
 .editor[data-pattern="gwent"] .power-toughness-separator,

@@ -250,7 +250,7 @@ class GenericCard
 		//}
 
 		if(this.pattern)
-			json.pattern = this.pattern;
+			json.cardPattern = this.pattern;
 		return json;
 	}
 

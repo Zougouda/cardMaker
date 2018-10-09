@@ -292,6 +292,25 @@ class GwentCard extends GenericCard
 					this.cardObject.update();
 				},
 			}),
+			author: new CardAttribute({
+				cardObject: this,
+				inputDOM: document.querySelector('.card-author'),
+				onready: function()
+				{
+					/* retrieve user's name from localstorage */
+					var userName = localStorage.getItem('userName');
+					if(userName)
+					{
+						this.value = userName;
+						this.inputDOM.value = this.value;
+					}
+				},
+				onchange: function()
+				{
+					this.cardObject.update();
+					localStorage.setItem('userName', this.value); // Store username into localStorage
+				},
+			}),
 		};
 	}
 
@@ -326,6 +345,6 @@ class GwentCard extends GenericCard
 
 	getFactionIconSrc()
 	{
-		return `/images/icons_gwent/faction${this.attributes.row.value}.png`;
+		return `/images/icons_gwent/faction${this.attributes.faction.value}.png`;
 	}
 }
