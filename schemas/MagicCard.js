@@ -21,6 +21,11 @@ const MagicCard = new Schema({
 
 	/* HS specific */
 	class: String,
+
+	/* Gwent specific */
+	faction: String,
+	row: String,
+	borderType: String,
 });
 
 module.exports = MagicCard;
