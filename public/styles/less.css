@@ -58,8 +58,13 @@ footer {
   max-width: 100%;
 }
 .editor {
+  /* Magic-specific */
   /* Hearthstone-specific */
   /* Gwent-specific */
+}
+.editor[data-pattern="magic"] .card-premium,
+.editor[data-pattern="magic"] .premium-label {
+  display: none;
 }
 .editor .card-class-selector {
   display: none;
