@@ -80,7 +80,7 @@ class GwentCard extends GenericCard
 						{
 							ctx.save();
 							ctx.fillStyle = 'black';
-							ctx.globalAlpha = 0.75;
+							ctx.globalAlpha = 0.3;
 							ctx.fillRect(
 								titleAttr.boundingBox.left,
 								titleAttr.boundingBox.top,
@@ -135,7 +135,7 @@ class GwentCard extends GenericCard
 						{
 							ctx.save();
 							ctx.fillStyle = 'black';
-							ctx.globalAlpha = 0.75;
+							ctx.globalAlpha = 0.4;
 							ctx.fillRect(
 								descAttr.boundingBox.left,
 								descAttr.boundingBox.top,
