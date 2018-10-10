@@ -5,6 +5,12 @@ class GwentCard extends GenericCard
 		super.beforeInit();
 		this.cardWidth = 400;
 		this.cardheight = 528;
+
+		this.factionBorderImg = new Image();
+		this.factionIconImg = new Image();
+		this.rarityImage = new Image();
+		this.bannerImg = new Image();
+		this.rowImg = new Image();
 	}
 
 	setAttributes()
@@ -45,11 +51,12 @@ class GwentCard extends GenericCard
 					this.cardObject.ctx.clearRect(0, 0, this.cardObject.cardWidth, this.cardObject.cardheight); // clear the whole card
 					
 					var factionBorderSrc = this.cardObject.getFactionFrameSrc();
-					var factionBorderImg = new Image();
-					factionBorderImg.onload = ()=>
+					var factionBorderImgOnload = ()=>
 					{
+						this.cardObject.factionBorderImg.ready = true;
+
 						ctx.drawImage(
-							factionBorderImg,
+							this.cardObject.factionBorderImg,
 							this.boundingBox.left + 10 , this.boundingBox.top + 12 ,
 							319, 
 							454
@@ -67,11 +74,15 @@ class GwentCard extends GenericCard
 						}
 						else if(this.value)
 						{
-							this.cardObject.uploadedImage.src = this.value;
 							this.cardObject.uploadedImage.onload = ()=>
 							{
+								this.cardObject.uploadedImage.ready = true;
 								actualDraw(this.cardObject.ctx, this.cardObject.uploadedImage);
 							};
+							if(!this.cardObject.uploadedImage.ready)
+								this.cardObject.uploadedImage.src = this.value;
+							else
+								actualDraw(this.cardObject.ctx, this.cardObject.uploadedImage);
 						}
 
 						/* title */
@@ -90,18 +101,22 @@ class GwentCard extends GenericCard
 							ctx.restore();
 
 							/* draw icon before the title */
-							var factionIconImg = new Image();
-							factionIconImg.onload = ()=>
+							var factionIconImgOnload = ()=>
 							{
+								this.cardObject.factionIconImg.ready = true;
 								ctx.drawImage(
-									factionIconImg,
+									this.cardObject.factionIconImg,
 									titleAttr.boundingBox.left,
 									titleAttr.boundingBox.top,
 									30,
 									30
 								);
 							};
-							factionIconImg.src = this.cardObject.getFactionIconSrc();
+							this.cardObject.factionIconImg.onload = factionIconImgOnload;
+							if(!this.cardObject.factionIconImg.ready)
+								this.cardObject.factionIconImg.src = this.cardObject.getFactionIconSrc();
+							else
+								factionIconImgOnload();
 
 							ctx.save();
 							var fontSize = 32,
@@ -162,27 +177,29 @@ class GwentCard extends GenericCard
 
 						/* Rarity */
 						var rarityAttr = this.cardObject.attributes.rarity;
-						var rarityImg = new Image();
-						rarityImg.onload = ()=>
+						var rarityImgOnload = ()=>
 						{
+							this.cardObject.rarityImage.ready = true;
 							ctx.drawImage(
-								rarityImg,
+								this.cardObject.rarityImage,
 								rarityAttr.boundingBox.left,
 								rarityAttr.boundingBox.top,
 								rarityAttr.boundingBox.width,
 								rarityAttr.boundingBox.height,
 							);
 						};
-						rarityImg.src = this.cardObject.getRarityIconSrc();
-
+						this.cardObject.rarityImage.onload = rarityImgOnload;
+						if(!this.cardObject.rarityImage.ready)
+							this.cardObject.rarityImage.src = this.cardObject.getRarityIconSrc();
+						else
+							rarityImgOnload();
 
 						/* Faction top-left icon */
-						var bannerImg = new Image();
-						var bannerSrc = this.cardObject.getFactionBannerSrc();
-						bannerImg.onload = ()=>
+						var bannerImgOnload = ()=>
 						{
+							this.cardObject.bannerImg.ready = true;
 							ctx.drawImage(
-								bannerImg,
+								this.cardObject.bannerImg,
 								0, 0,
 								163, 431
 							);
@@ -207,31 +224,51 @@ class GwentCard extends GenericCard
 							ctx.restore();
 
 							/* Row */
-							var rowImg = new Image();
-							rowImg.onload = ()=>
+							var rowImgOnload = ()=>
 							{
+								this.cardObject.rowImg.ready = true;
 								ctx.drawImage
 								(
-									rowImg,
+									this.cardObject.rowImg,
 									80 - 80/2,
 									125,
 									80, 
 									80
 								);
 							};
+							this.cardObject.rowImg.onload = rowImgOnload;
 							var rowIconSrc = this.cardObject.getRowIconSrc();
 							if(rowIconSrc)
-								rowImg.src = rowIconSrc;
-
+							{
+								if(!this.cardObject.rowImg.ready)
+									this.cardObject.rowImg.src = this.cardObject.getRowIconSrc();
+								else
+									rowImgOnload();
+							}
 						};
-						bannerImg.src = bannerSrc;
+						this.cardObject.bannerImg.onload = bannerImgOnload;
+						if(!this.cardObject.bannerImg.ready)
+							this.cardObject.bannerImg.src = this.cardObject.getFactionBannerSrc();
+						else
+							bannerImgOnload();
 					};
-					factionBorderImg.src = factionBorderSrc;
+					this.cardObject.factionBorderImg.onload = factionBorderImgOnload;
+					if(!this.cardObject.factionBorderImg.ready)
+						this.cardObject.factionBorderImg.src = factionBorderSrc;
+					else
+						factionBorderImgOnload();
 				},
 			}),
 			faction: new CardAttribute({
 				cardObject: this,
 				inputDOM: document.querySelector('.card-faction-selector'),
+				onchange: function()
+				{
+					this.cardObject.factionBorderImg.ready = false;
+					this.cardObject.factionIconImg.ready = false;
+					this.cardObject.bannerImg.ready = false;
+					this.cardObject.update();
+				},
 			}),
 			title: new CardAttribute({
 				cardObject: this,
@@ -260,12 +297,15 @@ class GwentCard extends GenericCard
 			borderType: new CardAttribute({
 				cardObject: this,
 				inputDOM: document.querySelector('.card-border-selector'),
-				ondraw: function(){}
 			}),
 			row: new CardAttribute({
 				cardObject: this,
 				inputDOM: document.querySelector('.card-row-selector'),
-				ondraw: function(){}
+				onchange: function()
+				{
+					this.cardObject.rowImg.ready = false;
+					this.cardObject.update();
+				},
 			}),
 			rarity: new CardAttribute({
 				cardObject: this,
@@ -275,6 +315,11 @@ class GwentCard extends GenericCard
 					top: this.cardheight - 39,
 					width: 22,
 					height: 22
+				},
+				onchange: function()
+				{
+					this.cardObject.rarityImage.ready = false;
+					this.cardObject.update();
 				},
 			}),
 			premium: new CardAttribute({
@@ -287,6 +332,7 @@ class GwentCard extends GenericCard
 				onchange: function()
 				{
 					this.value = this.inputDOM.checked; // checkbox specific
+					this.cardObject.bannerImg.ready = false;
 					this.cardObject.update();
 				},
 			}),
