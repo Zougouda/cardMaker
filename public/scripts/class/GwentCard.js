@@ -174,6 +174,57 @@ class GwentCard extends GenericCard
 							);
 						};
 						rarityImg.src = this.cardObject.getRarityIconSrc();
+
+
+						/* Faction top-left icon */
+						var bannerImg = new Image();
+						var bannerSrc = this.cardObject.getFactionBannerSrc();
+						bannerImg.onload = ()=>
+						{
+							ctx.drawImage(
+								bannerImg,
+								0, 0,
+								163, 431
+							);
+
+							/* Power */
+							ctx.save();
+							ctx.font = 'bold 64px '+this.cardObject.defaultFont;
+							ctx.textAlign = 'center';
+							ctx.fillStyle = 'white';
+							ctx.strokeStyle = 'black';
+							ctx.lineWidth = 8;
+							ctx.strokeText(
+								this.cardObject.attributes.power.value, 
+								80, 
+								105
+							);
+							ctx.fillText(
+								this.cardObject.attributes.power.value, 
+								80, 
+								105
+							);
+							ctx.restore();
+
+							/* Row */
+							var rowImg = new Image();
+							rowImg.onload = ()=>
+							{
+								ctx.drawImage
+								(
+									rowImg,
+									80 - 80/2,
+									125,
+									80, 
+									80
+								);
+							};
+							var rowIconSrc = this.cardObject.getRowIconSrc();
+							if(rowIconSrc)
+								rowImg.src = rowIconSrc;
+
+						};
+						bannerImg.src = bannerSrc;
 					};
 					factionBorderImg.src = factionBorderSrc;
 				},
@@ -181,61 +232,6 @@ class GwentCard extends GenericCard
 			faction: new CardAttribute({
 				cardObject: this,
 				inputDOM: document.querySelector('.card-faction-selector'),
-				ondraw: function()
-				{
-					var bannerImg = new Image();
-					var bannerSrc = this.cardObject.getFactionBannerSrc();
-
-					bannerImg.onload = ()=>
-					{
-						var ctx = this.cardObject.ctx;
-
-						ctx.drawImage(
-							bannerImg,
-							0, 0,
-							163, 431
-						);
-
-						/* we draw power and row below here for an easier layer management */
-						/* Power */
-						ctx.save();
-						ctx.font = 'bold 64px '+this.cardObject.defaultFont;
-						ctx.textAlign = 'center';
-						ctx.fillStyle = 'white';
-						ctx.strokeStyle = 'black';
-						ctx.lineWidth = 8;
-						ctx.strokeText(
-							this.cardObject.attributes.power.value, 
-							80, 
-							105
-						);
-						ctx.fillText(
-							this.cardObject.attributes.power.value, 
-							80, 
-							105
-						);
-						ctx.restore();
-
-						/* Row */
-						var rowImg = new Image();
-						rowImg.onload = ()=>
-						{
-							ctx.drawImage
-							(
-								rowImg,
-								80 - 80/2,
-								125,
-								80, 
-								80
-							);
-						};
-						var rowIconSrc = this.cardObject.getRowIconSrc();
-						if(rowIconSrc)
-							rowImg.src = rowIconSrc;
-
-					};
-					bannerImg.src = bannerSrc;
-				}
 			}),
 			title: new CardAttribute({
 				cardObject: this,
