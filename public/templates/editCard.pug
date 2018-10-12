@@ -41,7 +41,8 @@ block append scripts
 block content
 	div.global-container
 		div.editor
-			div.pattern-selector
+			fieldset.pattern-selector(style='text-align: center;')
+				legend(style='text-align: left;') Template
 				img(width='50',src='https://cn.pling.com/img//hive/content-pre1/104822-1.png', onclick='javascript:GenericCard.initCard("magic")', title='Magic the Gathering')
 				img(width='50',src='https://www.logolynx.com/images/logolynx/25/25cb1ccb3913a0224fd610ce83bfc4c3.png', onclick='javascript:GenericCard.initCard("hearthstone")', title='Hearthstone')
 				img(width='50',src='http://purepng.com/public/uploads/large/purepng.com-the-witcher-logowitcherthe-witcherandrzej-sapkowskiwriterfantasy-serieswitcher-geralt-of-riviawitchersbooksmonster-hunterssupernaturaldeadly-beastsseriesvideo-gamesxbox-1701528661197tz2s1.png', onclick='javascript:GenericCard.initCard("gwent")', title='Gwent')
@@ -55,60 +56,71 @@ block content
 					input.uploader-by-url(type='text')
 				div.uploaded-image-container
 					img.uploaded-image(crossorigin="")
-			input.card-title(type='text',placeholder='Name')
-			div.mana-cost-container
-				input.card-mana-cost(type='text',placeholder='Mana cost')
-				div.mana-cost-buttons
-			input.card-type(type='text',placeholder='type')
-			select.card-class-selector
-				option.common(value='warrior') Warrior
-				option(value='warlock') Warlock
-				option(value='shaman') Shaman
-				option(value='rogue') Rogue
-				option(value='priest') Priest
-				option(value='paladin') Paladin
-				option(value='monk') Monk
-				option(value='mage') Mage
-				option(value='hunter') Huntard
-				option(value='druid') Druid
-				option(value='dk_kotft') Death knight
-				option(value='neutral') Neutral
-			select.card-border-selector
-				option(value='bronze') Bronze
-				option(value='silver') Silver
-				option(value='gold') Gold
-			select.card-faction-selector
-				option(value='1') Meutral
-				option(value='2') Monsters
-				option(value='3') Northern Realms
-				option(value='4') Scoiatels
-				option(value='5') Skellige
-				option(value='6') Nilfgaard
-			select.card-row-selector
-				option(value='') None
-				option(value='any') Any
-				option(value='any_enemy') Any (enemy side)
-				option(value='melee') Melee
-				option(value='melee_enemy') Melee (enemy side)
-				option(value='ranged') Ranged
-				option(value='ranged_enemy') Ranged (enemy side)
-				option(value='siege') Siege
-				option(value='siege_enemy') Siege (enemy side)
-			select.card-rarity-selector
-				option.common(value='c') Common
-				option.unco(value='u')   Uncommon
-				option.rare(value='r')    Rare
-				option.mythic(value='m') Mythic rare
-			input#card-premium.card-premium(type='checkbox')
-			label.premium-label(for='card-premium') Premium
-			div.power-toughness-container
+			fieldset.card-title-container
+				legend Title
+				input.card-title(type='text',placeholder='Name')
+			fieldset.mana-cost-container
+				legend Cost
+				input.card-mana-cost.right-margin-light(type='text',placeholder='Mana cost')
+				div(style='width: calc(100% - 200px); vertical-align: top;').mana-cost-buttons
+			fieldset.card-type-container
+				legend Type, class, faction
+				input.card-type.right-margin-light(type='text',placeholder='Type')
+				select.card-class-selector.right-margin-light
+					option.common(value='warrior') Warrior
+					option(value='warlock') Warlock
+					option(value='shaman') Shaman
+					option(value='rogue') Rogue
+					option(value='priest') Priest
+					option(value='paladin') Paladin
+					option(value='monk') Monk
+					option(value='mage') Mage
+					option(value='hunter') Huntard
+					option(value='druid') Druid
+					option(value='dk_kotft') Death knight
+					option(value='neutral') Neutral
+				select.card-faction-selector.right-margin-light
+					option(value='1') Meutral
+					option(value='2') Monsters
+					option(value='3') Northern Realms
+					option(value='4') Scoiatels
+					option(value='5') Skellige
+					option(value='6') Nilfgaard
+				select.card-row-selector.right-margin-light
+					option(value='') None
+					option(value='any') Any
+					option(value='any_enemy') Any (enemy side)
+					option(value='melee') Melee
+					option(value='melee_enemy') Melee (enemy side)
+					option(value='ranged') Ranged
+					option(value='ranged_enemy') Ranged (enemy side)
+					option(value='siege') Siege
+					option(value='siege_enemy') Siege (enemy side)
+			fieldset.card-rarity-container
+				legend Rarity
+				select.card-rarity-selector.right-margin-light
+					option.common(value='c') Common
+					option.unco(value='u')   Uncommon
+					option.rare(value='r')    Rare
+					option.mythic(value='m') Mythic rare
+				select.card-border-selector.right-margin-light
+					option(value='bronze') Bronze
+					option(value='silver') Silver
+					option(value='gold') Gold
+				input#card-premium.card-premium(type='checkbox')
+				label.premium-label(for='card-premium') Premium
+			fieldset.power-toughness-container
+				legend Power
 				input.card-power(type='text',placeholder='Power')
 				span.power-toughness-separator /
 				input.card-toughness(type='text',placeholder='Toughness')
-			div.description-container
-				textarea.card-description(placeholder="Description ( Specials tags: <i>italic</i>, <b>bold</b> )")
+			fieldset.description-container
+				legend Description, abilities
 				div.description-buttons
-			input.card-author(placeholder="Author",value="")
+				textarea.card-description(placeholder="Description ( Specials tags: <i>italic</i>, <b>bold</b> )")
+			fieldset.card-author-container
+				legend Created by
+				input.card-author(placeholder="Author",value="")
 			br 
 			button(onclick="javascript:currentCard.exportImg()") Download card as image (ctrl+i)
 			button(onclick="javascript:currentCard.saveToDatabase()") Save card (ctrl+s)

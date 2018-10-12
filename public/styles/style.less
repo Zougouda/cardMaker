@@ -2,6 +2,9 @@
 @tablet:    ~"only screen and (min-width: 720px) and (max-width: 959px)";
 @mobile:    ~"only screen and (max-width: 719px)";
 
+@bgColor: #EEE;
+@bgImage: url(''); // TODO
+
 /* Limit image width to avoid overflow the container */
 img 
 {
@@ -21,6 +24,7 @@ img
 body 
 {
 	position: relative;
+	background-color: @bgColor;
 }
 
 /* Header */
@@ -153,18 +157,18 @@ footer
 	input, textarea 
 	{
 		display: block;
-		min-width: 200px;
+		//min-width: 200px;
 	}
 	textarea 
 	{
 		width: 100%;
-		height: 120px;
+		height: 150px;
 		max-width: 100%;
 		min-height: 100px;
 	}
 	input, textarea, .mana-cost-container 
 	{
-		margin-top: 10px;
+		//margin-top: 10px;
 	}
 	.card-mana-cost, .mana-cost-buttons 
 	{
@@ -174,11 +178,6 @@ footer
 	.card-type 
 	{
 		display: inline-block;
-	}
-	.card-rarity-selector 
-	{
-		display: inline-block;
-		margin-left: 15px;
 	}
 	.card-rarity-selector .common 
 	{
@@ -196,10 +195,6 @@ footer
 		width: 80px!important;
 		min-width: 0;
 		display: inline-block;
-	}
-	.power-toughness-container 
-	{
-		margin-top: 10px;
 	}
 	.power-toughness-separator 
 	{
@@ -220,7 +215,11 @@ footer
 	}
 	.icons-picker-button 
 	{
-		margin: 0 1px;
+		margin: 1px 1px;
+	}
+	.description-buttons
+	{
+		margin-bottom: 5px;
 	}
 	button 
 	{
@@ -326,4 +325,9 @@ footer
 			}
 		}
 	}
+}
+
+.right-margin-light
+{
+	margin-right: 5px;
 }
