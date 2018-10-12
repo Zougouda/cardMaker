@@ -51,6 +51,9 @@ footer {
   vertical-align: top;
   margin: 0 auto;
 }
+.preview {
+  position: fixed;
+}
 .preview-canvas {
   display: block;
   margin: 0 auto;
