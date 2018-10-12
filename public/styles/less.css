@@ -92,8 +92,12 @@ footer {
 .editor[data-pattern="gwent"] .card-border-selector {
   display: inline;
 }
+.editor .pattern-selector img {
+  transition: all 0.2s;
+}
 .editor .pattern-selector img:hover {
   cursor: pointer;
+  transform: scale(1.2);
 }
 .editor .caption-container input {
   display: inline-block;
