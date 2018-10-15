@@ -55,6 +55,10 @@ class GenericCard
 			case 'gwent':
 				classToUse = GwentCard;
 			break;
+
+			case 'yu-gi-oh':
+				classToUse = YuGiOhCard;
+			break;
 		}
 	
 		document.querySelector('.editor').dataset.pattern = pattern;
