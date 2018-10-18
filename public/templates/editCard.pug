@@ -61,14 +61,18 @@ block content
 			fieldset.card-title-container
 				legend Title
 				input.card-title(type='text',placeholder='Name')
-			fieldset.mana-cost-container
+			fieldset.mana-cost-container.gw-off
 				legend Cost
-				input.card-mana-cost.right-margin-light(type='text',placeholder='Mana cost')
-				div(style='width: calc(100% - 200px); vertical-align: top;').mana-cost-buttons
+				input.card-mana-cost.right-margin-light.ygo-off(type='text',placeholder='Mana cost',)
+				div.mana-cost-buttons.hs-off.gw-off.ygo-off
+				label.ygo(for='card-level') Level
+				input#card-level.card-level.ygo(type='number', min='4', max='10', value='4', placeholder='Level')
 			fieldset.card-type-container
 				legend Type, class, faction
-				input.card-type.right-margin-light(type='text',placeholder='Type')
-				select.card-class-selector.right-margin-light
+				input.card-type.right-margin-light.gw-off(type='text',placeholder='Type')
+				br.hs
+				label.right-margin-light.hs(for='card-class-selector') Class
+				select#card-class-selector.card-class-selector.right-margin-light.hs
 					option.common(value='warrior') Warrior
 					option(value='warlock') Warlock
 					option(value='shaman') Shaman
@@ -81,14 +85,17 @@ block content
 					option(value='druid') Druid
 					option(value='dk_kotft') Death knight
 					option(value='neutral') Neutral
-				select.card-faction-selector.right-margin-light
+				label.right-margin-light.gw(for='card-faction-selector') Faction
+				select#card-faction-selector.card-faction-selector.right-margin-light.gw
 					option(value='1') Meutral
 					option(value='2') Monsters
 					option(value='3') Northern Realms
 					option(value='4') Scoiatels
 					option(value='5') Skellige
 					option(value='6') Nilfgaard
-				select.card-row-selector.right-margin-light
+				br.gw
+				label.gw(for='card-row-selector') Row
+				select#card-row-selector.card-row-selector.right-margin-light.gw
 					option(value='') None
 					option(value='any') Any
 					option(value='any_enemy') Any (enemy side)
@@ -98,24 +105,44 @@ block content
 					option(value='ranged_enemy') Ranged (enemy side)
 					option(value='siege') Siege
 					option(value='siege_enemy') Siege (enemy side)
-			fieldset.card-rarity-container
+				br.ygo
+				label.right-margin-light.ygo(for='card-template-selector') Template
+				select#card-template-selector.card-template-selector.right-margin-light.ygo
+					option(value='normal') Monster
+					option(value='spell') Spell
+					option(value='trap') Trap
+				br.ygo
+				label.right-margin-light.ygo(for='card-attribute-selector') Attribute
+				select#card-attribute-selector.card-attribute-selector.right-margin-lighta.ygo
+					option(value='none') None
+					option(value='dark') Dark
+					option(value='divine') Divine
+					option(value='earth') Earth
+					option(value='fire') Fire
+					option(value='light') Light
+					option(value='water') Water
+					option(value='wind') Wind
+			fieldset.card-rarity-container.ygo-off
 				legend Rarity
 				select.card-rarity-selector.right-margin-light
 					option.common(value='c') Common
-					option.unco(value='u')   Uncommon
-					option.rare(value='r')    Rare
+					option.unco(value='u') Uncommon
+					option.rare(value='r') Rare
 					option.mythic(value='m') Mythic rare
-				select.card-border-selector.right-margin-light
+				br.gw
+				label.gw(for='card-border-selector') Border
+				select#card-border-selector.card-border-selector.right-margin-light.gw
 					option(value='bronze') Bronze
 					option(value='silver') Silver
 					option(value='gold') Gold
-				input#card-premium.card-premium(type='checkbox')
-				label.premium-label(for='card-premium') Premium
+				br.mtg-off.ygo-off
+				label.premium-label.mtg-off.ygo-off(for='card-premium') Premium
+				input#card-premium.card-premium.mtg-off.ygo-off(type='checkbox')
 			fieldset.power-toughness-container
 				legend Power
 				input.card-power(type='text',placeholder='Power')
-				span.power-toughness-separator /
-				input.card-toughness(type='text',placeholder='Toughness')
+				span.power-toughness-separator.gw-off /
+				input.card-toughness.gw-off(type='text',placeholder='Toughness')
 			fieldset.description-container
 				legend Description, abilities
 				div.description-buttons

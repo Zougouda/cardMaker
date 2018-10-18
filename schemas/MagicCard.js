@@ -26,6 +26,12 @@ const MagicCard = new Schema({
 	faction: String,
 	row: String,
 	borderType: String,
+
+	/* Yu-gi-oh specific */
+	template: String,
+	attribute: String,
+	level: Number
+	
 });
 
 module.exports = MagicCard;
