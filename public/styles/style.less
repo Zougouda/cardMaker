@@ -93,50 +93,62 @@ footer
 
 .editor 
 {
+	.mtg, // magic
+	.hs, // hearthstone
+	.gw, // gwent
+	.ygo, // yu-gi-oh
+	{
+		display: none;
+	}
 	/* Magic-specific */
 	&[data-pattern="magic"]
 	{
-		.card-premium, .premium-label
+		.mtg,
 		{
-			display: none;
+			display: initial;
+		}
+		.mtg-off
+		{
+			display: none!important;
 		}
 	}
 
 	/* Hearthstone-specific */
-	.card-class-selector
-	{
-		display: none;
-	}
 	&[data-pattern="hearthstone"]
 	{
-		.card-class-selector
+		.hs,
 		{
-			display: inline;
+			display: initial;
+		}
+		.hs-off
+		{
+			display: none!important;
 		}
 	}
 
 	/* Gwent-specific */
-	.card-faction-selector,
-	.card-row-selector,
-	.card-border-selector,
-	{
-		display: none;
-	}
 	&[data-pattern="gwent"]
 	{
-		.card-mana-cost,
-		.card-type,
-		.power-toughness-separator,
-		.card-toughness,
+		.gw,
 		{
-			display: none;
+			display: initial;
 		}
-
-		.card-faction-selector,
-		.card-row-selector,
-		.card-border-selector,
+		.gw-off
 		{
-			display: inline;
+			display: none!important;
+		}
+	}
+
+	/* Yu-gi-oh specific */
+	&[data-pattern="yu-gi-oh"]
+	{
+		.ygo,
+		{
+			display: initial;
+		}
+		.ygo-off
+		{
+			display: none!important;
 		}
 	}
 
@@ -158,10 +170,17 @@ footer
 		min-width: 0;
 		width: 100px;
 	}
+	input, select
+	{
+		margin-top: 5px;
+	}
+	label
+	{
+		margin-right: 5px;
+	}
 	input, textarea 
 	{
 		display: block;
-		//min-width: 200px;
 	}
 	textarea 
 	{
@@ -170,14 +189,15 @@ footer
 		max-width: 100%;
 		min-height: 100px;
 	}
-	input, textarea, .mana-cost-container 
-	{
-		//margin-top: 10px;
-	}
 	.card-mana-cost, .mana-cost-buttons 
 	{
 		display: inline-block;
 		margin-top: 0;
+	}
+	.mana-cost-buttons
+	{
+		vertical-align: top;
+		width: calc(100% - 200px);
 	}
 	.card-type 
 	{
@@ -190,7 +210,6 @@ footer
 	input.card-premium,
 	{
 		display: inline;
-		margin: 0 5px 0 10px;
 		min-width: auto;
 	}
 	input.card-power, input.card-toughness 

@@ -65,32 +65,37 @@ footer {
   /* Magic-specific */
   /* Hearthstone-specific */
   /* Gwent-specific */
+  /* Yu-gi-oh specific */
 }
-.editor[data-pattern="magic"] .card-premium,
-.editor[data-pattern="magic"] .premium-label {
+.editor .mtg,
+.editor .hs,
+.editor .gw,
+.editor .ygo {
   display: none;
 }
-.editor .card-class-selector {
-  display: none;
+.editor[data-pattern="magic"] .mtg {
+  display: initial;
 }
-.editor[data-pattern="hearthstone"] .card-class-selector {
-  display: inline;
+.editor[data-pattern="magic"] .mtg-off {
+  display: none!important;
 }
-.editor .card-faction-selector,
-.editor .card-row-selector,
-.editor .card-border-selector {
-  display: none;
+.editor[data-pattern="hearthstone"] .hs {
+  display: initial;
 }
-.editor[data-pattern="gwent"] .card-mana-cost,
-.editor[data-pattern="gwent"] .card-type,
-.editor[data-pattern="gwent"] .power-toughness-separator,
-.editor[data-pattern="gwent"] .card-toughness {
-  display: none;
+.editor[data-pattern="hearthstone"] .hs-off {
+  display: none!important;
 }
-.editor[data-pattern="gwent"] .card-faction-selector,
-.editor[data-pattern="gwent"] .card-row-selector,
-.editor[data-pattern="gwent"] .card-border-selector {
-  display: inline;
+.editor[data-pattern="gwent"] .gw {
+  display: initial;
+}
+.editor[data-pattern="gwent"] .gw-off {
+  display: none!important;
+}
+.editor[data-pattern="yu-gi-oh"] .ygo {
+  display: initial;
+}
+.editor[data-pattern="yu-gi-oh"] .ygo-off {
+  display: none!important;
 }
 .editor .pattern-selector img {
   transition: all 0.2s;
@@ -104,6 +109,13 @@ footer {
   margin-left: 15px;
   min-width: 0;
   width: 100px;
+}
+.editor input,
+.editor select {
+  margin-top: 5px;
+}
+.editor label {
+  margin-right: 5px;
 }
 .editor input,
 .editor textarea {
@@ -120,6 +132,10 @@ footer {
   display: inline-block;
   margin-top: 0;
 }
+.editor .mana-cost-buttons {
+  vertical-align: top;
+  width: calc(100% - 200px);
+}
 .editor .card-type {
   display: inline-block;
 }
@@ -128,7 +144,6 @@ footer {
 }
 .editor input.card-premium {
   display: inline;
-  margin: 0 5px 0 10px;
   min-width: auto;
 }
 .editor input.card-power,
