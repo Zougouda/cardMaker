@@ -131,7 +131,9 @@ class YuGiOhCard extends GenericCard
 					this.cardObject.ctx.save();
 					this.cardObject.ctx.fillStyle = 'black';
 					this.cardObject.ctx.textBaseline = 'alphabetic';
-					this.cardObject.ctx.font = 'bold 28px '+this.cardObject.defaultFont;
+					var fontSize = 28;
+					this.cardObject.ctx.font = `bold ${fontSize}px ${this.cardObject.defaultFont}`;
+					GenericCard.getFontSizeToFitText(this.cardObject.ctx, this.value, 300);
 					this.cardObject.ctx.fillText(this.value, this.boundingBox.left, this.boundingBox.top);
 					this.cardObject.ctx.restore();
 				}

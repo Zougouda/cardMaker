@@ -120,22 +120,16 @@ class GwentCard extends GenericCard
 
 							ctx.save();
 							var fontSize = 32,
-								titleFits = false, 
 								offsetLeft = 32, 
 								offsetTop = 0;
-							while(!titleFits) // change text font based on his measured width
-							{
-								ctx.font = `bold ${fontSize}px ${this.cardObject.defaultFont}`;
-								var titleWidth = ctx.measureText(titleAttr.value).width;
-								if(titleWidth + offsetLeft <= titleAttr.boundingBox.width)
-									titleFits = true;
-								else
-									fontSize--;
-							}
+
 							ctx.fillStyle = 'white';
 							ctx.textBaseline = 'top'; 
 
+							ctx.font = `bold ${fontSize}px ${this.cardObject.defaultFont}`;
+							fontSize = GenericCard.getFontSizeToFitText(this.cardObject.ctx, titleAttr.value, titleAttr.boundingBox.width - offsetLeft);
 							offsetTop = (titleAttr.boundingBox.height - fontSize)/2; // text vertically centered
+
 							ctx.fillText(
 								titleAttr.value, 
 								titleAttr.boundingBox.left + offsetLeft,

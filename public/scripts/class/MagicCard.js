@@ -81,6 +81,7 @@ class MagicCard extends GenericCard
 				{
 					this.cardObject.ctx.fillStyle = 'black';
 					this.cardObject.ctx.font = 'bold 18px '+this.cardObject.defaultFont;
+					GenericCard.getFontSizeToFitText(this.cardObject.ctx, this.value, 280);
 					this.cardObject.ctx.fillText(this.value, this.boundingBox.left, this.boundingBox.top);
 				}
 			}),

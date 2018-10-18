@@ -85,6 +85,24 @@ class GenericCard
 		});
 	}
 
+	static getFontSizeToFitText(ctx, text, maxTextWidth)
+	{
+		var titleFits = false;
+		var fontSize = ctx.font.match(/\d+px/)[0].slice(0, -2); // fetch the font size, without 'px'
+
+		while(!titleFits) // change text font based on his measured width
+		{
+			ctx.font = ctx.font.replace(/\d+px/, fontSize+"px");
+			var textWidth = ctx.measureText(text).width;
+			if(textWidth <= maxTextWidth)
+				titleFits = true;
+			else
+				fontSize--;
+		}
+
+		return fontSize;
+	}
+
 	constructor(options = {})
 	{
 		this.options = options;

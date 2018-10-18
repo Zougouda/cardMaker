@@ -93,6 +93,8 @@ class HearthstoneCard extends GenericCard
 					ctx.font = 'bold 28px '+this.cardObject.defaultFont;
 					ctx.textAlign = 'center';
 
+
+					GenericCard.getFontSizeToFitText(this.cardObject.ctx, this.value, 240);
 					if(this.cardObject.isACreature())
 					{
 						ctx.translate(this.boundingBox.left + this.boundingBox.width/2, this.boundingBox.top);
