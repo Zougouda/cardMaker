@@ -55,19 +55,33 @@ footer {
 .preview {
   position: fixed;
 }
-.preview-canvas {
+.preview-canvas,
+.preview-canvas-2 {
   display: block;
   margin: 0 auto;
   width: 400px;
   max-width: 100%;
 }
+.preview-canvas-2 {
+  display: none;
+}
+.editor[data-pattern="magic-transform"] + .preview canvas {
+  display: inline-block;
+  width: 50%;
+}
 .editor {
   /* Magic-specific */
+  /* Magic-Planeswalkers */
+  /* Magic Dual templates */
   /* Hearthstone-specific */
   /* Gwent-specific */
   /* Yu-gi-oh specific */
 }
 .editor .mtg,
+.editor .mtg-pw,
+.editor .mtg-transform,
+.editor .mtg-split,
+.editor .mtg-flip,
 .editor .hs,
 .editor .gw,
 .editor .ygo {
@@ -76,8 +90,27 @@ footer {
 .editor[data-pattern="magic"] .mtg {
   display: initial;
 }
-.editor[data-pattern="magic"] .mtg-off {
+.editor[data-pattern="magic"] .mtg-off,
+.editor[data-pattern="magic-pw"] .mtg-off,
+.editor[data-pattern="magic-transform"] .mtg-off,
+.editor[data-pattern="magic-split"] .mtg-off,
+.editor[data-pattern="magic-flip"] .mtg-off {
   display: none!important;
+}
+.editor[data-pattern="magic-pw"] .mtg-pw {
+  display: initial;
+}
+.editor[data-pattern="magic-pw"] .mtg-pw-off {
+  display: none!important;
+}
+.editor[data-pattern="magic-transform"] .mtg-transform {
+  display: block;
+}
+.editor[data-pattern="magic-split"] .mtg-split {
+  display: initial;
+}
+.editor[data-pattern="magic-flip"] .mtg-flip {
+  display: initial;
 }
 .editor[data-pattern="hearthstone"] .hs {
   display: initial;
@@ -105,7 +138,6 @@ footer {
   transform: scale(1.2);
 }
 .editor .caption-container input {
-  display: inline-block;
   margin-left: 15px;
   min-width: 0;
   width: 100px;
@@ -128,16 +160,15 @@ footer {
   min-height: 100px;
 }
 .editor .card-mana-cost,
-.editor .mana-cost-buttons {
+.editor .mana-cost-buttons,
+.editor .card-mana-cost-2,
+.editor .mana-cost-buttons-2 {
   display: inline-block;
   margin-top: 0;
 }
 .editor .mana-cost-buttons {
   vertical-align: top;
   width: calc(100% - 200px);
-}
-.editor .card-type {
-  display: inline-block;
 }
 .editor .card-rarity-selector .common {
   padding-left: 24px;
@@ -147,7 +178,9 @@ footer {
   min-width: auto;
 }
 .editor input.card-power,
-.editor input.card-toughness {
+.editor input.card-toughness,
+.editor input.card-power-2,
+.editor input.card-toughness-2 {
   margin-top: 0;
   width: 80px!important;
   min-width: 0;
@@ -161,11 +194,7 @@ footer {
 }
 .editor .uploaded-image-container {
   max-width: 80%;
-  max-height: 300px;
   margin: 10px auto;
-}
-.editor .uploaded-image-container img {
-  height: 100%;
 }
 .editor .icons-picker-button {
   margin: 1px 1px;
@@ -198,18 +227,38 @@ footer {
   text-align: center;
   margin: 0 auto;
 }
-.list-cards .list-card-el img {
-  transition: all 0.2s;
-  margin-bottom: 15px;
+.list-cards .list-card-el div {
+  position: relative;
 }
-.list-cards .list-card-el img:hover {
+.list-cards .list-card-el div img {
+  transition: all 0.4s;
+  margin-bottom: 15px;
+  transform-style: preserve-3d;
+}
+.list-cards .list-card-el div .transformed {
+  opacity: 0;
+  transform: rotateY(0deg) scale(1, 1);
+  left: -100000px;
+  position: absolute;
+}
+.list-cards .list-card-el div:hover img {
   transform: scale(1.05);
 }
-.list-cards .list-card-el .favorite {
+.list-cards .list-card-el div.can-transform:hover img.transformed {
+  opacity: 1;
+  position: initial;
+  transform: rotateY(180deg) scale(-1.05, 1.05);
+}
+.list-cards .list-card-el div.can-transform:hover img.untransformed {
+  opacity: 0;
+  position: absolute;
+  transform: rotateY(180deg) scale(-1.05, 1.05);
+}
+.list-cards .list-card-el div .favorite {
   float: right;
 }
-.list-cards .list-card-el .favorite label,
-.list-cards .list-card-el .favorite input.add-to-favorites {
+.list-cards .list-card-el div .favorite label,
+.list-cards .list-card-el div .favorite input.add-to-favorites {
   display: inline-block;
 }
 .list-cards .list-card-el.col-max-4 {

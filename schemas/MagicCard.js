@@ -30,7 +30,16 @@ const MagicCard = new Schema({
 	/* Yu-gi-oh specific */
 	template: String,
 	attribute: String,
-	level: Number
+	level: Number,
+
+	/* double Magic cards specific */
+	illustration2: String,
+	title2: String,
+	description2: String,
+	manaCost2: String,
+	type2: String,
+	power2: String,
+	toughness2: String,
 	
 });
 

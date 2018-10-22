@@ -47,6 +47,10 @@ class GenericCard
 			case 'magic':
 				classToUse = MagicCard;
 			break;
+
+			case 'magic-transform':
+				classToUse = MagicCardTransform;
+			break;
 	
 			case 'hearthstone':
 				classToUse = HearthstoneCard;
@@ -147,6 +151,8 @@ class GenericCard
 		}
 		if(this.cropper)
 			this.cropper.destroy();
+		if(this.cropper2)
+			this.cropper2.destroy();
 	}
 
 
@@ -165,21 +171,32 @@ class GenericCard
 		this.cardFrameImg = new Image();
 		this.cardFrameImg.src = this.getCardFrameSrc();
 
-		//var imagesToLoad = [this.cardFrameImg];
-		//if(
-		//	this.attributes['illustration'].value 
-		//	&& this.attributes['illustration'].value.indexOf('fake') == -1 // not a cropped image
-		//)
-		//{
-		//	this.uploadedImage.src = this.attributes['illustration'].value;
-		//	imagesToLoad.push(this.uploadedImage);
-		//}
+		var imagesToLoad = [this.cardFrameImg];
+
+		/* TODO Move elsewhere */
+		/* Dual-illustrations Magic specific */
+		if(this.attributes.illustration2)
+		{
+			this.cardFrameImg2 = new Image();
+			this.cardFrameImg2.src = this.getCardFrameSrc
+			(
+				this.attributes.manaCost2,
+				this.attributes.power2,
+				this.attributes.toughness2
+			);
+			imagesToLoad.push(this.cardFrameImg2);
+		}
 
 		var actualDraw = ()=>
 		{
+			this.attributes.illustration.draw();
+			if(this.attributes.illustration2)
+				this.attributes.illustration2.draw();
 			Object.entries(this.attributes).forEach( ([key, obj])=>
 			{
-				obj.draw();
+				/* Little hack: ALWAYS draw illustration first */
+				if(['illustration', 'illustration2'].indexOf(key) === -1)
+					obj.draw();
 			});
 		};
 
@@ -197,14 +214,22 @@ class GenericCard
 			});
 		}
 
-		//onMultipleImagesLoaded(imagesToLoad, actualDraw);
-		this.cardFrameImg.onload = ()=>
-		{
-			actualDraw();
-		};
+		onMultipleImagesLoaded(imagesToLoad, actualDraw);
+		//this.cardFrameImg.onload = ()=>
+		//{
+		//	actualDraw();
+		//};
 	}
 
-	setCropperSrc(src)
+	//setCropperSrc(src)
+	setCropperSrc
+	(
+		src, 
+		//cropper = this.cropper, 
+		cropperRef = 'cropper',
+		uploadedImage = this.uploadedImage,
+		attribute = this.attributes.illustration
+	)
 	{
 		if(!src) 
 			return;
@@ -212,29 +237,26 @@ class GenericCard
 		GenericCard.lastCropperSrc = src;
 
 		if(src.indexOf('blob') == -1 && src.indexOf('data:') == -1) // image URL from another domain
-			this.uploadedImage.src = 'https://cors-anywhere.herokuapp.com/'+src; // Thanks for this guys :)
+			uploadedImage.src = 'https://cors-anywhere.herokuapp.com/'+src; // Thanks for this guys :)
 		else // image uploaded with input type=file
-			this.uploadedImage.src = src;
+			uploadedImage.src = src;
 
-		//this.uploadedImage.onload = ()=>
-		//{
-			if(this.cropper) this.cropper.destroy(); // remove potential existing cropper
-			
-			this.cropper = new Cropper( this.uploadedImage, {
-				dragMode: 'move',
-				aspectRatio: this.attributes.illustration.boundingBox.width / this.attributes.illustration.boundingBox.height,
-				cropend:  ()=>{this.update()},
-				cropmove: ()=>{this.update()},
-				zoom:     ()=>{this.update()},
-				ready:    ()=>{this.update()},
-			});
-		//};
+		if(this[cropperRef]) this[cropperRef].destroy(); // remove potential existing cropper
+		
+		this[cropperRef] = new Cropper( uploadedImage, {
+			dragMode: 'move',
+			aspectRatio: attribute.boundingBox.width / attribute.boundingBox.height,
+			cropend:  ()=>{this.update()},
+			cropmove: ()=>{this.update()},
+			zoom:     ()=>{this.update()},
+			ready:    ()=>{this.update()},
+		});
 	}
 
-	getWholeCardImgSrc()
+	getWholeCardImgSrc(canvasDOM = this.canvasDOM)
 	{
 		this.update();
-		return this.canvasDOM.toDataURL('image/png').replace("image/png", "image/octet-stream");
+		return canvasDOM.toDataURL('image/png').replace("image/png", "image/octet-stream");
 	}
 
 	exportImg()
@@ -266,6 +288,15 @@ class GenericCard
 					else
 						json[key] = obj.value;
 				}
+				else if(key === 'illustration2')
+				{
+					if(this.cropper2)
+						json[key] = this.cropper2.getCroppedCanvas().toDataURL('image/png');
+					else if(obj.value.startsWith('/images') )
+						return;
+					else
+						json[key] = obj.value;
+				}
 				else
 					json[key] = obj.value;
 			});
@@ -292,9 +323,23 @@ class GenericCard
 					this.cropper = null;
 				}
 			}
+			if(key == 'illustration2')
+			{
+				if(this.cropper2)
+				{
+					this.cropper2.destroy();
+					this.cropper2 = null;
+				}
+			}
 			else
 			{
-				this.attributes[key].inputDOM.value = val;
+				try{
+					this.attributes[key].inputDOM.value = val;
+				}
+				catch(e)
+				{
+
+				}
 				this.attributes[key].inputDOM.checked = Boolean(val); // checkbox specific
 			}
 		});
@@ -306,6 +351,8 @@ class GenericCard
 	{
 		var json = this.exportJson(); // get card-relative infos
 		json['wholeCardImgSrc'] = this.getWholeCardImgSrc(); // save generated img to DB
+		if(json.cardPattern === 'magic-transform')
+			json['wholeCardImgSrc2'] = this.getWholeCardImgSrc(this.canvasDOM2); // save generated img to DB
 		if(this.cardID) // existing card
 			json['id'] = this.cardID; // update card
 		else // new card
@@ -515,15 +562,17 @@ document.addEventListener('DOMContentLoaded', (e)=>
 	
 			var blob = item.getAsFile();
 			var uRLObj = window.URL || window.webkitURL;
-			window.currentCard.setCropperSrc( uRLObj.createObjectURL(blob), true );
+			window.currentCard.setCropperSrc( uRLObj.createObjectURL(blob) );
 		});	
 	});
 	/* Add illustration by url from input text  */
+	/*
 	['change', 'keyup'].forEach((action)=>
 	{
 		document.querySelector('input.uploader-by-url').addEventListener(action, (e)=>
 		{
-			window.currentCard.setCropperSrc( e.target.value, true );
+			window.currentCard.setCropperSrc( e.target.value );
 		});
 	});
+	*/
 });

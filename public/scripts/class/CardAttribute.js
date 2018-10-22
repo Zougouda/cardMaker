@@ -55,10 +55,10 @@ class CardAttribute
 
 	draw()
 	{
-		this.ondraw();
+		var ctx = this.cardObject.ctx;
+		this.ondraw(ctx);
 		if(this.debug)
 		{
-			var ctx = this.cardObject.ctx;
 			ctx.save();
 			ctx.strokeStyle = 'red'; ctx.lineWidth = 3;
 			ctx.strokeRect(

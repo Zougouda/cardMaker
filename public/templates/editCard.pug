@@ -33,6 +33,7 @@ block append scripts
 	script(src='/scripts/main.js')
 	script(src='/scripts/class/GenericCard.js')
 	script(src='/scripts/class/MagicCard.js')
+	script(src='/scripts/class/MagicCard.transform.js')
 	script(src='/scripts/class/HearthstoneCard.js')
 	script(src='/scripts/class/GwentCard.js')
 	script(src='/scripts/class/YuGiOhCard.js')
@@ -53,23 +54,32 @@ block content
 				div
 					span Import an image from your computer
 					input.uploader(type='file')
-				div
-					span Or paste an image URL here
-					input.uploader-by-url(type='text')
+					input.uploader-2.mtg-transform.mtg-split(type='file')
+				//div
+				//	span Or paste an image URL here
+				//	input.uploader-by-url(type='text')
 				div.uploaded-image-container
 					img.uploaded-image(crossorigin="")
+				div.uploaded-image-container.mtg-transform.mtg-split
+					img.uploaded-image-2(crossorigin="")
 			fieldset.card-title-container
 				legend Title
 				input.card-title(type='text',placeholder='Name')
+				input.card-title-2.mtg-transform.mtg-split.mtg-flip(type='text',placeholder='Name')
 			fieldset.mana-cost-container.gw-off
 				legend Cost
-				input.card-mana-cost.right-margin-light.ygo-off(type='text',placeholder='Mana cost',)
-				div.mana-cost-buttons.hs-off.gw-off.ygo-off
+				div
+					input.card-mana-cost.right-margin-light.ygo-off(type='text',placeholder='Mana cost',)
+					div.mana-cost-buttons.hs-off.gw-off.ygo-off
+				div.mtg-transform.mtg-split
+					input.card-mana-cost-2.right-margin-light.ygo-off(type='text',placeholder='Mana cost',)
+					div.mana-cost-buttons-2.hs-off.gw-off.ygo-off
 				label.ygo(for='card-level') Level
 				input#card-level.card-level.ygo(type='number', min='4', max='10', value='4', placeholder='Level')
 			fieldset.card-type-container
 				legend Type, class, faction
 				input.card-type.right-margin-light.gw-off(type='text',placeholder='Type')
+				input.card-type-2.right-margin-light.mtg-transform.mtg-split.gw-off(type='text',placeholder='Type')
 				br.hs
 				label.right-margin-light.hs(for='card-class-selector') Class
 				select#card-class-selector.card-class-selector.right-margin-light.hs
@@ -140,13 +150,23 @@ block content
 				input#card-premium.card-premium.mtg-off.ygo-off(type='checkbox')
 			fieldset.power-toughness-container
 				legend Power
-				input.card-power(type='text',placeholder='Power')
-				span.power-toughness-separator.gw-off /
-				input.card-toughness.gw-off(type='text',placeholder='Toughness')
+				div
+					input.card-power(type='text',placeholder='Power')
+					span.power-toughness-separator.gw-off /
+					input.card-toughness.gw-off(type='text',placeholder='Toughness')
+				div.mtg-transform
+					input.card-power-2(type='text',placeholder='Power')
+					span.power-toughness-separator.gw-off /
+					input.card-toughness-2.gw-off(type='text',placeholder='Toughness')
 			fieldset.description-container
 				legend Description, abilities
-				div.description-buttons
-				textarea.card-description(placeholder="Description ( Specials tags: <i>italic</i>, <b>bold</b> )")
+				div
+					div.description-buttons
+					textarea.card-description(placeholder="Description ( Specials tags: <i>italic</i>, <b>bold</b> )")
+				br.mtg-transform.mtg-split
+				div.mtg-transform.mtg-split
+					div.description-buttons-2
+					textarea.card-description-2(placeholder="Description ( Specials tags: <i>italic</i>, <b>bold</b> )")
 			fieldset.card-author-container
 				legend Created by
 				input.card-author(placeholder="Author",value="")
@@ -156,3 +176,4 @@ block content
 			button.delete-button(onclick="javascript:currentCard.deleteFromDatabase()") Delete card
 		div.preview
 			canvas.preview-canvas(width='400',height='560')
+			canvas.preview-canvas-2(width='400',height='560')

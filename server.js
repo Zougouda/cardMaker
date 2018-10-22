@@ -115,9 +115,15 @@ var app = express()
 		}
 
 		/* write the whole card as an img onto the disk */
+		if(req.body.wholeCardImgSrc2)
+			writeBase64ToImage(req.body.wholeCardImgSrc2, `public/images/savedCards/${savedCard.id}-2.png`);
+
 		writeBase64ToImage(req.body.wholeCardImgSrc, `public/images/savedCards/${savedCard.id}.png`)
 		.then(()=>
 		{
+		if(req.body.illustration2)
+			writeBase64ToImage(req.body.illustration2n, `public/images/savedCards/${savedCard.id}_illustration-2.png`);
+
 			/* write the illustration as an img onto the disk */
 			if(!req.body.illustration)
 		  		res.send('ok'); // success
@@ -175,6 +181,7 @@ var app = express()
 				title: 1, 
 				userID: 1, 
 				author: 1,
+				cardPattern: 1,
 			}, 
 			{
 				skip: offset, 

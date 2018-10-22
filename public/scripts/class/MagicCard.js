@@ -43,27 +43,33 @@ class MagicCard extends GenericCard
 				{
 					this.cardObject.setCropperSrc( window.URL.createObjectURL(this.inputDOM.files[0]) );
 				},
-				ondraw: function()
+				ondraw: function
+				(
+					ctx, 
+					cropper = this.cardObject.cropper, 
+					uploadedImage = this.cardObject.uploadedImage,
+					cardFrameImg = this.cardObject.cardFrameImg
+				)
 				{
-					this.cardObject.ctx.drawImage(this.cardObject.cardFrameImg, 0, 0, this.cardObject.cardWidth, this.cardObject.cardheight); // draw frame
+					ctx.drawImage(cardFrameImg, 0, 0, this.cardObject.cardWidth, this.cardObject.cardheight); // draw frame
 					var actualDraw = (ctx, source)=>
 					{
-						ctx.clearRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height); // clear card's caption
+						//ctx.clearRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height); // clear card's caption
 						ctx.fillStyle = '#FFFFFF';
 						ctx.fillRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height);
 						ctx.drawImage(source, this.boundingBox.left-1, this.boundingBox.top, this.boundingBox.width+1, this.boundingBox.height); // TODO fix these offset/width values
 					};
 
-					if(this.cardObject.cropper)
+					if(cropper)
 					{
-						actualDraw(this.cardObject.ctx, this.cardObject.cropper.getCroppedCanvas() );
+						actualDraw(ctx, cropper.getCroppedCanvas() );
 					}
 					else if(this.value)
 					{
-						this.cardObject.uploadedImage.src = this.value;
-						this.cardObject.uploadedImage.onload = ()=>
+						uploadedImage.src = this.value;
+						uploadedImage.onload = ()=>
 						{
-							actualDraw(this.cardObject.ctx, this.cardObject.uploadedImage);
+							actualDraw(ctx, uploadedImage);
 						};
 					}
 				}
@@ -77,12 +83,12 @@ class MagicCard extends GenericCard
 					width: 328,
 					height: 10
 				},
-				ondraw: function()
+				ondraw: function(ctx)
 				{
-					this.cardObject.ctx.fillStyle = 'black';
-					this.cardObject.ctx.font = 'bold 18px '+this.cardObject.defaultFont;
+					ctx.fillStyle = 'black';
+					ctx.font = 'bold 18px '+this.cardObject.defaultFont;
 					GenericCard.getFontSizeToFitText(this.cardObject.ctx, this.value, 280);
-					this.cardObject.ctx.fillText(this.value, this.boundingBox.left, this.boundingBox.top);
+					ctx.fillText(this.value, this.boundingBox.left, this.boundingBox.top);
 				}
 			}),
 			description: new CardAttribute({
@@ -94,13 +100,13 @@ class MagicCard extends GenericCard
 					width: 328,
 					height: 150
 				},
-				ondraw: function()
+				ondraw: function(ctx)
 				{
 					var descFontSize = 16;
-					this.cardObject.ctx.fillStyle = 'black';
-					this.cardObject.ctx.font = descFontSize+'px '+this.cardObject.defaultFont;
+					ctx.fillStyle = 'black';
+					ctx.font = descFontSize+'px '+this.cardObject.defaultFont;
 					this.cardObject.wrapText(
-						this.cardObject.ctx, 
+						ctx, 
 						this.value, 
 						this.boundingBox.left, 
 						this.boundingBox.top, 
@@ -116,7 +122,7 @@ class MagicCard extends GenericCard
 					top: 40,
 					right: -40
 				},
-				ondraw: function()
+				ondraw: function(ctx)
 				{
 					var startX = this.cardObject.canvasDOM.width + this.boundingBox.right;
 					var startY = this.boundingBox.top;
@@ -130,7 +136,7 @@ class MagicCard extends GenericCard
 						image.src = imageSrc;
 						image.onload = ()=>
 						{
-							this.cardObject.ctx.drawImage(image, localStartX, startY, manaIconsSize, manaIconsSize);
+							ctx.drawImage(image, localStartX, startY, manaIconsSize, manaIconsSize);
 						}
 						startX += manaIconsSize;
 					});
@@ -143,11 +149,11 @@ class MagicCard extends GenericCard
 					top: 336,
 					left: 40
 				},
-				ondraw: function()
+				ondraw: function(ctx)
 				{
-					this.cardObject.ctx.fillStyle = 'black';
-					this.cardObject.ctx.font = 'bold 16px '+this.cardObject.defaultFont;
-					this.cardObject.ctx.fillText(this.value, this.boundingBox.left, this.boundingBox.top);
+					ctx.fillStyle = 'black';
+					ctx.font = `bold 16px ${this.cardObject.defaultFont}`;
+					ctx.fillText(this.value, this.boundingBox.left, this.boundingBox.top);
 				}
 			}),
 			rarity: new CardAttribute({
@@ -159,7 +165,7 @@ class MagicCard extends GenericCard
 					width: 22,
 					height: 22
 				},
-				ondraw: function()
+				ondraw: function(ctx)
 				{
 					this.rarityIconSrc = '/images/icons/rarities/default/';
 					this.rarityIconSrc += 'm-' + this.value + '.png';
@@ -168,7 +174,7 @@ class MagicCard extends GenericCard
 					
 					this.rarityIcon.onload = ()=>
 					{
-						this.cardObject.ctx.drawImage(
+						ctx.drawImage(
 							this.rarityIcon, 
 							this.boundingBox.left, 
 							this.boundingBox.top,
@@ -200,17 +206,17 @@ class MagicCard extends GenericCard
 					this.cardObject.update();
 					localStorage.setItem('userName', this.value); // Store username into localStorage
 				},
-				ondraw: function()
+				ondraw: function(ctx, cardFrameImgSrc = this.cardObject.cardFrameImg.src)
 				{
 					var authorFontSize = 11;
 					var authorColor = 'black';
-					if(this.cardObject.cardFrameImg.src.match(/(land|colorless|black|green|red)/)) 
+					if(cardFrameImgSrc.match(/(land|colorless|black|green|red)/)) 
 						authorColor = 'white';
-					this.cardObject.ctx.fillStyle = authorColor;
-					this.cardObject.ctx.font = authorFontSize+'px '+this.cardObject.defaultFont;
-					this.cardObject.ctx.fillText("Zougouda's Magic The Gathering™ generator, 2018", this.boundingBox.left, this.boundingBox.top);
+					ctx.fillStyle = authorColor;
+					ctx.font = authorFontSize+'px '+this.cardObject.defaultFont;
+					ctx.fillText("Zougouda's Magic The Gathering™ generator, 2018", this.boundingBox.left, this.boundingBox.top);
 					if(this.value)
-						this.cardObject.ctx.fillText("By "+this.value, this.boundingBox.left, this.boundingBox.top+authorFontSize);
+						ctx.fillText("By "+this.value, this.boundingBox.left, this.boundingBox.top+authorFontSize);
 				}
 			}),
 			power: new CardAttribute({
@@ -220,20 +226,24 @@ class MagicCard extends GenericCard
 					top: 520,
 					left: 334
 				},
-				ondraw: function()
+				ondraw: function(
+					ctx, 
+					powerAttr = this.cardObject.attributes.power, 
+					toughnessAttr = this.cardObject.attributes.toughness
+				)
 				{
 					/* little hack: we draw both power and toughness here */
-					var power = this.value;
-					var toughness = this.cardObject.attributes.toughness.value;
+					var power = powerAttr.value;
+					var toughness = toughnessAttr.value;
 
 					if(power || toughness)
 					{
-						this.cardObject.ctx.save();
-						this.cardObject.ctx.fillStyle = 'black';
-						this.cardObject.ctx.font = 'bold 20px '+this.cardObject.defaultFont;
-						this.cardObject.ctx.textAlign = 'center';
-						this.cardObject.ctx.fillText(power + ' / ' + toughness, this.boundingBox.left, this.boundingBox.top);
-						this.cardObject.ctx.restore();
+						ctx.save();
+						ctx.fillStyle = 'black';
+						ctx.font = 'bold 20px '+this.cardObject.defaultFont;
+						ctx.textAlign = 'center';
+						ctx.fillText(power + ' / ' + toughness, this.boundingBox.left, this.boundingBox.top);
+						ctx.restore();
 					}
 				}
 			}),
@@ -244,37 +254,44 @@ class MagicCard extends GenericCard
 		};
 	}
 
-	getCardFrameSrc()
+	getCardColor(manaAttribute = this.attributes.manaCost, powerAttribute = this.attributes.power, toughnessAttribute = this.attributes.toughness)
 	{
 		/* is a land */
-		if(!this.attributes.manaCost.value && !this.isACreature() )
-			return MagicCard.cardFramesSrcByColor.land + '.png';
+		if(!manaAttribute.value && !(powerAttribute.value || toughnessAttribute.value) )
+			return 'land';
 
 		var 
-			white = (this.attributes.manaCost.value.match(/\(w\)/g) || []).length,
-			blue  = (this.attributes.manaCost.value.match(/\(u\)/g) || []).length,
-			black = (this.attributes.manaCost.value.match(/\(b\)/g) || []).length,
-			red   = (this.attributes.manaCost.value.match(/\(r\)/g) || []).length,
-			green = (this.attributes.manaCost.value.match(/\(g\)/g) || []).length;
+			white = (manaAttribute.value.match(/\(w\)/g) || []).length,
+			blue  = (manaAttribute.value.match(/\(u\)/g) || []).length,
+			black = (manaAttribute.value.match(/\(b\)/g) || []).length,
+			red   = (manaAttribute.value.match(/\(r\)/g) || []).length,
+			green = (manaAttribute.value.match(/\(g\)/g) || []).length;
 
 		/* fatass if to determine the card's frame */
 		var returnValue;
 		if( !white && !blue && !black && !red && !green )
-			returnValue = MagicCard.cardFramesSrcByColor.colorless;
+			return 'colorless';
 		else if( white > 0 && !blue && !black && !red & !green )
-			returnValue = MagicCard.cardFramesSrcByColor.white; 
+			return 'white';
 		else if( blue > 0 && !white && !black && !red && !green )
-			returnValue = MagicCard.cardFramesSrcByColor.blue;
+			return 'blue';
 		else if( black > 0 && !blue && !white && !red && !green )
-			returnValue = MagicCard.cardFramesSrcByColor.black;
+			return 'black';
 		else if( red > 0 && !blue && !black && !white && !green )
-			returnValue = MagicCard.cardFramesSrcByColor.red;
+			return 'red';
 		else if( green > 0 && !blue && !black && !red & !white )
-			returnValue = MagicCard.cardFramesSrcByColor.green;
+			return 'green';
 		else
-			returnValue = MagicCard.cardFramesSrcByColor.gold;
+			return 'gold';
 
-		if(this.attributes.power.value || this.attributes.toughness.value)
+	}
+
+	getCardFrameSrc(manaAttribute = this.attributes.manaCost, powerAttribute = this.attributes.power, toughnessAttribute = this.attributes.toughness)
+	{
+		var color = this.getCardColor(manaAttribute, powerAttribute, toughnessAttribute);
+		var returnValue = MagicCard.cardFramesSrcByColor[color];
+
+		if(powerAttribute.value || toughnessAttribute.value)
 			returnValue += '-creature';
 		returnValue += '.png';
 
