@@ -100,6 +100,14 @@ footer
 	display: inline-block;
 	width: 50%;
 }
+.editor[data-pattern="magic-split"] + .preview canvas
+{
+	transition: transform .4s;
+	&:hover
+	{
+		transform: rotate(90deg);
+	}
+}
 
 .editor 
 {
