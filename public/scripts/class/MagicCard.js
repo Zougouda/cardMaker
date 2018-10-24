@@ -28,7 +28,6 @@ class MagicCard extends GenericCard
 
 	setAttributes()
 	{
-		var self = this;
 		this.attributes = {
 			illustration: new CardAttribute({
 				cardObject: this,
@@ -45,19 +44,37 @@ class MagicCard extends GenericCard
 				},
 				ondraw: function
 				(
+					/* TODO json parameters */
 					ctx, 
 					cropper = this.cardObject.cropper, 
 					uploadedImage = this.cardObject.uploadedImage,
-					cardFrameImg = this.cardObject.cardFrameImg
+					cardFrameImg = this.cardObject.cardFrameImg,
+					cardFrameWidth = this.cardObject.cardWidth,
+					cardFrameHeight = this.cardObject.cardheight,
+					offsetLeft = 0,
+					offsetTop = 0,
 				)
 				{
-					ctx.drawImage(cardFrameImg, 0, 0, this.cardObject.cardWidth, this.cardObject.cardheight); // draw frame
+					if(this.beforeDraw)
+						this.beforeDraw(ctx);
+					ctx.drawImage(cardFrameImg, offsetLeft, offsetTop, cardFrameWidth, cardFrameHeight); // draw frame
+					if(this.afterDraw)
+						this.afterDraw(ctx);
+
 					var actualDraw = (ctx, source)=>
 					{
-						//ctx.clearRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height); // clear card's caption
+						if(!source)
+							return;
+
+						if(this.beforeDraw)
+							this.beforeDraw(ctx);
+
 						ctx.fillStyle = '#FFFFFF';
 						ctx.fillRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height);
 						ctx.drawImage(source, this.boundingBox.left-1, this.boundingBox.top, this.boundingBox.width+1, this.boundingBox.height); // TODO fix these offset/width values
+
+						if(this.afterDraw)
+							this.afterDraw(ctx);
 					};
 
 					if(cropper)
@@ -70,6 +87,8 @@ class MagicCard extends GenericCard
 						uploadedImage.onload = ()=>
 						{
 							actualDraw(ctx, uploadedImage);
+							if(this.afterDraw)
+								this.afterDraw(ctx);
 						};
 					}
 				}
@@ -85,10 +104,16 @@ class MagicCard extends GenericCard
 				},
 				ondraw: function(ctx)
 				{
+					if(this.beforeDraw)
+						this.beforeDraw(ctx);
+
 					ctx.fillStyle = 'black';
 					ctx.font = 'bold 18px '+this.cardObject.defaultFont;
 					GenericCard.getFontSizeToFitText(this.cardObject.ctx, this.value, 280);
 					ctx.fillText(this.value, this.boundingBox.left, this.boundingBox.top);
+
+					if(this.afterDraw)
+						this.afterDraw(ctx);
 				}
 			}),
 			description: new CardAttribute({
@@ -102,6 +127,9 @@ class MagicCard extends GenericCard
 				},
 				ondraw: function(ctx)
 				{
+					if(this.beforeDraw)
+						this.beforeDraw(ctx);
+
 					var descFontSize = 16;
 					ctx.fillStyle = 'black';
 					ctx.font = descFontSize+'px '+this.cardObject.defaultFont;
@@ -113,6 +141,9 @@ class MagicCard extends GenericCard
 						this.boundingBox.width, 
 						descFontSize
 					);
+
+					if(this.afterDraw)
+						this.afterDraw(ctx);
 				}
 			}),
 			manaCost: new CardAttribute({
@@ -120,11 +151,14 @@ class MagicCard extends GenericCard
 				inputDOM: document.querySelector('.card-mana-cost'),
 				boundingBox: {
 					top: 40,
-					right: -40
+					left: this.canvasDOM.width - 40
 				},
 				ondraw: function(ctx)
 				{
-					var startX = this.cardObject.canvasDOM.width + this.boundingBox.right;
+					if(this.beforeDraw)
+						this.beforeDraw(ctx);
+
+					var startX = this.boundingBox.left;
 					var startY = this.boundingBox.top;
 					var manaCostImages = this.cardObject.getImagesByAbbreviationsText(this.value);
 					var manaIconsSize = 16;
@@ -134,12 +168,15 @@ class MagicCard extends GenericCard
 						var localStartX = startX; // to avoid async errors with image loading
 						var image = new Image();
 						image.src = imageSrc;
-						image.onload = ()=>
-						{
+						//image.onload = ()=>
+						//{
 							ctx.drawImage(image, localStartX, startY, manaIconsSize, manaIconsSize);
-						}
+						//}
 						startX += manaIconsSize;
 					});
+
+					if(this.afterDraw)
+						this.afterDraw(ctx);
 				}
 			}),
 			type: new CardAttribute({
@@ -151,9 +188,15 @@ class MagicCard extends GenericCard
 				},
 				ondraw: function(ctx)
 				{
+					if(this.beforeDraw)
+						this.beforeDraw(ctx);
+
 					ctx.fillStyle = 'black';
 					ctx.font = `bold 16px ${this.cardObject.defaultFont}`;
 					ctx.fillText(this.value, this.boundingBox.left, this.boundingBox.top);
+
+					if(this.afterDraw)
+						this.afterDraw(ctx);
 				}
 			}),
 			rarity: new CardAttribute({
@@ -174,6 +217,9 @@ class MagicCard extends GenericCard
 					
 					this.rarityIcon.onload = ()=>
 					{
+						if(this.beforeDraw)
+							this.beforeDraw(ctx);
+
 						ctx.drawImage(
 							this.rarityIcon, 
 							this.boundingBox.left, 
@@ -181,6 +227,9 @@ class MagicCard extends GenericCard
 							this.boundingBox.width, 
 							this.boundingBox.height
 						);
+
+						if(this.afterDraw)
+							this.afterDraw(ctx);
 					};
 				}
 			}),
@@ -206,17 +255,21 @@ class MagicCard extends GenericCard
 					this.cardObject.update();
 					localStorage.setItem('userName', this.value); // Store username into localStorage
 				},
-				ondraw: function(ctx, cardFrameImgSrc = this.cardObject.cardFrameImg.src)
+				ondraw: function(ctx, cardFrameImgSrc = this.cardObject.cardFrameImg.src, authorFontSize = 11)
 				{
-					var authorFontSize = 11;
-					var authorColor = 'black';
-					if(cardFrameImgSrc.match(/(land|colorless|black|green|red)/)) 
-						authorColor = 'white';
+					if(this.beforeDraw)
+						this.beforeDraw(ctx);
+
+					//var authorFontSize = 11;
+					var authorColor = this.cardObject.getAuthorColor(this.cardObject.cardFrameImg.src);
 					ctx.fillStyle = authorColor;
 					ctx.font = authorFontSize+'px '+this.cardObject.defaultFont;
 					ctx.fillText("Zougouda's Magic The Gathering™ generator, 2018", this.boundingBox.left, this.boundingBox.top);
 					if(this.value)
 						ctx.fillText("By "+this.value, this.boundingBox.left, this.boundingBox.top+authorFontSize);
+
+					if(this.afterDraw)
+						this.afterDraw(ctx);
 				}
 			}),
 			power: new CardAttribute({
@@ -232,6 +285,9 @@ class MagicCard extends GenericCard
 					toughnessAttr = this.cardObject.attributes.toughness
 				)
 				{
+					if(this.beforeDraw)
+						this.beforeDraw(ctx);
+
 					/* little hack: we draw both power and toughness here */
 					var power = powerAttr.value;
 					var toughness = toughnessAttr.value;
@@ -245,6 +301,9 @@ class MagicCard extends GenericCard
 						ctx.fillText(power + ' / ' + toughness, this.boundingBox.left, this.boundingBox.top);
 						ctx.restore();
 					}
+
+					if(this.afterDraw)
+						this.afterDraw(ctx);
 				}
 			}),
 			toughness: new CardAttribute({
@@ -296,6 +355,15 @@ class MagicCard extends GenericCard
 		returnValue += '.png';
 
 		return returnValue;
+	}
+
+	getAuthorColor(frameSrc = this.cardFrameImg.src)
+	{
+		var authorColor = 'black';
+		if(frameSrc.match(/(land|colorless|black|green|red)/)) 
+			authorColor = 'white';
+
+		return authorColor;
 	}
 
 	insertIconIntoTextInput(iconAsText, inputDOM)

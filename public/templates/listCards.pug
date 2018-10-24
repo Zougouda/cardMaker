@@ -10,7 +10,12 @@ block content
 	div.list-cards
 		each card in cards
 			div.list-card-el.col-max-4(data-card-id=card.id)
-				div(class=(card.cardPattern == 'magic-transform' ? 'can-transform' : '') )
+				-var containerClassName = '';
+				if card.cardPattern == 'magic-transform'
+					-containerClassName = 'can-transform'
+				else if card.cardPattern == 'magic-split'
+					-containerClassName = 'can-split'
+				div(class=containerClassName )
 					if card.cardPattern == 'magic-transform'
 						a(href="/edit-card?id="+card.id) 
 							img.untransformed(src="/images/savedCards/"+card.id+".png")

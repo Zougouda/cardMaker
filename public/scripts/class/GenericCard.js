@@ -51,6 +51,10 @@ class GenericCard
 			case 'magic-transform':
 				classToUse = MagicCardTransform;
 			break;
+			
+			case 'magic-split':
+				classToUse = MagicCardSplit;
+			break;
 	
 			case 'hearthstone':
 				classToUse = HearthstoneCard;
@@ -136,6 +140,8 @@ class GenericCard
 		this.attributes['illustration'].value = this.uploadedImage.src;
 		if(GenericCard.lastCropperSrc)
 			this.setCropperSrc(GenericCard.lastCropperSrc);
+
+		this.clear();
 		this.update();
 	}
 
@@ -159,6 +165,11 @@ class GenericCard
 	getCardFrameSrc()
 	{
 		// TODO ovoerride me
+	}
+
+	clear()
+	{
+		this.ctx.clearRect(0, 0, this.cardWidth, this.cardheight);
 	}
 
 	update()

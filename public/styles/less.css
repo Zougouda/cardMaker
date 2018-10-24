@@ -116,6 +116,9 @@ footer {
 .editor[data-pattern="magic-split"] .mtg-split {
   display: initial;
 }
+.editor[data-pattern="magic-split"] .mtg-split-off {
+  display: none;
+}
 .editor[data-pattern="magic-flip"] .mtg-flip {
   display: initial;
 }
@@ -173,7 +176,8 @@ footer {
   display: inline-block;
   margin-top: 0;
 }
-.editor .mana-cost-buttons {
+.editor .mana-cost-buttons,
+.editor .mana-cost-buttons-2 {
   vertical-align: top;
   width: calc(100% - 200px);
 }
@@ -250,6 +254,9 @@ footer {
 }
 .list-cards .list-card-el div:hover img {
   transform: scale(1.05);
+}
+.list-cards .list-card-el div.can-split:hover img {
+  transform: rotate(90deg) scale(0.95, 0.95);
 }
 .list-cards .list-card-el div.can-transform:hover img.transformed {
   opacity: 1;

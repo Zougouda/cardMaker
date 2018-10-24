@@ -4,11 +4,13 @@ class MagicCardTransform extends MagicCard
 	{
 		this.canvasDOM2 = document.querySelector('.preview-canvas-2');
 		this.ctx2 = this.canvasDOM2.getContext('2d');
-		this.uploadedImage2 = document.querySelector('img.uploaded-image-2'); // TODO
+		this.uploadedImage2 = document.querySelector('img.uploaded-image-2');
+		this.cropper2 = null;
 
 		super.init();
 
-		this.attributes['illustration2'].value = this.uploadedImage2.src;
+		if( this.attributes.illustration2)
+			this.attributes.illustration2.value = this.uploadedImage2.src;
 
 		/* Build buttonsPickers */
 		this.buildIconsPicker({

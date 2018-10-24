@@ -34,6 +34,7 @@ block append scripts
 	script(src='/scripts/class/GenericCard.js')
 	script(src='/scripts/class/MagicCard.js')
 	script(src='/scripts/class/MagicCard.transform.js')
+	script(src='/scripts/class/MagicCard.split.js')
 	script(src='/scripts/class/HearthstoneCard.js')
 	script(src='/scripts/class/GwentCard.js')
 	script(src='/scripts/class/YuGiOhCard.js')
@@ -148,7 +149,7 @@ block content
 				br.mtg-off.ygo-off
 				label.premium-label.mtg-off.ygo-off(for='card-premium') Premium
 				input#card-premium.card-premium.mtg-off.ygo-off(type='checkbox')
-			fieldset.power-toughness-container
+			fieldset.power-toughness-container.mtg-split-off
 				legend Power
 				div
 					input.card-power(type='text',placeholder='Power')
