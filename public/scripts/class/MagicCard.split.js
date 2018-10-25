@@ -202,6 +202,7 @@ class MagicCardSplit extends MagicCard
 			boundingBox: Object.create(this.attributes.rarity.boundingBox),
 			ondraw: function(ctx)
 			{
+				this.value = this.cardObject.attributes.rarity.value; // copy the first rarity attribute
 				this.cardObject.attributes.rarity.ondraw.apply(this, [ctx]);
 			}
 		});
