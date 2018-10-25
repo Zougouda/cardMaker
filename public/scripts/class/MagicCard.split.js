@@ -39,7 +39,7 @@ class MagicCardSplit extends MagicCard
 		var frameWidth = this.cardheight / 2;
 		var frameHeight = frameWidth / ( this.cardWidth / this.cardheight );
 		var sizeRatio = frameWidth / this.cardWidth;
-		var rightFrameOffsetLeft = frameWidth - 20;
+		var rightFrameOffsetLeft = frameWidth - 18;
 		var ctx = this.ctx;
 
 		var translateAndRotate = (ctx = this.ctx)=>
@@ -103,12 +103,12 @@ class MagicCardSplit extends MagicCard
 		var descDraw = this.attributes.description.ondraw;
 		this.attributes.description.boundingBox = {
 			left: 30,
-			top: 260,
+			top: 262,
 			width: 220,
 		};
 		this.attributes.description.ondraw = function(ctx)
 		{
-			descDraw.apply(this, [ctx]);
+			descDraw.apply(this, [ctx, 18]);
 		};
 
 		this.attributes.description2 = new CardAttribute({
@@ -167,10 +167,10 @@ class MagicCardSplit extends MagicCard
 		var typeDraw = this.attributes.type.ondraw;
 		this.attributes.type.ondraw = function(ctx)
 		{
-			typeDraw.apply(this, [ctx]);
+			typeDraw.apply(this, [ctx, 14]);
 		};
 		this.attributes.type.boundingBox = {
-			left: 26,
+			left: 28,
 			top: 235,
 		};
 		this.attributes.type2 = new CardAttribute({

@@ -256,7 +256,7 @@ footer {
   transform: scale(1.05);
 }
 .list-cards .list-card-el div.can-split:hover img {
-  transform: rotate(90deg) scale(0.95, 0.95);
+  transform: rotate(90deg);
 }
 .list-cards .list-card-el div.can-transform:hover img.transformed {
   opacity: 1;

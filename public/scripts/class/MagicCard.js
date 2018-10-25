@@ -123,12 +123,12 @@ class MagicCard extends GenericCard
 					width: 328,
 					height: 150
 				},
-				ondraw: function(ctx)
+				ondraw: function(ctx, descFontSize = 16)
 				{
 					if(this.beforeDraw)
 						this.beforeDraw(ctx);
 
-					var descFontSize = 16;
+					//var descFontSize = 16;
 					ctx.fillStyle = 'black';
 					ctx.font = descFontSize+'px '+this.cardObject.defaultFont;
 					this.cardObject.wrapText(
@@ -184,13 +184,13 @@ class MagicCard extends GenericCard
 					top: 336,
 					left: 40
 				},
-				ondraw: function(ctx)
+				ondraw: function(ctx, fontSize = 16)
 				{
 					if(this.beforeDraw)
 						this.beforeDraw(ctx);
 
 					ctx.fillStyle = 'black';
-					ctx.font = `bold 16px ${this.cardObject.defaultFont}`;
+					ctx.font = `bold ${fontSize}px ${this.cardObject.defaultFont}`;
 					ctx.fillText(this.value, this.boundingBox.left, this.boundingBox.top);
 
 					if(this.afterDraw)
