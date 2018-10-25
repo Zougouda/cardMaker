@@ -68,26 +68,11 @@ class MagicCardSplit extends MagicCard
 				frameHeight
 			]);
 		};
-		this.attributes.illustration.beforeDraw = function(ctx)
-		{
-			//ctx.clearRect(0, 0, this.cardObject.cardWidth, this.cardObject.cardheight);
-			ctx.save();
-			translateAndRotate(ctx);
-		};
-		this.attributes.illustration.afterDraw = function(ctx)
-		{
-			ctx.restore();
-		};
 
 		this.attributes.illustration2 = new CardAttribute({
 			cardObject: this,
 			inputDOM: document.querySelector('.uploader-2'),
-			boundingBox: {
-				left: rightFrameOffsetLeft + 26,
-				top: 48,
-				width: 328 * sizeRatio,
-				height: 242 * sizeRatio
-			},
+			boundingBox: Object.create(this.attributes.illustration.boundingBox),
 			onchange: function(val)
 			{
 				/* Override original function with parameters for cropper #2 */
@@ -113,15 +98,6 @@ class MagicCardSplit extends MagicCard
 				]);
 			}
 		});
-		this.attributes.illustration2.beforeDraw = function(ctx)
-		{
-			ctx.save();
-			translateAndRotate(ctx);
-		};
-		this.attributes.illustration2.afterDraw = function(ctx)
-		{
-			ctx.restore();
-		};
 
 		/* DESCRIPTIONS  */
 		var descDraw = this.attributes.description.ondraw;
@@ -132,20 +108,13 @@ class MagicCardSplit extends MagicCard
 		};
 		this.attributes.description.ondraw = function(ctx)
 		{
-			ctx.save();
-			translateAndRotate(ctx);
 			descDraw.apply(this, [ctx]);
-			ctx.restore();
 		};
 
 		this.attributes.description2 = new CardAttribute({
 			cardObject: this,
 			inputDOM: document.querySelector('.card-description-2'),
-			boundingBox: {
-				left: rightFrameOffsetLeft + 30,
-				top: 260,
-				width: 220,
-			},
+			boundingBox: Object.create(this.attributes.description.boundingBox),
 			ondraw: function(ctx)
 			{
 				this.cardObject.attributes.description.ondraw.apply(this, [ctx]);
@@ -160,18 +129,12 @@ class MagicCardSplit extends MagicCard
 		};
 		this.attributes.manaCost.ondraw = function(ctx)
 		{
-			ctx.save();
-			translateAndRotate(ctx);
 			manaDraw.apply(this, [ctx]);
-			ctx.restore();
 		};
 		this.attributes.manaCost2 = new CardAttribute({
 			cardObject: this,
 			inputDOM: document.querySelector('.card-mana-cost-2'),
-			boundingBox: {
-				top: 25,
-				left: frameWidth + rightFrameOffsetLeft - 25,
-			},
+			boundingBox: Object.create(this.attributes.manaCost.boundingBox),
 			ondraw: function()
 			{
 				this.cardObject.attributes.manaCost.ondraw.apply(this, [ctx])
@@ -182,10 +145,7 @@ class MagicCardSplit extends MagicCard
 		var titleDraw = this.attributes.title.ondraw;
 		this.attributes.title.ondraw = function(ctx)
 		{
-			ctx.save();
-			translateAndRotate(ctx);
 			titleDraw.apply(this, [ctx]);
-			ctx.restore();
 		};
 		this.attributes.title.boundingBox = {
 			left: 26,
@@ -196,12 +156,7 @@ class MagicCardSplit extends MagicCard
 		this.attributes.title2 = new CardAttribute({
 			cardObject: this,
 			inputDOM: document.querySelector('.card-title-2'),
-			boundingBox: {
-				left: 26 + rightFrameOffsetLeft,
-				top: 38,
-				width: 328,
-				height: 10
-			},
+			boundingBox: Object.create(this.attributes.title.boundingBox),
 			ondraw: function()
 			{
 				this.cardObject.attributes.title.ondraw.apply(this, [ctx])
@@ -212,10 +167,7 @@ class MagicCardSplit extends MagicCard
 		var typeDraw = this.attributes.type.ondraw;
 		this.attributes.type.ondraw = function(ctx)
 		{
-			ctx.save();
-			translateAndRotate(ctx);
 			typeDraw.apply(this, [ctx]);
-			ctx.restore();
 		};
 		this.attributes.type.boundingBox = {
 			left: 26,
@@ -224,10 +176,7 @@ class MagicCardSplit extends MagicCard
 		this.attributes.type2 = new CardAttribute({
 			cardObject: this,
 			inputDOM: document.querySelector('.card-type-2'),
-			boundingBox: {
-				left: 26 + rightFrameOffsetLeft,
-				top: 235,
-			},
+			boundingBox: Object.create(this.attributes.type.boundingBox),
 			ondraw: function()
 			{
 				this.cardObject.attributes.type.ondraw.apply(this, [ctx])
@@ -244,44 +193,18 @@ class MagicCardSplit extends MagicCard
 		};
 		this.attributes.rarity.ondraw = function(ctx)
 		{
-			ctx.save();
-			translateAndRotate(ctx);
 			rarityDraw.apply(this, [ctx]);
-			ctx.restore();
-		};
-		this.attributes.rarity.beforeDraw = function(ctx)
-		{
-			ctx.save();
-			translateAndRotate(ctx);
-		};
-		this.attributes.rarity.afterDraw = function(ctx)
-		{
-			ctx.restore();
 		};
 
 		this.attributes.rarity2 = new CardAttribute({
 			cardObject: this,
 			inputDOM: document.querySelector('.card-rarity-selector'),
-			boundingBox: {
-				top: 222,
-				left: frameWidth + rightFrameOffsetLeft - 44,
-				width: 16,
-				height: 16
-			},
+			boundingBox: Object.create(this.attributes.rarity.boundingBox),
 			ondraw: function(ctx)
 			{
 				this.cardObject.attributes.rarity.ondraw.apply(this, [ctx]);
 			}
 		});
-		this.attributes.rarity2.beforeDraw = function(ctx)
-		{
-			ctx.save();
-			translateAndRotate(ctx);
-		};
-		this.attributes.rarity2.afterDraw = function(ctx)
-		{
-			ctx.restore();
-		};
 
 		/* Author */
 		var authorDraw = this.attributes.author.ondraw;
@@ -291,10 +214,6 @@ class MagicCardSplit extends MagicCard
 		};
 		this.attributes.author.ondraw = function(ctx)
 		{
-			ctx.save();
-			translateAndRotate(ctx);
-
-
 			if(this.beforeDraw)
 				this.beforeDraw(ctx);
 
@@ -312,9 +231,27 @@ class MagicCardSplit extends MagicCard
 
 			if(this.afterDraw)
 				this.afterDraw(ctx);
-
-
-			ctx.restore();
 		};
+
+		/* Apply beforeDraw and afterDraw on all available attributes */
+		Object.keys(this.attributes)
+		.forEach((key)=>
+		{
+			this.attributes[key].beforeDraw = function(ctx)
+			{
+				ctx.save();
+				translateAndRotate(ctx);
+			};
+			this.attributes[key].afterDraw = function(ctx)
+			{
+				ctx.restore();
+			};
+
+			/* Apply additional offsetLeft to the right side of the split-card  */
+			if(key.slice(-1) == '2')
+			{
+				this.attributes[key].boundingBox.left += rightFrameOffsetLeft;
+			}
+		});
 	}
 }

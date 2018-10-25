@@ -87,8 +87,6 @@ class MagicCard extends GenericCard
 						uploadedImage.onload = ()=>
 						{
 							actualDraw(ctx, uploadedImage);
-							if(this.afterDraw)
-								this.afterDraw(ctx);
 						};
 					}
 				}
