@@ -386,7 +386,7 @@ class GenericCard
 				/* special case for gifs */
 				if(this.cropper && this.attributes.illustration.frameData) // cropped gif
 				{
-					GenericCard.imageToDataURL(this.attributes.illustration.inputDOM.files[0])
+					GenericCard.imageToDataURL(this.attributes.illustration.inputDOM.files[0]) // TODO fixme export the cropped gif only
 					.then((illustrationToDataURL)=>
 					{
 						json.illustration = illustrationToDataURL;

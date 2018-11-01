@@ -103,10 +103,9 @@ class GifHandler
 			var frameIndex = 0, isRendering = false;
 			cardObject.attributes.illustration.afterDraw = ()=>
 			{
-				if(frameIndex >= cardObject.attributes.illustration.frameData.length && !isRendering)
+				if(frameIndex >= cardObject.attributes.illustration.frameData.length && !isRendering) // all frames added
 				{
 					isRendering = true;
-					//console.log('RENDERING');
 					gif.render();
 				}
 
