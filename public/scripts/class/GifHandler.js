@@ -1,5 +1,29 @@
 class GifHandler
 {
+	static animateCardCanvas(cardIllustrationAttr, src)
+	{
+		/* GIF HANDLING */
+		if(cardIllustrationAttr.animationFrameID)
+		{
+			cancelAnimationFrame(cardIllustrationAttr.animationFrameID);
+			cardIllustrationAttr.animationFrameID = null;
+		}
+		cardIllustrationAttr.frameData = null;
+		cardIllustrationAttr.animationIndex = 0;
+		GifHandler.isAnimatedGif(src, (isAnimated)=>
+		{
+			if(isAnimated)
+			{
+				GifHandler.getFramesData(src)
+				.then((frameData)=>
+				{
+					cardIllustrationAttr.frameData = frameData;
+					cardIllustrationAttr.cardObject.update();
+				});
+			}
+		});
+	}
+
 	/* FROM https://gist.github.com/lakenen/3012623 */
 	static  isAnimatedGif(src, cb) 
 	{
