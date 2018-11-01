@@ -692,7 +692,7 @@ document.addEventListener('DOMContentLoaded', (e)=>
 		if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 83)  // Ctrl + S or cmd + S
 		{
 			e.preventDefault();
-			window.currentCard.saveToDatabase();
+			window.currentCard.saveToDatabasePromise();
 		}
 	}, false);
 	/* Add ctrl-i shortcut */
