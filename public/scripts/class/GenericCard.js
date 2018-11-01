@@ -293,7 +293,7 @@ class GenericCard
 			if(this.attributes.illustration2 && this.canvasDOM2 && canvasDOM == this.canvasDOM2) // secondary card
 				illustrationAttribute = this.attributes.illustration2;
 
-			if(!illustrationAttribute .frameData) // no gif
+			if(!illustrationAttribute.frameData) // no gif
 			{
 				this.update();
 				resolve(canvasDOM.toDataURL('image/png'));
@@ -377,14 +377,12 @@ class GenericCard
 			{
 				if(this.cropper2)
 					json.illustration2 = this.cropper2.getCroppedCanvas().toDataURL('image/png');
-				else if(!this.attributes.illustration2.value.startsWith('/images') )
-					json[key] = this.attributes.illustration2.value;
 			}
 
 			if(this.attributes.illustration)
 			{
 				/* special case for gifs */
-				if(this.cropper && this.attributes.illustration.frameData) // cropped gif
+				if(this.cropper && this.attributes.illustration.frameData) // animated gif
 				{
 					GenericCard.imageToDataURL(this.attributes.illustration.inputDOM.files[0]) // TODO fixme export the cropped gif only
 					.then((illustrationToDataURL)=>
@@ -395,14 +393,16 @@ class GenericCard
 				}
 				if(this.cropper)
 					json.illustration = this.cropper.getCroppedCanvas().toDataURL('image/png');
-				else if(!this.attributes.illustration.value.startsWith('/images') )
-					json[key] = this.attributes.illustration.value;
 			}
 
 			if
 			(
-				!this.attributes.illustration.frameData
-				&& ( 
+				(
+					!this.attributes.illustration.frameData 
+					|| !this.cropper
+				)
+				&& 
+				( 
 					!this.attributes.illustration2
 					|| !this.attributes.illustration2.frameData
 				)
