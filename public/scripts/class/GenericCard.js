@@ -111,6 +111,27 @@ class GenericCard
 		return fontSize;
 	}
 
+	static imageToDataURL(image) // blob or file
+	{
+		return new Promise((resolve, reject)=>
+		{
+			/* blob/file to dataURL */
+			try
+			{
+				var a = new FileReader();
+				a.onload = function(e) 
+				{
+					resolve(e.target.result); // returns blob URL-encoded as URL-encoded gif
+				};
+				a.readAsDataURL(image);
+			}
+			catch(e)
+			{
+				reject('Failed to convert image to dataURL', e);
+			}
+		});
+	}
+
 	constructor(options = {})
 	{
 		this.options = options;
@@ -226,17 +247,11 @@ class GenericCard
 		}
 
 		onMultipleImagesLoaded(imagesToLoad, actualDraw);
-		//this.cardFrameImg.onload = ()=>
-		//{
-		//	actualDraw();
-		//};
 	}
 
-	//setCropperSrc(src)
 	setCropperSrc
 	(
 		src, 
-		//cropper = this.cropper, 
 		cropperRef = 'cropper',
 		uploadedImage = this.uploadedImage,
 		attribute = this.attributes.illustration
@@ -268,6 +283,30 @@ class GenericCard
 	{
 		this.update();
 		return canvasDOM.toDataURL('image/png').replace("image/png", "image/octet-stream");
+	}
+
+	getWholeCardImgSrcPromise(canvasDOM = this.canvasDOM)
+	{
+		return new Promise((resolve, reject)=>
+		{
+			var illustrationAttribute = this.attributes.illustration;
+			if(this.attributes.illustration2 && this.canvasDOM2 && canvasDOM == this.canvasDOM2) // secondary card
+				illustrationAttribute = this.attributes.illustration2;
+
+			if(!illustrationAttribute .frameData) // no gif
+			{
+				this.update();
+				resolve(canvasDOM.toDataURL('image/png'));
+			}
+			else // gif
+			{
+				GifHandler.exportToFile(this)
+				.then((urlEncodedGif)=>
+				{
+					resolve(urlEncodedGif);
+				});
+			}
+		});
 	}
 
 	exportImg()
@@ -316,6 +355,60 @@ class GenericCard
 		if(this.pattern)
 			json.cardPattern = this.pattern;
 		return json;
+	}
+
+	exportJsonPromise()
+	{
+		return new Promise((resolve, reject)=>
+		{
+			var json = {};
+
+			Object.entries(this.attributes).forEach(([key, obj])=>
+			{
+				if( ['illustration', 'illustration2'].includes(key) )
+					return;
+				json[key] = obj.value;
+			});
+
+			if(this.pattern)
+				json.cardPattern = this.pattern;
+
+			if(this.attributes.illustration2)
+			{
+				if(this.cropper2)
+					json.illustration2 = this.cropper2.getCroppedCanvas().toDataURL('image/png');
+				else if(!this.attributes.illustration2.value.startsWith('/images') )
+					json[key] = this.attributes.illustration2.value;
+			}
+
+			if(this.attributes.illustration)
+			{
+				/* special case for gifs */
+				if(this.cropper && this.attributes.illustration.frameData) // cropped gif
+				{
+					GenericCard.imageToDataURL(this.attributes.illustration.inputDOM.files[0])
+					.then((illustrationToDataURL)=>
+					{
+						json.illustration = illustrationToDataURL;
+						resolve(json);
+					});
+				}
+				if(this.cropper)
+					json.illustration = this.cropper.getCroppedCanvas().toDataURL('image/png');
+				else if(!this.attributes.illustration.value.startsWith('/images') )
+					json[key] = this.attributes.illustration.value;
+			}
+
+			if
+			(
+				!this.attributes.illustration.frameData
+				&& ( 
+					!this.attributes.illustration2
+					|| !this.attributes.illustration2.frameData
+				)
+			) // no cropped gif for illustration or illustration2
+				resolve(json);
+		});
 	}
 
 	importJson(json)
@@ -382,6 +475,55 @@ class GenericCard
 		newXHR.setRequestHeader("Content-Type", "application/json");
 		var formattedJsonData = JSON.stringify( json );
 		newXHR.send( formattedJsonData );
+	}
+
+	saveToDatabasePromise()
+	{
+		var onJsonReady = (json)=>
+		{
+			/* Ajax query to save card */
+			var newXHR = new XMLHttpRequest();
+			newXHR.onreadystatechange = function() 
+			{
+				if (newXHR.readyState === 4 && newXHR.status === 200) 
+				{
+					window.location.href = `/list-cards?userID=${userID}`;
+				}
+			};
+			newXHR.open( 'POST', '/save-card', true );
+			newXHR.setRequestHeader("Content-Type", "application/json");
+			var formattedJsonData = JSON.stringify( json );
+			newXHR.send( formattedJsonData );
+		};
+
+		this.exportJsonPromise()
+		.then((json)=>
+		{
+			if(this.cardID) // existing card
+				json.id = this.cardID; // update card
+			else // new card
+				json.userID = window.userID; // set ownership
+
+			this.getWholeCardImgSrcPromise()
+			.then((wholeCardImgDataURL)=>
+			{
+				json.wholeCardImgSrc = wholeCardImgDataURL;
+
+				if(json.cardPattern !== 'magic-transform') // default behaviour
+				{
+					onJsonReady(json); // JSON READY
+				}
+				else // on transform-card specific case
+				{
+					this.getWholeCardImgSrcPromise(this.canvasDOM2)
+					.then((wholeCardImgDataURL2)=>
+					{
+						json.wholeCardImgSrc2 = wholeCardImgDataURL2;
+						onJsonReady(json); // JSON READY
+					});
+				}
+			});
+		});
 	}
 
 	deleteFromDatabase()

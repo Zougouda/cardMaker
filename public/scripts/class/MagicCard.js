@@ -40,7 +40,30 @@ class MagicCard extends GenericCard
 				},
 				onchange: function(val)
 				{
-					this.cardObject.setCropperSrc( window.URL.createObjectURL(this.inputDOM.files[0]) );
+					var src = val || this.inputDOM.files[0];
+					if(!src)
+						return;
+
+					/* GIF HANDLING */
+					if(this.animationFrameID)
+					{
+						cancelAnimationFrame(this.animationFrameID);
+						this.animationFrameID = null;
+					}
+					this.frameData = null;
+					this.animationIndex = 0;
+					this.cardObject.setCropperSrc( window.URL.createObjectURL(src) );
+					GifHandler.isAnimatedGif(window.URL.createObjectURL(src), (isAnimated)=>
+					{
+						if(isAnimated)
+						{
+							GifHandler.getFramesData(window.URL.createObjectURL(src))
+							.then((frameData)=>
+							{
+								this.frameData = frameData;
+							});
+						}
+					});
 				},
 				ondraw: function
 				(
@@ -61,7 +84,7 @@ class MagicCard extends GenericCard
 					if(this.afterDraw)
 						this.afterDraw(ctx);
 
-					var actualDraw = (ctx, source)=>
+					var actualDraw = (ctx, source, sx = 0, sy = 0, sWidth = null, sHeight = null)=>
 					{
 						if(!source)
 							return;
@@ -71,13 +94,51 @@ class MagicCard extends GenericCard
 
 						ctx.fillStyle = '#FFFFFF';
 						ctx.fillRect(this.boundingBox.left, this.boundingBox.top, this.boundingBox.width, this.boundingBox.height);
-						ctx.drawImage(source, this.boundingBox.left-1, this.boundingBox.top, this.boundingBox.width+1, this.boundingBox.height); // TODO fix these offset/width values
+
+						/* TODO fix these offset/width values */
+						if( sx || sy || sWidth || sHeight)
+							ctx.drawImage(source, sx, sy, sWidth, sHeight, this.boundingBox.left-1, this.boundingBox.top, this.boundingBox.width+1, this.boundingBox.height);
+						else
+							ctx.drawImage(source, this.boundingBox.left-1, this.boundingBox.top, this.boundingBox.width+1, this.boundingBox.height); 
 
 						if(this.afterDraw)
 							this.afterDraw(ctx);
 					};
 
-					if(cropper)
+					if(this.frameData)
+					{
+						if(this.animationFrameID)
+							return;
+
+						this.animationIndex = 0;
+						var loopDraw = ()=>
+						{
+							if( !this.frameData || !this.frameData[this.animationIndex])
+								return;
+
+							var sx = 0, sy = 0, sWidth = null, sHeight = null;
+							if(cropper)
+							{
+								var cropperData = cropper.getData();
+								sx = cropperData.x;
+								sy = cropperData.y;
+								sWidth = cropperData.width;
+								sHeight = cropperData.height
+							}
+							actualDraw(ctx, this.frameData[this.animationIndex].getImage(), sx, sy, sWidth, sHeight );
+							this.animationIndex++;
+							if(this.animationIndex >= this.frameData.length)
+								this.animationIndex = 0;
+							setTimeout(()=>
+							{
+								if(!this.animationFrameID)
+									return;
+								this.animationFrameID = requestAnimationFrame(loopDraw);
+							}, 32); /* 30 FPS gifs */
+						}
+						this.animationFrameID = requestAnimationFrame(loopDraw);
+					}
+					else if(cropper)
 					{
 						actualDraw(ctx, cropper.getCroppedCanvas() );
 					}

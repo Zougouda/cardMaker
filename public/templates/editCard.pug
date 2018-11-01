@@ -39,6 +39,11 @@ block append scripts
 	script(src='/scripts/class/GwentCard.js')
 	script(src='/scripts/class/YuGiOhCard.js')
 	script(src='/scripts/class/CardAttribute.js')
+
+	script(src='/scripts/class/GifHandler.js')
+	script(src='https://unpkg.com/gif-frames?main=bundled')
+	script(src='http://jnordberg.github.io/gif.js/gif.js?v=3')
+
 	script(src='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.4.1/cropper.js')
 
 block content
@@ -173,7 +178,7 @@ block content
 				input.card-author(placeholder="Author",value="")
 			br 
 			button(onclick="javascript:currentCard.exportImg()") Download card as image (ctrl+i)
-			button(onclick="javascript:currentCard.saveToDatabase()") Save card (ctrl+s)
+			button(onclick="javascript:currentCard.saveToDatabasePromise()") Save card (ctrl+s)
 			button.delete-button(onclick="javascript:currentCard.deleteFromDatabase()") Delete card
 		div.preview
 			canvas.preview-canvas(width='400',height='560')

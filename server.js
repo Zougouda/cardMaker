@@ -16,12 +16,17 @@ const port = 4242;
 
 const maxCardPerPage = 8;
 
+const savedCardsPublicPath = '/images/savedCards/';
+const savedCardsPath = `public${savedCardsPublicPath}`
+const savedCardsExtension = '';//'.png';
+
 function writeBase64ToImage(imageAsBase64, path)
 {
 	return new Promise((resolve, reject)=>
 	{
 		var base64Data = imageAsBase64
 		.replace('data:image/png;base64,', '')
+		.replace('data:image/gif;base64,', '')
 		.replace('data:image/octet-stream;base64,', '');
 		fs.writeFile(path, base64Data, {encoding: 'base64'}, (imgErr)=>
 		{
@@ -100,7 +105,7 @@ var app = express()
 		if(!card || err)
 			return res.send({error: "No card found"});
 
-		card.illustration = `/images/savedCards/${req.query.id}_illustration.png`;
+		card.illustration = `${savedCardsPublicPath}${req.query.id}_illustration${savedCardsExtension}`;
 		res.send(card);
 	});
 })
@@ -116,20 +121,20 @@ var app = express()
 
 		/* write the whole card as an img onto the disk */
 		if(req.body.wholeCardImgSrc2)
-			writeBase64ToImage(req.body.wholeCardImgSrc2, `public/images/savedCards/${savedCard.id}-2.png`);
+			writeBase64ToImage(req.body.wholeCardImgSrc2, `${savedCardsPath}${savedCard.id}-2${savedCardsExtension}`);
 
-		writeBase64ToImage(req.body.wholeCardImgSrc, `public/images/savedCards/${savedCard.id}.png`)
+		writeBase64ToImage(req.body.wholeCardImgSrc, `${savedCardsPath}${savedCard.id}${savedCardsExtension}`)
 		.then(()=>
 		{
-		if(req.body.illustration2)
-			writeBase64ToImage(req.body.illustration2n, `public/images/savedCards/${savedCard.id}_illustration-2.png`);
+			if(req.body.illustration2)
+				writeBase64ToImage(req.body.illustration2, `${savedCardsPath}${savedCard.id}_illustration-2${savedCardsExtension}`);
 
 			/* write the illustration as an img onto the disk */
 			if(!req.body.illustration)
 		  		res.send('ok'); // success
 			else
 			{
-				writeBase64ToImage(req.body.illustration, `public/images/savedCards/${savedCard.id}_illustration.png`)
+				writeBase64ToImage(req.body.illustration, `${savedCardsPath}${savedCard.id}_illustration${savedCardsExtension}`)
 				.then(()=>
 				{
 		  			res.send('ok'); // success
@@ -311,10 +316,10 @@ var app = express()
 	.catch(onErrorCB);
 })
 .use(express.static('public'))
-.use((req, res, next)=>
+/*.use((req, res, next)=>
 {
 	res.status(404).send('404 not found.');
-});
+})*/;
 
 process.on('SIGINT', async function()
 {

@@ -18,11 +18,11 @@ block content
 				div(class=containerClassName )
 					if card.cardPattern == 'magic-transform'
 						a(href="/edit-card?id="+card.id) 
-							img.untransformed(src="/images/savedCards/"+card.id+".png")
-							img.transformed(src="/images/savedCards/"+card.id+"-2.png")
+							img.untransformed(src="/images/savedCards/"+card.id)
+							img.transformed(src="/images/savedCards/"+card.id+"-2")
 					else
 						a(href="/edit-card?id="+card.id) 
-							img(src="/images/savedCards/"+card.id+".png")
+							img(src="/images/savedCards/"+card.id)
 					if card.author
 						span.author by #[a(href="/list-cards?userID="+card.userID) #{card.author}]
 					else
