@@ -143,6 +143,23 @@ var app = express()
 		});
 	};
 
+	/* TODO implement this */
+	/* Get the right extension */
+	//if(req.body.wholeCardImgSrc)
+	//{
+	//	if(req.body.wholeCardImgSrc.contains('image/png'))
+	//		req.body.extension = '.png';
+	//	else if(req.body.wholeCardImgSrc.contains('image/gif'))
+	//		req.body.extension = '.gif';
+	//}
+	//if(req.body.wholeCardImgSrc2)
+	//{
+	//	if(req.body.wholeCardImgSrc2.contains('image/png'))
+	//		req.body.extension2 = '.png';
+	//	else if(req.body.wholeCardImgSrc2.contains('image/gif'))
+	//		req.body.extension2 = '.gif';
+	//}
+
 	var cardID = req.body.id;
 	if(cardID)
 		MagicCardModel.findOneAndUpdate({_id: cardID}, req.body, {new: true}, onSaveCallback);
