@@ -80,7 +80,7 @@ class GifHandler
 			});
 	}
 
-	static exportToFile(cardObject)
+	static exportToFile(cardObject, asBlob = false)
 	{
 		return new Promise((resolve, reject)=>
 		{
@@ -93,6 +93,9 @@ class GifHandler
 			});
 			gif.on('finished', function(blob) 
 			{
+				if(asBlob)
+					return resolve(URL.createObjectURL(blob));
+
 				GenericCard.imageToDataURL(blob)
 				.then((dataURL)=>
 				{

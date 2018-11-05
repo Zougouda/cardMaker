@@ -285,7 +285,7 @@ class GenericCard
 		return canvasDOM.toDataURL('image/png').replace("image/png", "image/octet-stream");
 	}
 
-	getWholeCardImgSrcPromise(canvasDOM = this.canvasDOM)
+	getWholeCardImgSrcPromise(canvasDOM = this.canvasDOM, asBlob = false)
 	{
 		return new Promise((resolve, reject)=>
 		{
@@ -296,11 +296,11 @@ class GenericCard
 			if(!illustrationAttribute.frameData) // no gif
 			{
 				this.update();
-				resolve(canvasDOM.toDataURL('image/png'));
+				return resolve(canvasDOM.toDataURL('image/png'));
 			}
 			else // gif
 			{
-				GifHandler.exportToFile(this)
+				GifHandler.exportToFile(this, asBlob) // export as a blob
 				.then((urlEncodedGif)=>
 				{
 					resolve(urlEncodedGif);
@@ -311,14 +311,22 @@ class GenericCard
 
 	exportImg()
 	{
-		var dataUrl = this.getWholeCardImgSrc();
+		this.getWholeCardImgSrcPromise(undefined, true) // export as blob
+		.then((dataUrl)=>
+		{
+			GifHandler.isAnimatedGif(dataUrl, (isAnimated)=>
+			{
+				var fileExtension = (isAnimated) ? '.gif' : '.png';
 
-		var downloadButton = document.createElement('a');
+				var downloadButton = document.createElement('a');
 
-		var title = this.attributes.title.value;
-		downloadButton.setAttribute('download', (title) ? title+'.png' : 'newCard.png');
-		downloadButton.href = dataUrl;
-		downloadButton.click();
+				var title = this.attributes.title.value;
+				downloadButton.setAttribute('download', (title) ? `${title}${fileExtension}` : `newCard${fileExtension}`);
+				downloadButton.href = dataUrl;
+				downloadButton.click();
+			});
+
+		});
 	}
 
 	exportJson()
