@@ -50,7 +50,7 @@ function getFavoritesCards(userID, fields = {})
 			return reject(JSON.stringify({error: err}));
 		};
 
-		var populateOptions = {path: 'favoriteCards', select: fields}
+		var populateOptions = {path: 'favoriteCards', select: fields, options: {sort: {created: -1}}}
 		UserModel.findOne({userID})
 		.populate(populateOptions)
 		.then((user)=>
