@@ -46,25 +46,6 @@ class MagicCard extends GenericCard
 
 					this.cardObject.setCropperSrc( window.URL.createObjectURL(src) );
 					GifHandler.animateCardCanvas(this, window.URL.createObjectURL(src));
-					///* GIF HANDLING */
-					//if(this.animationFrameID)
-					//{
-					//	cancelAnimationFrame(this.animationFrameID);
-					//	this.animationFrameID = null;
-					//}
-					//this.frameData = null;
-					//this.animationIndex = 0;
-					//GifHandler.isAnimatedGif(window.URL.createObjectURL(src), (isAnimated)=>
-					//{
-					//	if(isAnimated)
-					//	{
-					//		GifHandler.getFramesData(window.URL.createObjectURL(src))
-					//		.then((frameData)=>
-					//		{
-					//			this.frameData = frameData;
-					//		});
-					//	}
-					//});
 				},
 				ondraw: function
 				(

@@ -44,6 +44,10 @@ class MagicCardTransform extends MagicCard
 			boundingBox: this.attributes.illustration.boundingBox,
 			onchange: function(val)
 			{
+				var src = val || this.inputDOM.files[0];
+				if(!src)
+					return;
+
 				/* Override original function with parameters for cropper #2 */
 				this.cardObject.setCropperSrc( 
 					window.URL.createObjectURL(this.inputDOM.files[0]),
@@ -51,6 +55,7 @@ class MagicCardTransform extends MagicCard
 					this.cardObject.uploadedImage2,
 					this.cardObject.attributes.illustration2
 				);
+				GifHandler.animateCardCanvas(this, window.URL.createObjectURL(src));
 			},
 			ondraw: function()
 			{
