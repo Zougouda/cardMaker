@@ -1,13 +1,20 @@
 class GifHandler
 {
-	static animateCardCanvas(cardIllustrationAttr, src)
+	static cancelAnimateCardCanvas(cardIllustrationAttr)
 	{
-		/* GIF HANDLING */
+		if(!cardIllustrationAttr) return;
+
 		if(cardIllustrationAttr.animationFrameID)
 		{
 			cancelAnimationFrame(cardIllustrationAttr.animationFrameID);
 			cardIllustrationAttr.animationFrameID = null;
 		}
+	}
+
+	static animateCardCanvas(cardIllustrationAttr, src)
+	{
+		GifHandler.cancelAnimateCardCanvas(cardIllustrationAttr);
+		/* GIF HANDLING */
 		cardIllustrationAttr.frameData = null;
 		cardIllustrationAttr.animationIndex = 0;
 		GifHandler.isAnimatedGif(src, (isAnimated)=>

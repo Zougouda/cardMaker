@@ -141,6 +141,7 @@ footer {
   display: none!important;
 }
 .editor .pattern-selector img {
+  margin: 0 4px;
   transition: all 0.2s;
 }
 .editor .pattern-selector img:hover {
@@ -150,7 +151,6 @@ footer {
 .editor .caption-container input {
   margin-left: 15px;
   min-width: 0;
-  width: 100px;
 }
 .editor input,
 .editor select {

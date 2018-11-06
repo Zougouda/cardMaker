@@ -180,6 +180,13 @@ class GenericCard
 			this.cropper.destroy();
 		if(this.cropper2)
 			this.cropper2.destroy();
+
+		/* stop any gif animation */
+		['illustration', 'ilustration2'].forEach((attributeKey)=>
+		{
+			if(this.attributes[attributeKey])
+				GifHandler.cancelAnimateCardCanvas(this.attributes[attributeKey]);
+		});
 	}
 
 
