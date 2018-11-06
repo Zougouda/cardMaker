@@ -250,6 +250,7 @@ footer {
   opacity: 0;
   transform: rotateY(0deg) scale(1, 1);
   left: -100000px;
+  top: 0;
   position: absolute;
 }
 .list-cards .list-card-el div:hover img {
