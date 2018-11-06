@@ -130,7 +130,8 @@ class GifHandler
 					frameIndex++;
 				}
 			};
-			cardObject.update();
+			cardObject.attributes.illustration.animationIndex = 0; // back to first frame
+			//cardObject.update();
 		});
 
 	}
