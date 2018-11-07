@@ -13,15 +13,15 @@ class GifHandler
 
 	static animateCardCanvas(cardIllustrationAttr, src)
 	{
-		GifHandler.cancelAnimateCardCanvas(cardIllustrationAttr);
+		this.cancelAnimateCardCanvas(cardIllustrationAttr);
 		/* GIF HANDLING */
 		cardIllustrationAttr.frameData = null;
 		cardIllustrationAttr.animationIndex = 0;
-		GifHandler.isAnimatedGif(src, (isAnimated)=>
+		this.isAnimatedGif(src, (isAnimated)=>
 		{
 			if(isAnimated)
 			{
-				GifHandler.getFramesData(src)
+				this.getFramesData(src)
 				.then((frameData)=>
 				{
 					cardIllustrationAttr.frameData = frameData;
