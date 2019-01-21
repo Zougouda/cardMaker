@@ -183,7 +183,7 @@ var app = express()
 {
 	var userID = req.query.userID;
 	
-	var offset = req.query.offset;
+	var offset = parseInt(req.query.offset);
 
 	var searchParams = {};
 	if(userID)
