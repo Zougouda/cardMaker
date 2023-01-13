@@ -50,7 +50,7 @@ function checkFavorites()
 				if(!isFavoriteCheckbox)
 					return;
 
-				if( myFavoriteCardsIDs.indexOf(cardID) !== -1)
+				if( Array.isArray(myFavoriteCardsIDs) && myFavoriteCardsIDs.indexOf(cardID) !== -1)
 					isFavoriteCheckbox.checked = true;
 				
 				isFavoriteCheckbox.addEventListener('change', (e)=>
