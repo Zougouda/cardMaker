@@ -17,5 +17,3 @@ services:
       - TZ=Europe/Paris
     volumes:
       - /mnt/storage/shared/images/cardMaker:/app/public/images/savedCards
-    ports:
-    - 4242:4242
