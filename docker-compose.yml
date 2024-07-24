@@ -1,0 +1,21 @@
+name: cardmaker
+services:
+  db:
+    image: mongo:4.4.6
+    container_name: cardmaker-db
+    ports:
+      - '27017:27017'
+  front:
+    build: .
+    depends_on:
+      db:
+        condition: service_started
+    container_name: cardmaker-front
+    environment:
+      - PUID=1000
+      - PGUID=1000
+      - TZ=Europe/Paris
+    volumes:
+      - /mnt/storage/shared/images/cardMaker:/app/public/images/savedCards
+    ports:
+    - 4242:4242

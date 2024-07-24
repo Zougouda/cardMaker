@@ -8,7 +8,7 @@ const express = require('express'),
 	  ;
 
 /* DB vars */
-const db = mongoose.connect('mongodb://localhost:27017/cardMaker', {useNewUrlParser: true});
+const db = mongoose.connect('mongodb://db:27017/cardMaker', {useNewUrlParser: true});
 const MagicCardModel = mongoose.model('MagicCard', require('./schemas/MagicCard.js')),
 	  UserModel = mongoose.model('User', require('./schemas/User.js'));
 
